@@ -194,10 +194,13 @@ export default class ManualSortingPlugin extends Plugin {
 					const sortingMenuSection = "manual-sorting";
 					menu.addItem((item) => {
 						item.setTitle('Manual sorting')
+							.setChecked(thisPlugin.manualSortingEnabled)
 							.setSection(sortingMenuSection)
 							.onClick(async () => {
 								if (!thisPlugin.manualSortingEnabled) {
 									thisPlugin.manualSortingEnabled = true;
+									await thisPlugin.reloadExplorerPlugin();
+									await thisPlugin.orderManager.cleanUpInvalidPaths();
 								}
 							});
 					});
