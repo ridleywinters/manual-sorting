@@ -9,6 +9,14 @@ function debugLog(...args: any[]) {
 	}
 }
 
+
+declare module 'obsidian' {
+	interface TFolder {
+		prevActualChildrenCount?: number;
+	}
+}
+
+
 export default class ManualSortingPlugin extends Plugin {
 	async onload() {
 		if (this.app.workspace.layoutReady) {
@@ -24,6 +32,7 @@ export default class ManualSortingPlugin extends Plugin {
 
 	async patchFileExplorer() {
 		const explorerView = this.app.workspace.getLeavesOfType("file-explorer")[0].view;
+		const thisPlugin = this;
 
 		around(explorerView.tree.infinityScroll.rootEl.childrenEl.__proto__, {
 			setChildrenInPlace: (original) => function (...args) {
@@ -33,9 +42,13 @@ export default class ManualSortingPlugin extends Plugin {
 
 				for (const child of currentChildren) {
 					if (!newChildrenSet.has(child)) {
+						const container = child.parentElement;
 						this.removeChild(child);
 						if (child.classList.contains("tree-item")) {
 							debugLog(`Removing`, child, child.firstChild.getAttribute("data-path"));
+							const itemContainerPath = container.previousElementSibling?.getAttribute("data-path") || "/";
+							const itemContainer = thisPlugin.app.vault.getFolderByPath(itemContainerPath);
+							itemContainer.prevActualChildrenCount = itemContainer?.children.length;
 						}
 					}
 				}
@@ -43,6 +56,20 @@ export default class ManualSortingPlugin extends Plugin {
 				const processNewItem = (addedItem) => {
 					debugLog(`Adding`, addedItem, addedItem.firstChild.getAttribute("data-path"));
 					const itemContainer = this;
+
+					const renderedChildrenCount = itemContainer.querySelectorAll(':scope > .tree-item').length;
+					const itemInstance = thisPlugin.app.vault.getAbstractFileByPath(addedItem.firstChild.getAttribute("data-path"));
+					const targetFolder = itemInstance?.parent;
+					const actualChildrenCount = targetFolder?.children.length;
+
+					if (targetFolder?.prevActualChildrenCount < actualChildrenCount) {
+						debugLog("New item created:", addedItem);
+					}
+
+					targetFolder.prevActualChildrenCount = actualChildrenCount;
+					if (itemInstance.children) {
+						itemInstance.prevActualChildrenCount = itemInstance?.children.length;
+					}
 
 					if (!Sortable.get(itemContainer)) {
 						debugLog(`Initiating Sortable on`, itemContainer.parentElement);
