@@ -10,7 +10,11 @@ function debugLog(...args: any[]) {
 export default class ManualSortingPlugin extends Plugin {
 	async onload() {
 		this.addRibbonIcon('dice', 'Manual Sorting Plugin', () => {
-			new Notice('This is a notice!');
+			this.initialize();
 		});
+	}
+
+	async initialize() {
+		debugLog("Initializing Manual Sorting Plugin");
 	}
 }
