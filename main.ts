@@ -22,7 +22,8 @@ export default class ManualSortingPlugin extends Plugin {
 	private manualSortingEnabled: boolean = true;
 	private orderManager = new OrderManager(this);
 	private explorerPatches: Function[] = [];
-
+	private unpatchMenu: Function | null = null;
+	
 	async onload() {
 		if (this.app.workspace.layoutReady) {
 			this.initialize();
@@ -35,6 +36,7 @@ export default class ManualSortingPlugin extends Plugin {
 		this.explorerPatches.forEach(unpatch => unpatch());
 		this.explorerPatches = [];
 		this.reloadExplorerPlugin();
+		this.unpatchMenu && this.unpatchMenu() && (this.unpatchMenu = null);
 	}
 
 	async initialize() {
@@ -198,7 +200,7 @@ export default class ManualSortingPlugin extends Plugin {
 
 	async patchSortOrderMenu() {
 		const thisPlugin = this;
-		around(Menu.prototype, {
+		this.unpatchMenu = around(Menu.prototype, {
 			showAtMouseEvent: (original) => function (...args) {
 				if (args[0].target.getAttribute('aria-label') === 'Change sort order') {
 					const menu = this;
