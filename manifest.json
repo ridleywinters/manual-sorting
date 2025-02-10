@@ -5,7 +5,6 @@
 	"minAppVersion": "0.15.0",
 	"description": "Enables manual sorting in the file explorer using drag-and-drop.",
 	"author": "Kh4f",
-	"authorUrl": "https://obsidian.md",
-	"fundingUrl": "https://obsidian.md/pricing",
+	"authorUrl": "https://github.com/Kh4f",
 	"isDesktopOnly": false
 }
