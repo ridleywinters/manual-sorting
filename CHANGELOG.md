@@ -1,6 +1,20 @@
 # Changelog
 
 
+## [1.3.0](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.2.0...1.3.0) (2025-02-10)
+
+
+### 🚀 Features
+
+* **menu:** add emojis to custom menu options ([ce51167](https://github.com/Kh4f/obsidian-manual-sorting/commit/ce511674f982c653228e5945eca7e9a9ff36549e))
+
+
+### 🐞 Bug Fixes
+
+* add optional chaining to prevent potential null reference errors ([8c64d67](https://github.com/Kh4f/obsidian-manual-sorting/commit/8c64d679266c38036fc26e861b2011571f81584b))
+* add type annotations for better type safety in menu and sorting logic ([a3d0847](https://github.com/Kh4f/obsidian-manual-sorting/commit/a3d0847d9034049c833e0a1dc4293f6eb7395676))
+* replace direct prototype access with Object.getPrototypeOf for better compatibility ([d33bf5e](https://github.com/Kh4f/obsidian-manual-sorting/commit/d33bf5ece069a14475663020932e11295cba2536))
+
 ## [1.2.0](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.1.0...1.2.0) (2025-02-10)
 
 
