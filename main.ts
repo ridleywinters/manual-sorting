@@ -127,6 +127,19 @@ export default class ManualSortingPlugin extends Plugin {
 				}
 			}
 		})
+
+		around(explorerView.__proto__, {
+			onRename: (original) => async function (...args) {
+				await original.apply(this, args);
+				if (!thisPlugin.manualSortingEnabled) {
+					return;
+				}
+				debugLog(`Renaming "${args[1]}" to "${args[0].path}"`);
+				const itemElement = document.querySelector(`[data-path="${args[0].path}"]`)?.parentElement;
+				const newContainer = itemElement?.parentElement;
+				await thisPlugin.orderManager.saveOrder(newContainer);
+			}
+		})
 	}
 }
 
