@@ -39,6 +39,10 @@ export default class ManualSortingPlugin extends Plugin {
 					}
 				}
 
+				const processNewItem = (addedItem) => {
+					debugLog(`Adding`, addedItem, addedItem.firstChild.getAttribute("data-path"));
+				}
+
 				for (const child of newChildren) {
 					if (!this.contains(child)) {
 						this.appendChild(child);
@@ -47,14 +51,13 @@ export default class ManualSortingPlugin extends Plugin {
 								new MutationObserver((mutations, obs) => {
 									for (const mutation of mutations) {
 										if (mutation.attributeName === "data-path") {
-											debugLog(`Adding`, child, child.firstChild.getAttribute("data-path"));
-											obs.disconnect();
+											processNewItem(child);
 											return;
 										}
 									}
 								}).observe(child.firstChild, { attributes: true, attributeFilter: ["data-path"] });
 							} else {
-								debugLog(`Adding`, child, child.firstChild.getAttribute("data-path"));
+								processNewItem(child);
 							}
 						}
 					}
