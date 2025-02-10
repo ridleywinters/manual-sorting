@@ -1,4 +1,5 @@
 import { Plugin } from 'obsidian';
+import Sortable from 'sortablejs';
 import { around } from 'monkey-around';
 
 
@@ -41,6 +42,17 @@ export default class ManualSortingPlugin extends Plugin {
 
 				const processNewItem = (addedItem) => {
 					debugLog(`Adding`, addedItem, addedItem.firstChild.getAttribute("data-path"));
+					const itemContainer = this;
+
+					if (!Sortable.get(itemContainer)) {
+						debugLog(`Initiating Sortable on`, itemContainer.parentElement);
+						new Sortable(itemContainer, {
+							group: "nested",
+							draggable: ".tree-item",
+							animation: 100,
+							fallbackOnBody: true,
+						});
+					}
 				}
 
 				for (const child of newChildren) {
