@@ -1,4 +1,4 @@
-import { Notice, Plugin } from 'obsidian';
+import { Plugin } from 'obsidian';
 
 
 function debugLog(...args: any[]) {
@@ -9,9 +9,11 @@ function debugLog(...args: any[]) {
 
 export default class ManualSortingPlugin extends Plugin {
 	async onload() {
-		this.addRibbonIcon('dice', 'Manual Sorting Plugin', () => {
+		if (this.app.workspace.layoutReady) {
 			this.initialize();
-		});
+		} else {
+			this.registerEvent(this.app.workspace.on("layout-ready", this.initialize.bind(this)));
+		}
 	}
 
 	async initialize() {
