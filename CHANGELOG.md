@@ -1,6 +1,21 @@
 # Changelog
 
 
+## [1.1.0](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.0.0...1.1.0) (2025-02-10)
+
+
+### 🚀 Features
+
+* add custom option for manual sorting in Sort Order menu ([7583173](https://github.com/Kh4f/obsidian-manual-sorting/commit/7583173670746020e5d76eb0c5f210a0416eb755))
+* add enable/disable functionality for custom option ([05628ec](https://github.com/Kh4f/obsidian-manual-sorting/commit/05628ec49c65bfd18891dd0dfb099d6d2f99c702))
+* add unpatching functionality for sort order menu on unload ([b3ff25e](https://github.com/Kh4f/obsidian-manual-sorting/commit/b3ff25eedb49f10ef0890e993bdac1b542c4a959))
+* enhance initialization process by patching sort order menu and cleaning up invalid paths ([7be74d5](https://github.com/Kh4f/obsidian-manual-sorting/commit/7be74d5622678394e7d67bd4e2f012e769a145c9))
+* update manual sorting menu option to reflect enabled state and reload plugin on activation ([a850371](https://github.com/Kh4f/obsidian-manual-sorting/commit/a850371225ec575a9d3f462f4f1fbaaee47d0f73))
+
+### 🐞 Bug Fixes
+
+* disable manual sorting when selecting another sort option ([bf987d0](https://github.com/Kh4f/obsidian-manual-sorting/commit/bf987d09776cba549904e14e10f8bbc0794a094a))
+
 ## [1.0.0](https://github.com/Kh4f/obsidian-manual-sorting/compare/0.2.0...1.0.0) (2025-02-10)
 
 
