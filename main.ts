@@ -1,4 +1,4 @@
-import { App, ButtonComponent, Menu, Modal, Plugin } from 'obsidian';
+import { App, ButtonComponent, Menu, MenuItem, Modal, Plugin } from 'obsidian';
 import Sortable from 'sortablejs';
 import { around } from 'monkey-around';
 
@@ -202,14 +202,14 @@ export default class ManualSortingPlugin extends Plugin {
 		const thisPlugin = this;
 		this.unpatchMenu = around(Menu.prototype, {
 			showAtMouseEvent: (original) => function (...args) {
-				if (args[0].target.getAttribute('aria-label') === 'Change sort order') {
+				if ((args[0].target as HTMLElement).getAttribute('aria-label') === 'Change sort order') {
 					const menu = this;
 					menu.sections.unshift("custom-sorting");
 					if (thisPlugin.manualSortingEnabled) {
-						menu.items.find(item => item.checked === true).setChecked(false);
+						menu.items.find((item: { checked: boolean; }) => item.checked === true).setChecked(false);
 					}
 					const sortingMenuSection = "manual-sorting";
-					menu.addItem((item) => {
+					menu.addItem((item: MenuItem) => {
 						item.setTitle('📌 Manual sorting')
 							.setChecked(thisPlugin.manualSortingEnabled)
 							.setSection(sortingMenuSection)
@@ -222,7 +222,7 @@ export default class ManualSortingPlugin extends Plugin {
 							});
 					});
 					if (thisPlugin.manualSortingEnabled) {
-						menu.addItem((item) => {
+						menu.addItem((item: MenuItem) => {
 							item.setTitle('🗑️ Reset order')
 								.setSection(sortingMenuSection)
 								.onClick(async () => {
@@ -325,7 +325,7 @@ class OrderManager {
 			if (!this.plugin.app.vault.getAbstractFileByPath(key)) {
 				delete data[key];
 			} else {
-				data[key] = data[key].filter(item => this.plugin.app.vault.getAbstractFileByPath(item));
+				data[key] = data[key].filter((item: string) => this.plugin.app.vault.getAbstractFileByPath(item));
 			}
 		}
 		await this.plugin.saveData(data);
