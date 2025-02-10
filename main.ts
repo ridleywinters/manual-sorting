@@ -1,4 +1,4 @@
-import { Menu, Plugin } from 'obsidian';
+import { App, ButtonComponent, Menu, Modal, Plugin } from 'obsidian';
 import Sortable from 'sortablejs';
 import { around } from 'monkey-around';
 
@@ -226,8 +226,10 @@ export default class ManualSortingPlugin extends Plugin {
 							item.setTitle('Reset order')
 								.setSection(sortingMenuSection)
 								.onClick(async () => {
-									await thisPlugin.saveData({});
-									await thisPlugin.reloadExplorerPlugin();
+									new ResetOrderConfirmationModal(thisPlugin.app, async () => {
+										await thisPlugin.saveData({});
+										await thisPlugin.reloadExplorerPlugin();
+									}).open();
 								});
 						});
 					}
@@ -328,4 +330,28 @@ class OrderManager {
 		}
 		await this.plugin.saveData(data);
 	}
+}
+
+
+export class ResetOrderConfirmationModal extends Modal {
+    constructor(app: App, onSubmit: () => void) {
+        super(app);
+        this.setTitle("Manual Sorting");
+
+        const modalContent = this.contentEl.createEl("div");
+        modalContent.createEl("p", { text: "Are you sure you want to reset order to default?" });
+
+        const modalButtons = modalContent.createEl("div", { cls: "modal-buttons" });
+        new ButtonComponent(modalButtons)
+            .setButtonText("Yep")
+            .setCta()
+            .onClick(() => {
+                this.close();
+                onSubmit();
+            });
+
+        new ButtonComponent(modalButtons)
+            .setButtonText("Cancel")
+            .onClick(() => this.close());
+    }
 }
