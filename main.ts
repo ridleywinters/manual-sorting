@@ -12,6 +12,7 @@ function debugLog(...args: any[]) {
 
 declare module 'obsidian' {
 	interface TFolder {
+		allChildrenRendered?: boolean;
 		prevActualChildrenCount?: number;
 	}
 }
@@ -64,6 +65,12 @@ export default class ManualSortingPlugin extends Plugin {
 
 					if (targetFolder?.prevActualChildrenCount < actualChildrenCount) {
 						debugLog("New item created:", addedItem);
+					}
+
+					if (!targetFolder?.allChildrenRendered && renderedChildrenCount === actualChildrenCount) {
+						debugLog("All children rendered for", itemContainer.parentElement, targetFolder?.path);
+						targetFolder.allChildrenRendered = true;
+						targetFolder.prevActualChildrenCount = actualChildrenCount;
 					}
 
 					targetFolder.prevActualChildrenCount = actualChildrenCount;
