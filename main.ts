@@ -19,6 +19,8 @@ declare module 'obsidian' {
 
 
 export default class ManualSortingPlugin extends Plugin {
+	private orderManager = new OrderManager(this);
+	
 	async onload() {
 		if (this.app.workspace.layoutReady) {
 			this.initialize();
@@ -47,6 +49,7 @@ export default class ManualSortingPlugin extends Plugin {
 						this.removeChild(child);
 						if (child.classList.contains("tree-item")) {
 							debugLog(`Removing`, child, child.firstChild.getAttribute("data-path"));
+							thisPlugin.orderManager.saveOrder(container);
 							const itemContainerPath = container.previousElementSibling?.getAttribute("data-path") || "/";
 							const itemContainer = thisPlugin.app.vault.getFolderByPath(itemContainerPath);
 							itemContainer.prevActualChildrenCount = itemContainer?.children.length;
@@ -65,12 +68,14 @@ export default class ManualSortingPlugin extends Plugin {
 
 					if (targetFolder?.prevActualChildrenCount < actualChildrenCount) {
 						debugLog("New item created:", addedItem);
+						thisPlugin.orderManager.saveOrder(itemContainer);
 					}
 
 					if (!targetFolder?.allChildrenRendered && renderedChildrenCount === actualChildrenCount) {
 						debugLog("All children rendered for", itemContainer.parentElement, targetFolder?.path);
 						targetFolder.allChildrenRendered = true;
 						targetFolder.prevActualChildrenCount = actualChildrenCount;
+						thisPlugin.orderManager.restoreOrder(itemContainer);
 					}
 
 					targetFolder.prevActualChildrenCount = actualChildrenCount;
