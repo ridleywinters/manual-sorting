@@ -50,6 +50,11 @@ export default class ManualSortingPlugin extends Plugin {
 						if (child.classList.contains("tree-item")) {
 							debugLog(`Removing`, child, child.firstChild.getAttribute("data-path"));
 							thisPlugin.orderManager.saveOrder(container);
+							const isFolderItem = child.classList.contains("nav-folder");
+							if (isFolderItem) {
+								thisPlugin.orderManager.cleanUpInvalidPaths();
+							}
+
 							const itemContainerPath = container.previousElementSibling?.getAttribute("data-path") || "/";
 							const itemContainer = thisPlugin.app.vault.getFolderByPath(itemContainerPath);
 							itemContainer.prevActualChildrenCount = itemContainer?.children.length;
@@ -143,6 +148,11 @@ export default class ManualSortingPlugin extends Plugin {
 				const itemElement = document.querySelector(`[data-path="${args[0].path}"]`)?.parentElement;
 				const newContainer = itemElement?.parentElement;
 				await thisPlugin.orderManager.saveOrder(newContainer);
+
+				const isFolderItem = itemElement?.classList.contains("nav-folder");
+				if (isFolderItem) {
+					thisPlugin.orderManager.cleanUpInvalidPaths();
+				}
 			}
 		})
 	}
@@ -232,5 +242,19 @@ class OrderManager {
 
 		container.appendChild(fragment);
 		debugLog(`Order restored for "${folderPath}":`, container, savedOrder);
+	}
+
+	async cleanUpInvalidPaths() {
+		const data = await this.plugin.loadData();
+		if (!data) return;
+		debugLog("Cleaning up invalid paths");
+		for (const key in data) {
+			if (!this.plugin.app.vault.getAbstractFileByPath(key)) {
+				delete data[key];
+			} else {
+				data[key] = data[key].filter(item => this.plugin.app.vault.getAbstractFileByPath(item));
+			}
+		}
+		await this.plugin.saveData(data);
 	}
 }
