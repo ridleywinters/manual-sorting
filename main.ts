@@ -64,6 +64,7 @@ export default class ManualSortingPlugin extends Plugin {
 									for (const mutation of mutations) {
 										if (mutation.attributeName === "data-path") {
 											processNewItem(child);
+											obs.disconnect();
 											return;
 										}
 									}
