@@ -51,7 +51,7 @@ export default class ManualSortingPlugin extends Plugin {
 		const thisPlugin = this;
 
 		this.explorerPatches.push(
-			around(explorerView.tree.infinityScroll.rootEl.childrenEl.__proto__, {
+			around(Object.getPrototypeOf(explorerView.tree.infinityScroll.rootEl.childrenEl), {
 				setChildrenInPlace: (original) => function (...args) {
 					if (!thisPlugin.manualSortingEnabled) {
 						return original.apply(this, args);
@@ -158,7 +158,7 @@ export default class ManualSortingPlugin extends Plugin {
 		);
 
 		this.explorerPatches.push(
-			around(explorerView.__proto__, {
+			around(Object.getPrototypeOf(explorerView), {
 				onRename: (original) => async function (...args) {
 					await original.apply(this, args);
 					if (!thisPlugin.manualSortingEnabled) {
