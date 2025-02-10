@@ -38,7 +38,10 @@ export default class ManualSortingPlugin extends Plugin {
 	}
 
 	async initialize() {
+		this.patchSortOrderMenu();
 		await this.patchFileExplorer();
+		this.reloadExplorerPlugin();
+		this.orderManager.cleanUpInvalidPaths();
 	}
 
 	async patchFileExplorer() {
@@ -48,6 +51,10 @@ export default class ManualSortingPlugin extends Plugin {
 		this.explorerPatches.push(
 			around(explorerView.tree.infinityScroll.rootEl.childrenEl.__proto__, {
 				setChildrenInPlace: (original) => function (...args) {
+					if (!thisPlugin.manualSortingEnabled) {
+						return original.apply(this, args);
+					}
+
 					const newChildren = args[0];
 					const currentChildren = Array.from(this.children);
 					const newChildrenSet = new Set(newChildren);
