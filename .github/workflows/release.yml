@@ -1,0 +1,40 @@
+name: Release Plugin
+
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18.x"
+
+      - name: Build plugin
+        run: |
+          npm install
+          npm run build
+
+      - name: Extract release notes from CHANGELOG.md
+        run: |
+          awk '/\[[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+\]/{if (p) exit; p=1} p' CHANGELOG.md > RELEASE.md
+
+      - name: Create release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          tag="${GITHUB_REF#refs/tags/}"
+          RELEASE_NOTES=$(cat RELEASE.md)
+
+          gh release create "$tag" \
+            --title="$tag" \
+            --notes "$RELEASE_NOTES" \
+            main.js manifest.json
