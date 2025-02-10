@@ -113,3 +113,49 @@ export default class ManualSortingPlugin extends Plugin {
 		})
 	}
 }
+
+
+class OrderManager {
+	constructor(private plugin: Plugin) {}
+
+	private async saveOrder(container: Element) {
+		const itemPaths = Array.from(container.children)
+			.filter((item) => item.classList.contains("tree-item"))
+			.map((item) => item.firstElementChild?.getAttribute("data-path"))
+			.filter((item): item is string => item !== null && item !== undefined);
+
+		const folderPath = container?.previousElementSibling?.getAttribute("data-path") || "/";
+		const currentData = await this.plugin.loadData() || {};
+
+		currentData[folderPath] = itemPaths;
+		await this.plugin.saveData(currentData);
+
+		debugLog(`Order saved for "${folderPath}":`, container, await this.plugin.loadData());
+	}
+
+	async restoreOrder(container: Element) {
+		const savedData = await this.plugin.loadData();
+		const folderPath = container?.previousElementSibling?.getAttribute("data-path") || "/";
+		const savedOrder = savedData?.[folderPath];
+		if (!savedOrder) return;
+
+		const itemsByPath = new Map<string, Element>();
+		Array.from(container.children).forEach((child: Element) => {
+			const path = child.firstElementChild?.getAttribute("data-path");
+			if (path) {
+				itemsByPath.set(path, child);
+			}
+		});
+
+		const fragment = document.createDocumentFragment();
+		savedOrder.forEach((path: string) => {
+			const element = itemsByPath.get(path);
+			if (element) {
+				fragment.appendChild(element);
+			}
+		});
+
+		container.appendChild(fragment);
+		debugLog(`Order restored for "${folderPath}":`, container, savedOrder);
+	}
+}
