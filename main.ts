@@ -19,6 +19,7 @@ declare module 'obsidian' {
 
 
 export default class ManualSortingPlugin extends Plugin {
+	private manualSortingEnabled: boolean = true;
 	private orderManager = new OrderManager(this);
 	private explorerPatches: Function[] = [];
 
@@ -194,6 +195,11 @@ export default class ManualSortingPlugin extends Plugin {
 					menu.addItem((item) => {
 						item.setTitle('Manual sorting')
 							.setSection(sortingMenuSection)
+							.onClick(async () => {
+								if (!thisPlugin.manualSortingEnabled) {
+									thisPlugin.manualSortingEnabled = true;
+								}
+							});
 					});
 					let menuItems = menu.items;
 					let menuSeparator = menuItems.splice(8, 1)[0];
