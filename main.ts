@@ -210,7 +210,7 @@ export default class ManualSortingPlugin extends Plugin {
 					}
 					const sortingMenuSection = "manual-sorting";
 					menu.addItem((item) => {
-						item.setTitle('Manual sorting')
+						item.setTitle('📌 Manual sorting')
 							.setChecked(thisPlugin.manualSortingEnabled)
 							.setSection(sortingMenuSection)
 							.onClick(async () => {
@@ -223,7 +223,7 @@ export default class ManualSortingPlugin extends Plugin {
 					});
 					if (thisPlugin.manualSortingEnabled) {
 						menu.addItem((item) => {
-							item.setTitle('Reset order')
+							item.setTitle('🗑️ Reset order')
 								.setSection(sortingMenuSection)
 								.onClick(async () => {
 									new ResetOrderConfirmationModal(thisPlugin.app, async () => {
