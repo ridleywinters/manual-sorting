@@ -1,6 +1,13 @@
 # Changelog
 
 
+## [1.0.0](https://github.com/Kh4f/obsidian-manual-sorting/compare/0.2.0...1.0.0) (2025-02-10)
+
+
+### 🚀 Features
+
+* add unpatching functionality for file explorer on unload ([7d51c21](https://github.com/Kh4f/obsidian-manual-sorting/commit/7d51c2138749d92425df9b07808601bb1d35d827))
+
 ## [0.2.0](https://github.com/Kh4f/obsidian-manual-sorting/compare/0.1.0...0.2.0) (2025-02-10)
 
 
