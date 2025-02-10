@@ -1,6 +1,20 @@
 # Changelog
 
 
+## [1.2.0](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.1.0...1.2.0) (2025-02-10)
+
+
+### 🚀 Features
+
+* add 'Reset order' option to Obsidian Sort Order menu for clearing saved data ([0b095b6](https://github.com/Kh4f/obsidian-manual-sorting/commit/0b095b6a772ec32267be30f29f98cf268dff87a7))
+* add confirmation modal for resetting sort order to default ([01ed06e](https://github.com/Kh4f/obsidian-manual-sorting/commit/01ed06e04b33f69bf81b24c2161e6ab30f1d5d7f))
+* conditionally add 'Reset order' option to sorting menu based on manual sorting status ([19c2253](https://github.com/Kh4f/obsidian-manual-sorting/commit/19c2253af5fa5b0b4098ce8bedc46a61219b33f0))
+
+
+### 🐞 Bug Fixes
+
+* correct small spacing between buttons in confirmation modal ([fc80c2d](https://github.com/Kh4f/obsidian-manual-sorting/commit/fc80c2d0487c459011ec7dcf313a2d683ae747da))
+
 ## [1.1.0](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.0.0...1.1.0) (2025-02-10)
 
 
