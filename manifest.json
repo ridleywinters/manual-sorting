@@ -1,7 +1,7 @@
 {
 	"id": "obsidian-manual-sorting",
 	"name": "Manual Sorting",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"minAppVersion": "0.15.0",
 	"description": "Enables manual sorting in the file explorer using drag-and-drop.",
 	"author": "Kh4f",
