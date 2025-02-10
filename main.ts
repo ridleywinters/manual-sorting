@@ -1,4 +1,4 @@
-import { Plugin } from 'obsidian';
+import { Menu, Plugin } from 'obsidian';
 import Sortable from 'sortablejs';
 import { around } from 'monkey-around';
 
@@ -164,7 +164,15 @@ export default class ManualSortingPlugin extends Plugin {
 					if (isFolderItem) {
 						thisPlugin.orderManager.cleanUpInvalidPaths();
 					}
-				}
+				},
+				setSortOrder: (original) => async function (...args) {
+					if (!thisPlugin.manualSortingEnabled) {
+						return await original.apply(this, args);;
+					}
+					thisPlugin.manualSortingEnabled = false;
+					await original.apply(this, args);
+					thisPlugin.reloadExplorerPlugin();
+				},
 			})
 		);
 	}
