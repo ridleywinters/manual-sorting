@@ -20,7 +20,7 @@ declare module 'obsidian' {
 
 export default class ManualSortingPlugin extends Plugin {
 	private orderManager = new OrderManager(this);
-	
+
 	async onload() {
 		if (this.app.workspace.layoutReady) {
 			this.initialize();
@@ -121,9 +121,38 @@ export default class ManualSortingPlugin extends Plugin {
 
 
 class OrderManager {
+	private isSaving = false;
+	private pendingSaves: (() => Promise<void>)[] = [];
+
 	constructor(private plugin: Plugin) {}
 
-	private async saveOrder(container: Element) {
+	async saveOrder(container: Element, callback?: null | (() => void)) {
+		if (!container) return;
+		if (this.isSaving) {
+			return new Promise<void>((resolve) => {
+				this.pendingSaves.push(async () => {
+					await this._saveOrder(container);
+					callback?.();
+					resolve();
+				});
+			});
+		}
+
+		this.isSaving = true;
+
+		try {
+			await this._saveOrder(container);
+			callback?.();
+			while (this.pendingSaves.length > 0) {
+				const nextSave = this.pendingSaves.shift();
+				if (nextSave) await nextSave();
+			}
+		} finally {
+			this.isSaving = false;
+		}
+	}
+
+	private async _saveOrder(container: Element) {
 		const itemPaths = Array.from(container.children)
 			.filter((item) => item.classList.contains("tree-item"))
 			.map((item) => item.firstElementChild?.getAttribute("data-path"))
