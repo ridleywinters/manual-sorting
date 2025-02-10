@@ -141,6 +141,18 @@ export default class ManualSortingPlugin extends Plugin {
 			}
 		})
 	}
+
+	async reloadExplorerPlugin() {
+        const fileExplorerPlugin = this.app.internalPlugins.plugins['file-explorer'];
+        fileExplorerPlugin.disable();
+        await fileExplorerPlugin.enable();
+
+		const allFolders = this.app.vault.getAllFolders();
+		allFolders.push(this.app.vault.getRoot());
+		allFolders.forEach((folder) => {
+			folder.allChildrenRendered = false; 
+		});
+    }
 }
 
 
