@@ -90,6 +90,14 @@ export default class ManualSortingPlugin extends Plugin {
 							draggable: ".tree-item",
 							animation: 100,
 							fallbackOnBody: true,
+							onEnd: (evt) => {
+								const draggedItemPath = evt.item.firstChild.getAttribute("data-path");
+								const destinationPath = evt.to?.previousElementSibling?.getAttribute("data-path") || "/";
+								const movedItem = thisPlugin.app.vault.getAbstractFileByPath(draggedItemPath);
+								debugLog(`Moving "${draggedItemPath}" from "${movedItem?.parent.path}" to "${destinationPath}"`);
+
+								thisPlugin.orderManager.saveOrder(evt.from);
+							},
 						});
 					}
 				}
