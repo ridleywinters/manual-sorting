@@ -99,6 +99,11 @@ export default class ManualSortingPlugin extends Plugin {
 								const targetFolder = thisPlugin.app.vault.getFolderByPath(destinationPath);
 								evt.item.firstChild.setAttribute("data-path", `${(!targetFolder?.isRoot()) ? (destinationPath + '/') : ''}${movedItem.name}`);
 
+								const movedFolder = thisPlugin.app.vault.getFolderByPath(draggedItemPath);
+								if (movedFolder) {
+									thisPlugin.app.fileManager.renameFile(movedFolder, `${(!targetFolder?.isRoot()) ? (destinationPath + '/') : ''}${movedFolder.name}`);
+								}
+
 								thisPlugin.orderManager.saveOrder(evt.from);
 							},
 						});
