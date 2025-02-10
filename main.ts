@@ -43,7 +43,19 @@ export default class ManualSortingPlugin extends Plugin {
 					if (!this.contains(child)) {
 						this.appendChild(child);
 						if (child.classList.contains("tree-item")) {
-							debugLog(`Adding`, child, child.firstChild.getAttribute("data-path"));
+							if (!child.firstChild.hasAttribute("data-path")) {
+								new MutationObserver((mutations, obs) => {
+									for (const mutation of mutations) {
+										if (mutation.attributeName === "data-path") {
+											debugLog(`Adding`, child, child.firstChild.getAttribute("data-path"));
+											obs.disconnect();
+											return;
+										}
+									}
+								}).observe(child.firstChild, { attributes: true, attributeFilter: ["data-path"] });
+							} else {
+								debugLog(`Adding`, child, child.firstChild.getAttribute("data-path"));
+							}
 						}
 					}
 				}
