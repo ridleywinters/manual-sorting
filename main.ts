@@ -221,14 +221,16 @@ export default class ManualSortingPlugin extends Plugin {
 								}
 							});
 					});
-					menu.addItem((item) => {
-						item.setTitle('Reset order')
-							.setSection(sortingMenuSection)
-							.onClick(async () => {
-								await thisPlugin.saveData({});
-								await thisPlugin.reloadExplorerPlugin();
-							});
-					});
+					if (thisPlugin.manualSortingEnabled) {
+						menu.addItem((item) => {
+							item.setTitle('Reset order')
+								.setSection(sortingMenuSection)
+								.onClick(async () => {
+									await thisPlugin.saveData({});
+									await thisPlugin.reloadExplorerPlugin();
+								});
+						});
+					}
 					let menuItems = menu.items;
 					let menuSeparator = menuItems.splice(8, 1)[0];
 					menuItems.splice(0, 0, menuSeparator);
