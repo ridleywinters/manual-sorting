@@ -1,4 +1,5 @@
 import { Plugin } from 'obsidian';
+import { around } from 'monkey-around';
 
 
 function debugLog(...args: any[]) {
@@ -17,6 +18,36 @@ export default class ManualSortingPlugin extends Plugin {
 	}
 
 	async initialize() {
-		debugLog("Initializing Manual Sorting Plugin");
+		await this.patchFileExplorer();
+	}
+
+	async patchFileExplorer() {
+		const explorerView = this.app.workspace.getLeavesOfType("file-explorer")[0].view;
+
+		around(explorerView.tree.infinityScroll.rootEl.childrenEl.__proto__, {
+			setChildrenInPlace: (original) => function (...args) {
+				const newChildren = args[0];
+				const currentChildren = Array.from(this.children);
+				const newChildrenSet = new Set(newChildren);
+
+				for (const child of currentChildren) {
+					if (!newChildrenSet.has(child)) {
+						this.removeChild(child);
+						if (child.classList.contains("tree-item")) {
+							debugLog(`Removing`, child, child.firstChild.getAttribute("data-path"));
+						}
+					}
+				}
+
+				for (const child of newChildren) {
+					if (!this.contains(child)) {
+						this.appendChild(child);
+						if (child.classList.contains("tree-item")) {
+							debugLog(`Adding`, child, child.firstChild.getAttribute("data-path"));
+						}
+					}
+				}
+			}
+		})
 	}
 }
