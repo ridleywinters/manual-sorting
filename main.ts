@@ -20,6 +20,7 @@ declare module 'obsidian' {
 
 export default class ManualSortingPlugin extends Plugin {
 	private orderManager = new OrderManager(this);
+	private explorerPatches: Function[] = [];
 
 	async onload() {
 		if (this.app.workspace.layoutReady) {
@@ -27,6 +28,12 @@ export default class ManualSortingPlugin extends Plugin {
 		} else {
 			this.registerEvent(this.app.workspace.on("layout-ready", this.initialize.bind(this)));
 		}
+	}
+
+	async onunload() {
+		this.explorerPatches.forEach(unpatch => unpatch());
+		this.explorerPatches = [];
+		this.reloadExplorerPlugin();
 	}
 
 	async initialize() {
@@ -37,124 +44,128 @@ export default class ManualSortingPlugin extends Plugin {
 		const explorerView = this.app.workspace.getLeavesOfType("file-explorer")[0].view;
 		const thisPlugin = this;
 
-		around(explorerView.tree.infinityScroll.rootEl.childrenEl.__proto__, {
-			setChildrenInPlace: (original) => function (...args) {
-				const newChildren = args[0];
-				const currentChildren = Array.from(this.children);
-				const newChildrenSet = new Set(newChildren);
+		this.explorerPatches.push(
+			around(explorerView.tree.infinityScroll.rootEl.childrenEl.__proto__, {
+				setChildrenInPlace: (original) => function (...args) {
+					const newChildren = args[0];
+					const currentChildren = Array.from(this.children);
+					const newChildrenSet = new Set(newChildren);
 
-				for (const child of currentChildren) {
-					if (!newChildrenSet.has(child)) {
-						const container = child.parentElement;
-						this.removeChild(child);
-						if (child.classList.contains("tree-item")) {
-							debugLog(`Removing`, child, child.firstChild.getAttribute("data-path"));
-							thisPlugin.orderManager.saveOrder(container);
-							const isFolderItem = child.classList.contains("nav-folder");
-							if (isFolderItem) {
-								thisPlugin.orderManager.cleanUpInvalidPaths();
-							}
-
-							const itemContainerPath = container.previousElementSibling?.getAttribute("data-path") || "/";
-							const itemContainer = thisPlugin.app.vault.getFolderByPath(itemContainerPath);
-							itemContainer.prevActualChildrenCount = itemContainer?.children.length;
-						}
-					}
-				}
-
-				const processNewItem = (addedItem) => {
-					debugLog(`Adding`, addedItem, addedItem.firstChild.getAttribute("data-path"));
-					const itemContainer = this;
-
-					const renderedChildrenCount = itemContainer.querySelectorAll(':scope > .tree-item').length;
-					const itemInstance = thisPlugin.app.vault.getAbstractFileByPath(addedItem.firstChild.getAttribute("data-path"));
-					const targetFolder = itemInstance?.parent;
-					const actualChildrenCount = targetFolder?.children.length;
-
-					if (targetFolder?.prevActualChildrenCount < actualChildrenCount) {
-						debugLog("New item created:", addedItem);
-						thisPlugin.orderManager.saveOrder(itemContainer);
-					}
-
-					if (!targetFolder?.allChildrenRendered && renderedChildrenCount === actualChildrenCount) {
-						debugLog("All children rendered for", itemContainer.parentElement, targetFolder?.path);
-						targetFolder.allChildrenRendered = true;
-						targetFolder.prevActualChildrenCount = actualChildrenCount;
-						thisPlugin.orderManager.restoreOrder(itemContainer);
-					}
-
-					targetFolder.prevActualChildrenCount = actualChildrenCount;
-					if (itemInstance.children) {
-						itemInstance.prevActualChildrenCount = itemInstance?.children.length;
-					}
-
-					if (!Sortable.get(itemContainer)) {
-						debugLog(`Initiating Sortable on`, itemContainer.parentElement);
-						new Sortable(itemContainer, {
-							group: "nested",
-							draggable: ".tree-item",
-							animation: 100,
-							fallbackOnBody: true,
-							onEnd: (evt) => {
-								const draggedItemPath = evt.item.firstChild.getAttribute("data-path");
-								const destinationPath = evt.to?.previousElementSibling?.getAttribute("data-path") || "/";
-								const movedItem = thisPlugin.app.vault.getAbstractFileByPath(draggedItemPath);
-								debugLog(`Moving "${draggedItemPath}" from "${movedItem?.parent.path}" to "${destinationPath}"`);
-
-								const targetFolder = thisPlugin.app.vault.getFolderByPath(destinationPath);
-								evt.item.firstChild.setAttribute("data-path", `${(!targetFolder?.isRoot()) ? (destinationPath + '/') : ''}${movedItem.name}`);
-
-								const movedFolder = thisPlugin.app.vault.getFolderByPath(draggedItemPath);
-								if (movedFolder) {
-									thisPlugin.app.fileManager.renameFile(movedFolder, `${(!targetFolder?.isRoot()) ? (destinationPath + '/') : ''}${movedFolder.name}`);
+					for (const child of currentChildren) {
+						if (!newChildrenSet.has(child)) {
+							const container = child.parentElement;
+							this.removeChild(child);
+							if (child.classList.contains("tree-item")) {
+								debugLog(`Removing`, child, child.firstChild.getAttribute("data-path"));
+								thisPlugin.orderManager.saveOrder(container);
+								const isFolderItem = child.classList.contains("nav-folder");
+								if (isFolderItem) {
+									thisPlugin.orderManager.cleanUpInvalidPaths();
 								}
 
-								thisPlugin.orderManager.saveOrder(evt.from);
-							},
-						});
+								const itemContainerPath = container.previousElementSibling?.getAttribute("data-path") || "/";
+								const itemContainer = thisPlugin.app.vault.getFolderByPath(itemContainerPath);
+								itemContainer.prevActualChildrenCount = itemContainer?.children.length;
+							}
+						}
 					}
-				}
 
-				for (const child of newChildren) {
-					if (!this.contains(child)) {
-						this.appendChild(child);
-						if (child.classList.contains("tree-item")) {
-							if (!child.firstChild.hasAttribute("data-path")) {
-								new MutationObserver((mutations, obs) => {
-									for (const mutation of mutations) {
-										if (mutation.attributeName === "data-path") {
-											processNewItem(child);
-											obs.disconnect();
-											return;
-										}
+					const processNewItem = (addedItem) => {
+						debugLog(`Adding`, addedItem, addedItem.firstChild.getAttribute("data-path"));
+						const itemContainer = this;
+
+						const renderedChildrenCount = itemContainer.querySelectorAll(':scope > .tree-item').length;
+						const itemInstance = thisPlugin.app.vault.getAbstractFileByPath(addedItem.firstChild.getAttribute("data-path"));
+						const targetFolder = itemInstance?.parent;
+						const actualChildrenCount = targetFolder?.children.length;
+
+						if (targetFolder?.prevActualChildrenCount < actualChildrenCount) {
+							debugLog("New item created:", addedItem);
+							thisPlugin.orderManager.saveOrder(itemContainer);
+						}
+
+						if (!targetFolder?.allChildrenRendered && renderedChildrenCount === actualChildrenCount) {
+							debugLog("All children rendered for", itemContainer.parentElement, targetFolder?.path);
+							targetFolder.allChildrenRendered = true;
+							targetFolder.prevActualChildrenCount = actualChildrenCount;
+							thisPlugin.orderManager.restoreOrder(itemContainer);
+						}
+
+						targetFolder.prevActualChildrenCount = actualChildrenCount;
+						if (itemInstance.children) {
+							itemInstance.prevActualChildrenCount = itemInstance?.children.length;
+						}
+
+						if (!Sortable.get(itemContainer)) {
+							debugLog(`Initiating Sortable on`, itemContainer.parentElement);
+							new Sortable(itemContainer, {
+								group: "nested",
+								draggable: ".tree-item",
+								animation: 100,
+								fallbackOnBody: true,
+								onEnd: (evt) => {
+									const draggedItemPath = evt.item.firstChild.getAttribute("data-path");
+									const destinationPath = evt.to?.previousElementSibling?.getAttribute("data-path") || "/";
+									const movedItem = thisPlugin.app.vault.getAbstractFileByPath(draggedItemPath);
+									debugLog(`Moving "${draggedItemPath}" from "${movedItem?.parent.path}" to "${destinationPath}"`);
+
+									const targetFolder = thisPlugin.app.vault.getFolderByPath(destinationPath);
+									evt.item.firstChild.setAttribute("data-path", `${(!targetFolder?.isRoot()) ? (destinationPath + '/') : ''}${movedItem.name}`);
+
+									const movedFolder = thisPlugin.app.vault.getFolderByPath(draggedItemPath);
+									if (movedFolder) {
+										thisPlugin.app.fileManager.renameFile(movedFolder, `${(!targetFolder?.isRoot()) ? (destinationPath + '/') : ''}${movedFolder.name}`);
 									}
-								}).observe(child.firstChild, { attributes: true, attributeFilter: ["data-path"] });
-							} else {
-								processNewItem(child);
+
+									thisPlugin.orderManager.saveOrder(evt.from);
+								},
+							});
+						}
+					}
+
+					for (const child of newChildren) {
+						if (!this.contains(child)) {
+							this.appendChild(child);
+							if (child.classList.contains("tree-item")) {
+								if (!child.firstChild.hasAttribute("data-path")) {
+									new MutationObserver((mutations, obs) => {
+										for (const mutation of mutations) {
+											if (mutation.attributeName === "data-path") {
+												processNewItem(child);
+												obs.disconnect();
+												return;
+											}
+										}
+									}).observe(child.firstChild, { attributes: true, attributeFilter: ["data-path"] });
+								} else {
+									processNewItem(child);
+								}
 							}
 						}
 					}
 				}
-			}
-		})
+			})
+		);
 
-		around(explorerView.__proto__, {
-			onRename: (original) => async function (...args) {
-				await original.apply(this, args);
-				if (!thisPlugin.manualSortingEnabled) {
-					return;
-				}
-				debugLog(`Renaming "${args[1]}" to "${args[0].path}"`);
-				const itemElement = document.querySelector(`[data-path="${args[0].path}"]`)?.parentElement;
-				const newContainer = itemElement?.parentElement;
-				await thisPlugin.orderManager.saveOrder(newContainer);
+		this.explorerPatches.push(
+			around(explorerView.__proto__, {
+				onRename: (original) => async function (...args) {
+					await original.apply(this, args);
+					if (!thisPlugin.manualSortingEnabled) {
+						return;
+					}
+					debugLog(`Renaming "${args[1]}" to "${args[0].path}"`);
+					const itemElement = document.querySelector(`[data-path="${args[0].path}"]`)?.parentElement;
+					const newContainer = itemElement?.parentElement;
+					await thisPlugin.orderManager.saveOrder(newContainer);
 
-				const isFolderItem = itemElement?.classList.contains("nav-folder");
-				if (isFolderItem) {
-					thisPlugin.orderManager.cleanUpInvalidPaths();
+					const isFolderItem = itemElement?.classList.contains("nav-folder");
+					if (isFolderItem) {
+						thisPlugin.orderManager.cleanUpInvalidPaths();
+					}
 				}
-			}
-		})
+			})
+		);
 	}
 
 	async reloadExplorerPlugin() {
