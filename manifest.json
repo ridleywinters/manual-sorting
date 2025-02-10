@@ -1,10 +1,10 @@
 {
-	"id": "sample-plugin",
-	"name": "Sample Plugin",
+	"id": "obsidian-manual-sorting",
+	"name": "Manual Sorting",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "Demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
+	"description": "Enables manual sorting in the file explorer using drag-and-drop.",
+	"author": "Kh4f",
 	"authorUrl": "https://obsidian.md",
 	"fundingUrl": "https://obsidian.md/pricing",
 	"isDesktopOnly": false
