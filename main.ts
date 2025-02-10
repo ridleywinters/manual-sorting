@@ -179,6 +179,30 @@ export default class ManualSortingPlugin extends Plugin {
 			folder.allChildrenRendered = false; 
 		});
     }
+
+	async patchSortOrderMenu() {
+		const thisPlugin = this;
+		around(Menu.prototype, {
+			showAtMouseEvent: (original) => function (...args) {
+				if (args[0].target.getAttribute('aria-label') === 'Change sort order') {
+					const menu = this;
+					menu.sections.unshift("custom-sorting");
+					if (thisPlugin.manualSortingEnabled) {
+						menu.items.find(item => item.checked === true).setChecked(false);
+					}
+					const sortingMenuSection = "manual-sorting";
+					menu.addItem((item) => {
+						item.setTitle('Manual sorting')
+							.setSection(sortingMenuSection)
+					});
+					let menuItems = menu.items;
+					let menuSeparator = menuItems.splice(8, 1)[0];
+					menuItems.splice(0, 0, menuSeparator);
+				}
+				original.apply(this, args);
+			}
+		});
+	}
 }
 
 
