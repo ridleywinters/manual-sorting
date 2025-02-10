@@ -102,7 +102,7 @@ export default class ManualSortingPlugin extends Plugin {
 						}
 
 						targetFolder.prevActualChildrenCount = actualChildrenCount;
-						if (itemInstance.children) {
+						if (itemInstance?.children) {
 							itemInstance.prevActualChildrenCount = itemInstance?.children.length;
 						}
 
@@ -117,10 +117,10 @@ export default class ManualSortingPlugin extends Plugin {
 									const draggedItemPath = evt.item.firstChild.getAttribute("data-path");
 									const destinationPath = evt.to?.previousElementSibling?.getAttribute("data-path") || "/";
 									const movedItem = thisPlugin.app.vault.getAbstractFileByPath(draggedItemPath);
-									debugLog(`Moving "${draggedItemPath}" from "${movedItem?.parent.path}" to "${destinationPath}"`);
+									debugLog(`Moving "${draggedItemPath}" from "${movedItem?.parent?.path}" to "${destinationPath}"`);
 
 									const targetFolder = thisPlugin.app.vault.getFolderByPath(destinationPath);
-									evt.item.firstChild.setAttribute("data-path", `${(!targetFolder?.isRoot()) ? (destinationPath + '/') : ''}${movedItem.name}`);
+									evt.item.firstChild.setAttribute("data-path", `${(!targetFolder?.isRoot()) ? (destinationPath + '/') : ''}${movedItem?.name}`);
 
 									const movedFolder = thisPlugin.app.vault.getFolderByPath(draggedItemPath);
 									if (movedFolder) {
