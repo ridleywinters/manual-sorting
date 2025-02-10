@@ -25,7 +25,7 @@ jobs:
 
       - name: Extract release notes from CHANGELOG.md
         run: |
-          awk '/\[[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+\]/{if (p) exit; p=1} p' CHANGELOG.md > RELEASE.md
+          awk '/^#.*[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+/{if (p) exit; p=1} p' CHANGELOG.md > RELEASE.md
 
       - name: Create release
         env:
