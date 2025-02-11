@@ -15,7 +15,7 @@
 		<img src="https://img.shields.io/github/manifest-json/v/Kh4f/obsidian-manual-sorting" alt="Version Badge">
 	</a>
     <img src="https://img.shields.io/github/release-date/Kh4f/obsidian-manual-sorting" alt="Release Date Badge">
-	<a href="https://github.com/Kh4f/obsidian-manual-sorting/blob/main/LICENSE">
+	<a href="https://github.com/Kh4f/obsidian-manual-sorting/blob/master/LICENSE">
 		<img src="https://img.shields.io/github/license/Kh4f/obsidian-manual-sorting" alt="License Badge">
 	</a>
 	<a href="https://github.com/Kh4f/obsidian-manual-sorting/issues">
