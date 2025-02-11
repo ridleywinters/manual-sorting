@@ -1,6 +1,11 @@
 # Changelog
 
 
+### [1.3.2](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.3.1...1.3.2) (2025-02-11)
+
+### 🛠️ Changes
+- update plugin ID in `manifest.json` ([d374551](https://github.com/Kh4f/obsidian-manual-sorting/commit/d37455194018310698f9a054d5b42bf7c54e0830))
+
 ### [1.3.1](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.3.0...1.3.1) (2025-02-11)
 
 ### 🛠️ Changes
