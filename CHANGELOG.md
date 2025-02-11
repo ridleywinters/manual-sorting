@@ -1,6 +1,11 @@
 # Changelog
 
 
+### [1.3.1](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.3.0...1.3.1) (2025-02-11)
+
+### 🛠️ Changes
+- update description for clarity in `manifest.json` ([364117b](https://github.com/Kh4f/obsidian-manual-sorting/commit/364117beb82ab53f512565aed4a0c4364984a660))
+
 ## [1.3.0](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.2.0...1.3.0) (2025-02-10)
 
 
