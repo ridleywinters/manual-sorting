@@ -33,6 +33,7 @@
 		"typescript": "^5.7.3"
 	},
 	"dependencies": {
+		"i18next": "^24.2.2",
 		"monkey-around": "^3.0.0",
 		"sortablejs": "^1.15.6"
 	}
