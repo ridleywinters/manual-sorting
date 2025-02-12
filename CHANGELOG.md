@@ -1,6 +1,20 @@
 # Changelog
 
 
+### [1.3.4](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.3.3...1.3.4) (2025-02-12)
+
+
+### 🛠️ Changes
+
+* add refactor and chore sections to .versionrc ([888c7c6](https://github.com/Kh4f/obsidian-manual-sorting/commit/888c7c6742280b5e87da3586c76c83d2c51f8936))
+* update devDependencies to latest versions ([541c609](https://github.com/Kh4f/obsidian-manual-sorting/commit/541c609d36410c36a66afafc4810c69ca5a89ec2))
+
+
+### 🐞 Bug Fixes
+
+* **mobile:** tree.infinityScroll not found that lead to a crash by [<u>**@Mara-Li**</u>](https://github.com/Mara-Li) in [#3](https://github.com/Kh4f/obsidian-manual-sorting/pull/3) ([7b369fb](https://github.com/Kh4f/obsidian-manual-sorting/commit/7b369fb5f77131c0febd9e43ce1965a6e1b7b694))
+* not working in french by [<u>**@Mara-Li**</u>](https://github.com/Mara-Li) in [#2](https://github.com/Kh4f/obsidian-manual-sorting/pull/2) ([ebb4e5d](https://github.com/Kh4f/obsidian-manual-sorting/commit/ebb4e5d9bfccb3e2b46fb283a6a0b5a3c5b8834f)), closes [#1](https://github.com/Kh4f/obsidian-manual-sorting/issues/1)
+
 ### [1.3.3](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.3.2...1.3.3) (2025-02-12)
 
 
