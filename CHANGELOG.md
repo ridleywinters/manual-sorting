@@ -1,6 +1,14 @@
 # Changelog
 
 
+### [1.3.3](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.3.2...1.3.3) (2025-02-12)
+
+
+### 🛠️ Changes
+
+* include styles.css in release workflow ([b115fff](https://github.com/Kh4f/obsidian-manual-sorting/commit/b115fff55363c10487f8f571e209a7f0f412b143))
+* move modal button styles into CSS ([1a20f9e](https://github.com/Kh4f/obsidian-manual-sorting/commit/1a20f9e092d7361f00e25785f2d913bc04906dfc))
+
 ### [1.3.2](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.3.1...1.3.2) (2025-02-11)
 
 ### 🛠️ Changes
