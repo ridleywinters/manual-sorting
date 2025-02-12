@@ -342,8 +342,6 @@ export class ResetOrderConfirmationModal extends Modal {
         modalContent.createEl("p", { text: "Are you sure you want to reset order to default?" });
 
         const modalButtons = modalContent.createEl("div", { cls: "modal-buttons" });
-		modalButtons.style.display = "flex";
-		modalButtons.style.gap = "8px";
         new ButtonComponent(modalButtons)
             .setButtonText("Yep")
             .setCta()
