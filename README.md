@@ -1,5 +1,5 @@
 <h1 align="center">
-  <a href="https://obsidian.md/plugins?id=obsidian-manual-sorting">📌 Manual Sorting</a>
+  <a href="https://obsidian.md/plugins?id=manual-sorting">📌 Manual Sorting</a>
 </h1>
 
 <p align="center">A plugin for <a href="https://obsidian.md/" target="_blank">Obsidian</a> that enables manual sorting within the file explorer using drag-and-drop.</p>
