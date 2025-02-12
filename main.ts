@@ -10,9 +10,11 @@ function debugLog(...args: any[]) {
 	}
 }
 
+
 declare global {
 	const i18next: i18n;
 }
+
 
 declare module 'obsidian' {
 	interface TFolder {
