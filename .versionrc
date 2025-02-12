@@ -6,7 +6,9 @@
 	"types": [
 		{ "type": "feat", "section": "🚀 Features" },
 		{ "type": "fix", "section": "🐞 Bug Fixes" },
-		{ "type": "perf", "section": "⚡ Performance" }
+		{ "type": "perf", "section": "⚡ Performance" },
+		{ "type": "refactor", "section": "🛠️ Changes" },
+		{ "type": "chore", "section": "🛠️ Changes" }
 	],
 	"bumpFiles": [
 		{"filename": "package.json","type": "json"}, 
