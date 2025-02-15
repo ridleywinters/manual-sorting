@@ -1,6 +1,14 @@
 # Changelog
 
 
+### [1.3.5](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.3.4...1.3.5) (2025-02-15)
+
+
+### 🛠️ Changes
+
+* **dependencies:** add i18next and update @babel/runtime ([17dc880](https://github.com/Kh4f/obsidian-manual-sorting/commit/17dc8808b431cdea7494c927488f5edcdcfefe67))
+* **manifest.json:** set isDesktopOnly to true ([f200866](https://github.com/Kh4f/obsidian-manual-sorting/commit/f200866d8433d7599032858852a1a80d64109171))
+
 ### [1.3.4](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.3.3...1.3.4) (2025-02-12)
 
 
