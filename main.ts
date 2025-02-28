@@ -31,11 +31,9 @@ export default class ManualSortingPlugin extends Plugin {
 	private unpatchMenu: Function | null = null;
 	
 	async onload() {
-		if (this.app.workspace.layoutReady) {
+		this.app.workspace.onLayoutReady(() => {
 			this.initialize();
-		} else {
-			this.registerEvent(this.app.workspace.on("layout-ready", this.initialize.bind(this)));
-		}
+		});
 	}
 
 	async onunload() {
