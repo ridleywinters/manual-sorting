@@ -342,7 +342,7 @@ class OrderManager {
 export class ResetOrderConfirmationModal extends Modal {
     constructor(app: App, onSubmit: () => void) {
         super(app);
-        this.setTitle("Manual Sorting");
+        this.setTitle("Manual sorting");
 
         const modalContent = this.contentEl.createEl("div");
         modalContent.createEl("p", { text: "Are you sure you want to reset order to default?" });
