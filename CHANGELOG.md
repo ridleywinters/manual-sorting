@@ -1,6 +1,19 @@
 # Changelog
 
 
+### [1.3.6](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.3.5...1.3.6) (2025-02-28)
+
+
+### 🐞 Bug Fixes
+
+* **ui:** change modal title to sentence case ([cb2ec6c](https://github.com/Kh4f/obsidian-manual-sorting/commit/cb2ec6c2108bdd128464ea9fedf8f83f96ef682a))
+
+
+### 🛠️ Changes
+
+* **license:** update copyright year and owner ([fbb6e76](https://github.com/Kh4f/obsidian-manual-sorting/commit/fbb6e762d294d636182c9a2179508547a5bde1fb))
+* replace outdated layout ready check with modern approach ([82f2951](https://github.com/Kh4f/obsidian-manual-sorting/commit/82f2951ce72b0235f49a59a94539e6e54437987e))
+
 ### [1.3.5](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.3.4...1.3.5) (2025-02-15)
 
 
