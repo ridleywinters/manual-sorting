@@ -11,10 +11,10 @@
 </br>
 
 <p align="center">
-    <a href="https://github.com/Kh4f/obsidian-manual-sorting/releases/latest"><img src="https://img.shields.io/github/manifest-json/v/Kh4f/obsidian-manual-sorting?color=373737&labelColor=a3061e&label=%F0%9F%94%A5%20Release" alt="Version Badge"></a>
-    <a href="https://github.com/Kh4f/obsidian-manual-sorting/releases/latest"><img src="https://img.shields.io/github/release-date/Kh4f/obsidian-manual-sorting?color=373737&labelColor=a3061e&label=%F0%9F%93%85%20Release%20Date" alt="Release Date Badge"></a>
-	<a href="https://github.com/Kh4f/obsidian-manual-sorting/blob/master/LICENSE"><img src="https://img.shields.io/github/license/Kh4f/obsidian-manual-sorting?color=373737&labelColor=a3061e&label=%F0%9F%9B%A1%EF%B8%8F%20Licence" alt="License Badge"></a>
-	<a href="https://github.com/Kh4f/obsidian-manual-sorting/issues"><img src="https://img.shields.io/github/issues/Kh4f/obsidian-manual-sorting?color=373737&labelColor=a3061e&label=%F0%9F%94%A7%20Issues" alt="Issues Badge"></a>
+	<a href="https://github.com/Kh4f/obsidian-manual-sorting/releases/latest"><img src="https://img.shields.io/badge/dynamic/json?logo=obsidian&color=363636&labelColor=5845b5&label=Downloads&query=%24%5B%22manual-sorting%22%5D.downloads&url=https%3A%2F%2Fraw.githubusercontent.com%2Fobsidianmd%2Fobsidian-releases%2Fmaster%2Fcommunity-plugin-stats.json" alt="Version Badge"></a>
+    <a href="https://github.com/Kh4f/obsidian-manual-sorting/releases/latest"><img src="https://img.shields.io/github/manifest-json/v/Kh4f/obsidian-manual-sorting?color=373737&labelColor=5845b5&label=%F0%9F%94%A5%20Release" alt="Version Badge"></a>
+	<a href="https://github.com/Kh4f/obsidian-manual-sorting/blob/master/LICENSE"><img src="https://img.shields.io/github/license/Kh4f/obsidian-manual-sorting?color=373737&labelColor=5845b5&label=%F0%9F%9B%A1%EF%B8%8F%20Licence" alt="License Badge"></a>
+	<a href="https://github.com/Kh4f/obsidian-manual-sorting/issues"><img src="https://img.shields.io/github/issues/Kh4f/obsidian-manual-sorting?color=373737&labelColor=5845b5&label=%F0%9F%94%A7%20Issues" alt="Issues Badge"></a>
 </p>
 
 ## 🪧 Usage
