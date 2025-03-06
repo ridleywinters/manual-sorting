@@ -206,7 +206,10 @@ export default class ManualSortingPlugin extends Plugin {
 		const thisPlugin = this;
 		this.unpatchMenu = around(Menu.prototype, {
 			showAtMouseEvent: (original) => function (...args) {
-				if ((args[0].target as HTMLElement).getAttribute('aria-label') === i18next.t("plugins.file-explorer.action-change-sort")) {
+				const openManuButton = args[0].target as HTMLElement;
+				if (openManuButton.getAttribute('aria-label') === i18next.t("plugins.file-explorer.action-change-sort") &&
+					openManuButton.classList.contains('nav-action-button')
+				) {
 					const menu = this;
 					menu.sections.unshift("custom-sorting");
 					if (thisPlugin.manualSortingEnabled) {
