@@ -1,6 +1,13 @@
 # Changelog
 
 
+### [1.3.7](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.3.6...1.3.7) (2025-03-06)
+
+
+### 🐞 Bug Fixes
+
+* **menu:** ensure "Change sort order" click handler only applies in File Explorer ([a90690e](https://github.com/Kh4f/obsidian-manual-sorting/commit/a90690eabb5d8299b88de063aa6f7122954a4711)), closes [#6](https://github.com/Kh4f/obsidian-manual-sorting/issues/6)
+
 ### [1.3.6](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.3.5...1.3.6) (2025-02-28)
 
 
