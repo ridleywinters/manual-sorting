@@ -138,7 +138,7 @@ export default class ManualSortingPlugin extends Plugin {
 									}
 
 									const nextItem = evt.item.nextElementSibling;
-									const nextItemPath = nextItem?.firstChild.getAttribute("data-path");
+									const nextItemPath = nextItem?.firstChild?.getAttribute("data-path");
 									thisPlugin.orderManager.moveFile(draggedItemPath, itemDestPath, nextItemPath);
 								},
 							});
