@@ -189,6 +189,21 @@ export default class ManualSortingPlugin extends Plugin {
 				},
 			})
 		);
+
+		this.explorerPatches.push(
+			around(Object.getPrototypeOf(explorerView.tree?.infinityScroll.rootEl.childrenEl), {
+				detach: (original) => function (...args) {
+					const itemNode = this;
+					const itemPath = itemNode?.firstChild?.getAttribute?.("data-path");
+					const itemObject = thisPlugin.app.vault.getAbstractFileByPath(itemPath);
+
+					// Prevent detaching of existing items
+					if (!itemObject) {
+						return original.apply(this, args);
+					}
+				}
+			})
+		);
 	}
 
 	async reloadExplorerPlugin() {
