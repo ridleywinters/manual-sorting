@@ -112,7 +112,7 @@ export default class ManualSortingPlugin extends Plugin {
 						}
 
 						targetFolder.prevActualChildrenCount = actualChildrenCount;
-						if (itemInstance?.children) {
+						if (itemIsFolder) {
 							itemInstance.prevActualChildrenCount = itemInstance?.children.length;
 						}
 
