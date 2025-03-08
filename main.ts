@@ -68,19 +68,23 @@ export default class ManualSortingPlugin extends Plugin {
 					for (const child of currentChildren) {
 						if (!newChildrenSet.has(child)) {
 							const container = child.parentElement;
-							this.removeChild(child);
-							if (child.classList.contains("tree-item")) {
-								debugLog(`Removing`, child, child.firstChild.getAttribute("data-path"));
-								thisPlugin.orderManager.saveOrder(container);
-								const isFolderItem = child.classList.contains("nav-folder");
-								if (isFolderItem) {
-									thisPlugin.orderManager.cleanUpInvalidPaths();
-								}
+							const childPath = child?.firstChild?.getAttribute("data-path");
 
-								const itemContainerPath = container.previousElementSibling?.getAttribute("data-path") || "/";
-								const itemContainer = thisPlugin.app.vault.getFolderByPath(itemContainerPath);
-								itemContainer.prevActualChildrenCount = itemContainer?.children.length;
+							if (childPath && child?.classList.contains("tree-item")) {
+								const itemObject = thisPlugin.app.vault.getAbstractFileByPath(childPath);
+								
+								if (!itemObject) {
+									childPath && thisPlugin.orderManager.deleteItem(childPath);
+
+									const itemContainerPath = container.previousElementSibling?.getAttribute("data-path") || "/";
+									const itemContainer = thisPlugin.app.vault.getFolderByPath(itemContainerPath);
+									itemContainer.prevActualChildrenCount = itemContainer?.children.length;
+								} else {
+									continue;
+								}
 							}
+
+							this.removeChild(child);
 						}
 					}
 
