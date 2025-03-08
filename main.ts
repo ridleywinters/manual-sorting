@@ -122,6 +122,7 @@ export default class ManualSortingPlugin extends Plugin {
 								group: "nested",
 								draggable: ".tree-item",
 								animation: 100,
+								swapThreshold: 0.18,
 								fallbackOnBody: true,
 								onEnd: (evt) => {
 									const draggedItemPath = evt.item.firstChild.getAttribute("data-path");
