@@ -46,8 +46,8 @@ export default class ManualSortingPlugin extends Plugin {
 	async initialize() {
 		this.patchSortOrderMenu();
 		await this.patchFileExplorer();
-		this.reloadExplorerPlugin();
-		this.orderManager.cleanUpInvalidPaths();
+		await this.orderManager.initOrder();
+		await this.reloadExplorerPlugin();	
 	}
 
 	async patchFileExplorer() {
@@ -90,12 +90,14 @@ export default class ManualSortingPlugin extends Plugin {
 
 						const renderedChildrenCount = itemContainer.querySelectorAll(':scope > .tree-item').length;
 						const itemInstance = thisPlugin.app.vault.getAbstractFileByPath(addedItem.firstChild.getAttribute("data-path"));
+						const itemPath = addedItem.firstChild.getAttribute("data-path");
+						const itemIsFolder = !!itemInstance?.children;
 						const targetFolder = itemInstance?.parent;
 						const actualChildrenCount = targetFolder?.children.length;
 
 						if (targetFolder?.prevActualChildrenCount < actualChildrenCount) {
 							debugLog("New item created:", addedItem);
-							thisPlugin.orderManager.saveOrder(itemContainer);
+							thisPlugin.orderManager.createItem(itemPath);
 						}
 
 						if (!targetFolder?.allChildrenRendered && renderedChildrenCount === actualChildrenCount) {
@@ -121,17 +123,19 @@ export default class ManualSortingPlugin extends Plugin {
 									const draggedItemPath = evt.item.firstChild.getAttribute("data-path");
 									const destinationPath = evt.to?.previousElementSibling?.getAttribute("data-path") || "/";
 									const movedItem = thisPlugin.app.vault.getAbstractFileByPath(draggedItemPath);
-									debugLog(`Moving "${draggedItemPath}" from "${movedItem?.parent?.path}" to "${destinationPath}"`);
 
 									const targetFolder = thisPlugin.app.vault.getFolderByPath(destinationPath);
-									evt.item.firstChild.setAttribute("data-path", `${(!targetFolder?.isRoot()) ? (destinationPath + '/') : ''}${movedItem?.name}`);
+									const itemDestPath = `${(!targetFolder?.isRoot()) ? (destinationPath + '/') : ''}${movedItem?.name}`;
+									evt.item.firstChild.setAttribute("data-path", itemDestPath);
 
 									const movedFolder = thisPlugin.app.vault.getFolderByPath(draggedItemPath);
 									if (movedFolder) {
 										thisPlugin.app.fileManager.renameFile(movedFolder, `${(!targetFolder?.isRoot()) ? (destinationPath + '/') : ''}${movedFolder.name}`);
 									}
 
-									thisPlugin.orderManager.saveOrder(evt.from);
+									const nextItem = evt.item.nextElementSibling;
+									const nextItemPath = nextItem?.firstChild.getAttribute("data-path");
+									thisPlugin.orderManager.moveFile(draggedItemPath, itemDestPath, nextItemPath);
 								},
 							});
 						}
@@ -168,19 +172,12 @@ export default class ManualSortingPlugin extends Plugin {
 					if (!thisPlugin.manualSortingEnabled) {
 						return;
 					}
-					debugLog(`Renaming "${args[1]}" to "${args[0].path}"`);
-					const itemElement = document.querySelector(`[data-path="${args[0].path}"]`)?.parentElement;
-					const newContainer = itemElement?.parentElement;
-					await thisPlugin.orderManager.saveOrder(newContainer);
-
-					const isFolderItem = itemElement?.classList.contains("nav-folder");
-					if (isFolderItem) {
-						thisPlugin.orderManager.cleanUpInvalidPaths();
-					}
+					
+					thisPlugin.orderManager.renameItem(args[1], args[0].path);
 				},
 				setSortOrder: (original) => async function (...args) {
 					if (!thisPlugin.manualSortingEnabled) {
-						return await original.apply(this, args);;
+						return await original.apply(this, args);
 					}
 					thisPlugin.manualSortingEnabled = false;
 					await original.apply(this, args);
@@ -223,8 +220,8 @@ export default class ManualSortingPlugin extends Plugin {
 							.onClick(async () => {
 								if (!thisPlugin.manualSortingEnabled) {
 									thisPlugin.manualSortingEnabled = true;
+									await thisPlugin.orderManager.initOrder();
 									await thisPlugin.reloadExplorerPlugin();
-									await thisPlugin.orderManager.cleanUpInvalidPaths();
 								}
 							});
 					});
@@ -234,7 +231,8 @@ export default class ManualSortingPlugin extends Plugin {
 								.setSection(sortingMenuSection)
 								.onClick(async () => {
 									new ResetOrderConfirmationModal(thisPlugin.app, async () => {
-										await thisPlugin.saveData({});
+										await thisPlugin.orderManager.resetOrder();
+										await thisPlugin.orderManager.initOrder();
 										await thisPlugin.reloadExplorerPlugin();
 									}).open();
 								});
@@ -252,91 +250,195 @@ export default class ManualSortingPlugin extends Plugin {
 
 
 class OrderManager {
-	private isSaving = false;
-	private pendingSaves: (() => Promise<void>)[] = [];
+    private _operationQueue: Promise<void> = Promise.resolve();
 
-	constructor(private plugin: Plugin) {}
+    constructor(private plugin: Plugin) {}
 
-	async saveOrder(container: Element, callback?: null | (() => void)) {
-		if (!container) return;
-		if (this.isSaving) {
-			return new Promise<void>((resolve) => {
-				this.pendingSaves.push(async () => {
-					await this._saveOrder(container);
-					callback?.();
-					resolve();
-				});
-			});
-		}
+    private async _queueOperation(operation: () => Promise<void>) {
+        this._operationQueue = this._operationQueue.finally(operation);
+        return this._operationQueue;
+    }
 
-		this.isSaving = true;
+    async initOrder() {
+        return this._queueOperation(async () => {
+			const savedOrder = await this.plugin.loadData();
+			const savedOrderExists = savedOrder && Object.keys(savedOrder).length > 0;
+			const currentOrder = await this._getCurrentOrder();
 
-		try {
-			await this._saveOrder(container);
-			callback?.();
-			while (this.pendingSaves.length > 0) {
-				const nextSave = this.pendingSaves.shift();
-				if (nextSave) await nextSave();
+			if (savedOrderExists) {
+				this._updateOrder(currentOrder, savedOrder);
+			} else {
+				await this.plugin.saveData(currentOrder);
 			}
-		} finally {
-			this.isSaving = false;
-		}
+		});
+    }
+
+	async resetOrder() {
+		return this._queueOperation(async () => {
+            await this.plugin.saveData({});
+        });
 	}
 
-	private async _saveOrder(container: Element) {
-		const itemPaths = Array.from(container.children)
-			.filter((item) => item.classList.contains("tree-item"))
-			.map((item) => item.firstElementChild?.getAttribute("data-path"))
-			.filter((item): item is string => item !== null && item !== undefined);
+	private async _updateOrder(currentOrderParam?: object, savedOrderParam?: object) {
+		return this._queueOperation(async () => {
+			const currentOrder = currentOrderParam || await this._getCurrentOrder();
+			const savedOrder = savedOrderParam || await this.plugin.loadData();
+			const newOrder = await this._matchSavedOrder(currentOrder, savedOrder);
+			await this.plugin.saveData(newOrder);
+		});
+	}
 
-		const folderPath = container?.previousElementSibling?.getAttribute("data-path") || "/";
-		const currentData = await this.plugin.loadData() || {};
+    private async _getCurrentOrder() {
+        const currentData = {};
+        const explorerView = this.plugin.app.workspace.getLeavesOfType("file-explorer")[0]?.view;
 
-		currentData[folderPath] = itemPaths;
-		await this.plugin.saveData(currentData);
+        const indexFolder = (folder) => {
+            const sortedItems = explorerView.getSortedFolderItems(folder);
+            const sortedItemPaths = sortedItems.map((item) => item.file.path);
+            currentData[folder.path] = sortedItemPaths;
 
-		debugLog(`Order saved for "${folderPath}":`, container, await this.plugin.loadData());
+            for (const item of sortedItems) {
+                const itemObject = item.file;
+                if (itemObject.children) {
+                    indexFolder(itemObject);
+                }
+            }
+        };
+
+        indexFolder(this.plugin.app.vault.root);
+        return currentData;
+    }
+
+    private async _matchSavedOrder(currentOrder, savedOrder) {
+        let result = {};
+
+        for (let folder in currentOrder) {
+            if (savedOrder[folder]) {
+                let prevOrder = savedOrder[folder];
+                let currentFiles = currentOrder[folder];
+                // Leave the files that have already been saved
+                let existingFiles = prevOrder.filter(file => currentFiles.includes(file));
+                // Add new files to the end of the list
+                let newFiles = currentFiles.filter(file => !prevOrder.includes(file));
+                result[folder] = [...existingFiles, ...newFiles];
+            } else {
+                result[folder] = currentOrder[folder];
+            }
+        }
+
+        return result;
+    }
+
+    async moveFile(oldPath: string, newPath: string, afterPath: string) {
+        return this._queueOperation(async () => {
+            debugLog(`Moving "${oldPath}" to "${newPath}" after "${afterPath}"`);
+            const data = await this.plugin.loadData();
+
+            const oldDir = oldPath.substring(0, oldPath.lastIndexOf("/")) || "/";
+            data[oldDir] = data[oldDir].filter(item => item !== oldPath);
+
+            const newDir = newPath.substring(0, newPath.lastIndexOf("/")) || "/";
+
+            if (afterPath) {
+                const afterIndex = data[newDir].indexOf(afterPath);
+                data[newDir].splice(afterIndex, 0, newPath);
+            } else {
+                data[newDir].push(newPath);
+            }
+
+            await this.plugin.saveData(data);
+			this._updateOrder();
+        });
+    }
+
+    async renameItem(oldPath: string, newPath: string) {
+        return this._queueOperation(async () => {
+            debugLog(`Renaming "${oldPath}" to "${newPath}"`);
+            const data = await this.plugin.loadData();
+
+            const oldDir = oldPath.substring(0, oldPath.lastIndexOf("/")) || "/";
+			if (data[oldDir]) {
+				data[oldDir] = data[oldDir].map(item => (item === oldPath ? newPath : item));
+			}
+
+            const itemIsFolder = !!data[oldPath];
+            if (itemIsFolder) {
+                data[newPath] = data[oldPath];
+                delete data[oldPath];
+                data[newPath] = data[newPath].map(item => item.replace(oldPath, newPath));
+            }
+
+            await this.plugin.saveData(data);
+			this._updateOrder();
+        });
+    }
+
+    async deleteItem(path: string) {
+        return this._queueOperation(async () => {
+            debugLog(`Deleting "${path}"`);
+            const data = await this.plugin.loadData();
+
+            const dir = path.substring(0, path.lastIndexOf("/")) || "/";
+            data[dir] = data[dir].filter(item => item !== path);
+
+            const itemIsFolder = !!data[path];
+            if (itemIsFolder) {
+                delete data[path];
+            }
+
+            await this.plugin.saveData(data);
+			this._updateOrder();
+        });
+    }
+
+	async createItem(path: string) {
+		return this._queueOperation(async () => {
+			debugLog(`Creating "${path}"`);
+	
+			const data = await this.plugin.loadData();
+			const dir = path.substring(0, path.lastIndexOf("/")) || "/";
+	
+			if (!data[dir].includes(path)) {
+				data[dir].push(path);
+			}
+
+			const itemIsFolder = !!this.plugin.app.vault.getAbstractFileByPath(path)?.children;
+            if (itemIsFolder) {
+                data[path] = [];
+            }
+	
+			await this.plugin.saveData(data);
+			this._updateOrder();
+		});
 	}
 
 	async restoreOrder(container: Element) {
-		const savedData = await this.plugin.loadData();
-		const folderPath = container?.previousElementSibling?.getAttribute("data-path") || "/";
-		const savedOrder = savedData?.[folderPath];
-		if (!savedOrder) return;
+        return this._queueOperation(async () => {
+            const savedData = await this.plugin.loadData();
+            const folderPath = container?.previousElementSibling?.getAttribute("data-path") || "/";
+            const savedOrder = savedData?.[folderPath];
+            if (!savedOrder) return;
 
-		const itemsByPath = new Map<string, Element>();
-		Array.from(container.children).forEach((child: Element) => {
-			const path = child.firstElementChild?.getAttribute("data-path");
-			if (path) {
-				itemsByPath.set(path, child);
-			}
-		});
+            const itemsByPath = new Map<string, Element>();
+            Array.from(container.children).forEach((child: Element) => {
+                const path = child.firstElementChild?.getAttribute("data-path");
+                if (path) {
+                    itemsByPath.set(path, child);
+                }
+            });
 
-		const fragment = document.createDocumentFragment();
-		savedOrder.forEach((path: string) => {
-			const element = itemsByPath.get(path);
-			if (element) {
-				fragment.appendChild(element);
-			}
-		});
+            const fragment = document.createDocumentFragment();
+            savedOrder.forEach((path: string) => {
+                const element = itemsByPath.get(path);
+                if (element) {
+                    fragment.appendChild(element);
+                }
+            });
 
-		container.appendChild(fragment);
-		debugLog(`Order restored for "${folderPath}":`, container, savedOrder);
-	}
-
-	async cleanUpInvalidPaths() {
-		const data = await this.plugin.loadData();
-		if (!data) return;
-		debugLog("Cleaning up invalid paths");
-		for (const key in data) {
-			if (!this.plugin.app.vault.getAbstractFileByPath(key)) {
-				delete data[key];
-			} else {
-				data[key] = data[key].filter((item: string) => this.plugin.app.vault.getAbstractFileByPath(item));
-			}
-		}
-		await this.plugin.saveData(data);
-	}
+            container.appendChild(fragment);
+            debugLog(`Order restored for "${folderPath}"`);
+        });
+    }
 }
 
 
