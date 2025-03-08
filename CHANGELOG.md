@@ -1,6 +1,19 @@
 # Changelog
 
 
+## [1.5.0](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.4.0...1.5.0) (2025-03-08)
+
+
+### 🐞 Bug Fixes
+
+* add optional chaining to prevent errors when accessing nextItem's firstChild ([a23b662](https://github.com/Kh4f/obsidian-manual-sorting/commit/a23b66289a97b9e977970a250b995f88ffcf75ef))
+* **debug:** correct debug message from 'after' to 'before' ([e796833](https://github.com/Kh4f/obsidian-manual-sorting/commit/e796833f7c84c477456ae80c56084e72d9e94e8e))
+
+
+### 🚀 Features
+
+* **drag-and-drop:** prevent folder from moving when dragging item over it by adding swapThreshold ([de043d1](https://github.com/Kh4f/obsidian-manual-sorting/commit/de043d133389c51b5d0e6c6502fa8d2d903464ee)), closes [#10](https://github.com/Kh4f/obsidian-manual-sorting/issues/10)
+
 ## [1.4.0](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.3.7...1.4.0) (2025-03-08)
 
 
