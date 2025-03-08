@@ -350,7 +350,7 @@ class OrderManager {
 
     async moveFile(oldPath: string, newPath: string, afterPath: string) {
         return this._queueOperation(async () => {
-            debugLog(`Moving "${oldPath}" to "${newPath}" after "${afterPath}"`);
+            debugLog(`Moving "${oldPath}" to "${newPath}" before "${afterPath}"`);
             const data = await this.plugin.loadData();
 
             const oldDir = oldPath.substring(0, oldPath.lastIndexOf("/")) || "/";
