@@ -1,6 +1,26 @@
 # Changelog
 
 
+## [1.4.0](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.3.7...1.4.0) (2025-03-08)
+
+
+### 🚀 Features
+
+* **order-manager:** rewrite OrderManager to index entire file structure and seamlessly update order after external changes ([786f924](https://github.com/Kh4f/obsidian-manual-sorting/commit/786f924bccb86ef647e899d4002189389deaa5e1))
+
+
+### 🛠️ Changes
+
+* replace itemInstance?.children with itemIsFolder variable ([752e70d](https://github.com/Kh4f/obsidian-manual-sorting/commit/752e70d1bb223cc44a83a1728f785c8b7e433494))
+
+
+### 🐞 Bug Fixes
+
+* ensure files are truly deleted before updating order ([29f5b71](https://github.com/Kh4f/obsidian-manual-sorting/commit/29f5b7128463fba201448a7dab082c439c087bea))
+* **menu:** correct variable name from 'openManuButton' to 'openMenuButton' ([f8385d5](https://github.com/Kh4f/obsidian-manual-sorting/commit/f8385d52ddc935bb17ddcbdbdb021cba92a19d1a))
+* override detach function to prevent deletion of offscreen files ([f296b9e](https://github.com/Kh4f/obsidian-manual-sorting/commit/f296b9e68c32268df654878544d777cf25e177c8))
+* **ui:** reduce large empty gaps between file structure elements ([b1ab442](https://github.com/Kh4f/obsidian-manual-sorting/commit/b1ab4424021aacf34e40ca1cf0790dbe6058f623))
+
 ### [1.3.7](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.3.6...1.3.7) (2025-03-06)
 
 
