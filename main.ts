@@ -50,7 +50,22 @@ export default class ManualSortingPlugin extends Plugin {
 		await this.reloadExplorerPlugin();	
 	}
 
+	async waitForExplorer() {
+		return new Promise<void>((resolve) => {
+			const observer = new MutationObserver((_, obs) => {
+				const explorer = document.querySelector('[data-type="file-explorer"] .nav-files-container');
+				if (explorer) {
+					obs.disconnect();
+					resolve();
+				}
+			});
+			const workspace = document.querySelector(".workspace");
+			workspace && observer.observe(workspace, { childList: true, subtree: true });
+		});
+	}
+
 	async patchFileExplorer() {
+		await this.waitForExplorer();
 		const explorerView = this.app.workspace.getLeavesOfType("file-explorer")[0].view;
 		const thisPlugin = this;
 
