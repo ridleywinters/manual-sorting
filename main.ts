@@ -152,8 +152,15 @@ export default class ManualSortingPlugin extends Plugin {
 									}
 								},
 								onEnd: (evt) => {
+									const draggedOverElement = document.querySelector(".is-being-dragged-over");
 									const draggedItemPath = evt.item.firstChild.getAttribute("data-path");
-									const destinationPath = evt.to?.previousElementSibling?.getAttribute("data-path") || "/";
+									let destinationPath = evt.to?.previousElementSibling?.getAttribute("data-path") || "/";
+									
+									const draggedOverElementPath = draggedOverElement?.firstChild?.getAttribute("data-path");
+									if (draggedOverElementPath) {
+										destinationPath = draggedOverElementPath;
+									}
+
 									const movedItem = thisPlugin.app.vault.getAbstractFileByPath(draggedItemPath);
 
 									const targetFolder = thisPlugin.app.vault.getFolderByPath(destinationPath);
@@ -161,7 +168,10 @@ export default class ManualSortingPlugin extends Plugin {
 									evt.item.firstChild.setAttribute("data-path", itemDestPath);
 
 									const nextItem = evt.item.nextElementSibling;
-									const nextItemPath = nextItem?.firstChild?.getAttribute("data-path");
+									let nextItemPath = nextItem?.firstChild?.getAttribute("data-path");
+									if (draggedOverElementPath) {
+										nextItemPath = null;
+									}
 									thisPlugin.orderManager.moveFile(draggedItemPath, itemDestPath, nextItemPath);
 
 									const itemIsFolder = !!movedItem?.children;
