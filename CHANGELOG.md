@@ -1,6 +1,13 @@
 # Changelog
 
 
+## [1.7.0](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.6.1...1.7.0) (2025-03-09)
+
+
+### 🚀 Features
+
+* **drag-n-drop:** automatically collapse folder when dragging ([d1b0730](https://github.com/Kh4f/obsidian-manual-sorting/commit/d1b07303d4b2f2085e071a57bcad7e452a5a0266)), closes [#13](https://github.com/Kh4f/obsidian-manual-sorting/issues/13)
+
 ### [1.6.1](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.6.0...1.6.1) (2025-03-09)
 
 
