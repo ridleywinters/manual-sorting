@@ -1,6 +1,13 @@
 # Changelog
 
 
+### [1.7.1](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.7.0...1.7.1) (2025-03-09)
+
+
+### 🐞 Bug Fixes
+
+* **ui:** fix cursor stuck in "grabbing" state when releasing mouse outside file explorer ([0c03d2a](https://github.com/Kh4f/obsidian-manual-sorting/commit/0c03d2a8376022a608e3e99d3bb0b13e88d36220)), closes [#9](https://github.com/Kh4f/obsidian-manual-sorting/issues/9)
+
 ## [1.7.0](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.6.1...1.7.0) (2025-03-09)
 
 
