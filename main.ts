@@ -11,6 +11,7 @@ function debugLog(...args: any[]) {
 }
 
 
+
 declare global {
 	const i18next: i18n;
 }
@@ -159,14 +160,14 @@ export default class ManualSortingPlugin extends Plugin {
 									const itemDestPath = `${(!targetFolder?.isRoot()) ? (destinationPath + '/') : ''}${movedItem?.name}`;
 									evt.item.firstChild.setAttribute("data-path", itemDestPath);
 
-									thisPlugin.app.fileManager.renameFile(movedItem, `${(!targetFolder?.isRoot()) ? (destinationPath + '/') : ''}${movedItem?.name}`);
-
 									const nextItem = evt.item.nextElementSibling;
 									const nextItemPath = nextItem?.firstChild?.getAttribute("data-path");
 									thisPlugin.orderManager.moveFile(draggedItemPath, itemDestPath, nextItemPath);
 
 									const itemIsFolder = !!movedItem?.children;
-									if (itemIsFolder) {
+									if (itemIsFolder || thisPlugin.app.isMobile) {
+										thisPlugin.app.fileManager.renameFile(movedItem, `${(!targetFolder?.isRoot()) ? (destinationPath + '/') : ''}${movedItem?.name}`);
+
 										const explorerView = thisPlugin.app.workspace.getLeavesOfType("file-explorer")[0].view;
 										explorerView.fileItems[movedItem.path].collapsed = true;
 									}
