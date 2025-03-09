@@ -148,10 +148,7 @@ export default class ManualSortingPlugin extends Plugin {
 									const itemDestPath = `${(!targetFolder?.isRoot()) ? (destinationPath + '/') : ''}${movedItem?.name}`;
 									evt.item.firstChild.setAttribute("data-path", itemDestPath);
 
-									const movedFolder = thisPlugin.app.vault.getFolderByPath(draggedItemPath);
-									if (movedFolder) {
-										thisPlugin.app.fileManager.renameFile(movedFolder, `${(!targetFolder?.isRoot()) ? (destinationPath + '/') : ''}${movedFolder.name}`);
-									}
+									thisPlugin.app.fileManager.renameFile(movedItem, `${(!targetFolder?.isRoot()) ? (destinationPath + '/') : ''}${movedItem?.name}`);
 
 									const nextItem = evt.item.nextElementSibling;
 									const nextItemPath = nextItem?.firstChild?.getAttribute("data-path");
