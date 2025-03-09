@@ -1,6 +1,13 @@
 # Changelog
 
 
+### [1.6.1](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.6.0...1.6.1) (2025-03-09)
+
+
+### 🐞 Bug Fixes
+
+* **ui:** further reduce large empty gaps between file structure elements ([ce08b0f](https://github.com/Kh4f/obsidian-manual-sorting/commit/ce08b0fbe9f23b2b7e9cb5b536a3ac90ad612531)), closes [#7](https://github.com/Kh4f/obsidian-manual-sorting/issues/7)
+
 ## [1.6.0](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.5.0...1.6.0) (2025-03-09)
 
 
