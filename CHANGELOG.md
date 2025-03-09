@@ -1,6 +1,15 @@
 # Changelog
 
 
+## [1.6.0](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.5.0...1.6.0) (2025-03-09)
+
+
+### 🚀 Features
+
+* add waitForExplorer method to ensure file explorer is loaded before patching ([10d460f](https://github.com/Kh4f/obsidian-manual-sorting/commit/10d460f3237f572624d753a0f4ed64f6d08486fe))
+* enable plugin for mobile devices ([3f08a57](https://github.com/Kh4f/obsidian-manual-sorting/commit/3f08a5727479f34ade1c5e39b75a2d321baf92b1))
+* manually trigger file renaming after moving between directories ([e9f94d8](https://github.com/Kh4f/obsidian-manual-sorting/commit/e9f94d88e86cda357feba63d729798a7bbd86355))
+
 ## [1.5.0](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.4.0...1.5.0) (2025-03-08)
 
 
