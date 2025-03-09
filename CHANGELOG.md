@@ -1,6 +1,13 @@
 # Changelog
 
 
+### [1.7.2](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.7.1...1.7.2) (2025-03-09)
+
+
+### 🐞 Bug Fixes
+
+* **desktop:** resolve issue where item does not move when releasing mouse after hover callout ([ffc6e1b](https://github.com/Kh4f/obsidian-manual-sorting/commit/ffc6e1b3b5e7d8435b3116941fd4f44f15ca208b))
+
 ### [1.7.1](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.7.0...1.7.1) (2025-03-09)
 
 
