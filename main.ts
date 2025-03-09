@@ -139,6 +139,17 @@ export default class ManualSortingPlugin extends Plugin {
 								animation: 100,
 								swapThreshold: 0.18,
 								fallbackOnBody: true,
+								onStart: (evt) => {
+									const itemPath = evt.item.firstChild.getAttribute("data-path");
+									const itemObject = thisPlugin.app.vault.getFolderByPath(itemPath);
+
+									if (itemObject) {
+										const explorerView = thisPlugin.app.workspace.getLeavesOfType("file-explorer")[0].view;
+										explorerView.fileItems[itemObject.path].setCollapsed(true);
+										// for some reason Obsidian expands the folder, so we simulate its expanded state
+										explorerView.fileItems[itemObject.path].collapsed = false;
+									}
+								},
 								onEnd: (evt) => {
 									const draggedItemPath = evt.item.firstChild.getAttribute("data-path");
 									const destinationPath = evt.to?.previousElementSibling?.getAttribute("data-path") || "/";
@@ -153,6 +164,12 @@ export default class ManualSortingPlugin extends Plugin {
 									const nextItem = evt.item.nextElementSibling;
 									const nextItemPath = nextItem?.firstChild?.getAttribute("data-path");
 									thisPlugin.orderManager.moveFile(draggedItemPath, itemDestPath, nextItemPath);
+
+									const itemIsFolder = !!movedItem?.children;
+									if (itemIsFolder) {
+										const explorerView = thisPlugin.app.workspace.getLeavesOfType("file-explorer")[0].view;
+										explorerView.fileItems[movedItem.path].collapsed = true;
+									}
 								},
 							});
 						}
