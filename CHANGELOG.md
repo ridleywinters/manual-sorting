@@ -1,6 +1,13 @@
 # Changelog
 
 
+### [1.7.4](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.7.3...1.7.4) (2025-03-09)
+
+
+### 🐞 Bug Fixes
+
+* ensure patched setChildrenInPlace runs only for items inside file explorer ([6613c48](https://github.com/Kh4f/obsidian-manual-sorting/commit/6613c481e1324aa4b1a26c438a7727c180f6c70a)), closes [#15](https://github.com/Kh4f/obsidian-manual-sorting/issues/15)
+
 ### [1.7.3](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.7.2...1.7.3) (2025-03-09)
 
 
