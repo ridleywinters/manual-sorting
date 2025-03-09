@@ -171,6 +171,9 @@ export default class ManualSortingPlugin extends Plugin {
 										explorerView.fileItems[movedItem.path].collapsed = true;
 									}
 								},
+								onUnchoose: () => {
+									document.body.classList.toggle('is-grabbing', false);
+								},
 							});
 						}
 					}
