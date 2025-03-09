@@ -1,6 +1,13 @@
 # Changelog
 
 
+### [1.7.3](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.7.2...1.7.3) (2025-03-09)
+
+
+### 🐞 Bug Fixes
+
+* resolve issue with incorrect destinationPath when moving folders after hover callout ([4fae11f](https://github.com/Kh4f/obsidian-manual-sorting/commit/4fae11f05e09ef593ceff87406f6519df2352231))
+
 ### [1.7.2](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.7.1...1.7.2) (2025-03-09)
 
 
