@@ -227,7 +227,18 @@ export default class ManualSortingPlugin extends Plugin {
         const fileExplorerPlugin = this.app.internalPlugins.plugins['file-explorer'];
         fileExplorerPlugin.disable();
         await fileExplorerPlugin.enable();
+
+		const folderNotesPlugin = await this.app.plugins.getPlugin('folder-notes');
+		if (folderNotesPlugin) {
+			await this.reloadFolderNotesPlugin();
+		}
     }
+
+	async reloadFolderNotesPlugin() {
+		await this.app.plugins.disablePlugin('folder-notes');
+		await this.app.plugins.enablePlugin('folder-notes');
+		debugLog('Folder Notes plugin has been reloaded.');
+	}
 
 	async patchSortOrderMenu() {
 		const thisPlugin = this;
