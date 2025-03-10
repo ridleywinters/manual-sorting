@@ -1,6 +1,24 @@
 # Changelog
 
 
+## [1.8.0](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.7.4...1.8.0) (2025-03-10)
+
+
+### 🐞 Bug Fixes
+
+* **ui:** adjust animation speed for smoother transition ([31d355d](https://github.com/Kh4f/obsidian-manual-sorting/commit/31d355d3d530d81bec4644457944254f85e5efd0))
+
+
+### 🛠️ Changes
+
+* remove update and restore order logic based on rendered elements count ([cd66353](https://github.com/Kh4f/obsidian-manual-sorting/commit/cd66353fd1924462186ccd1b4530f33e78dc119a))
+
+
+### 🚀 Features
+
+* add restoreOrder call after moving an element ([cdb7044](https://github.com/Kh4f/obsidian-manual-sorting/commit/cdb7044a84e97e087c225ae9f5534e7b17a85a20))
+* ensure ui matches saved order by calling updateVirtualDisplay in updateOrder ([ca9083b](https://github.com/Kh4f/obsidian-manual-sorting/commit/ca9083b2b67d59a1493ca6dc2f7a49e804e8e8a2))
+
 ### [1.7.4](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.7.3...1.7.4) (2025-03-09)
 
 
