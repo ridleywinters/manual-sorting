@@ -139,7 +139,7 @@ export default class ManualSortingPlugin extends Plugin {
 							new Sortable(itemContainer, {
 								group: "nested",
 								draggable: ".tree-item",
-								animation: 100,
+								animation: 200,
 								swapThreshold: 0.18,
 								fallbackOnBody: true,
 								onStart: (evt) => {
