@@ -11,17 +11,8 @@ function debugLog(...args: any[]) {
 }
 
 
-
 declare global {
 	const i18next: i18n;
-}
-
-
-declare module 'obsidian' {
-	interface TFolder {
-		allChildrenRendered?: boolean;
-		prevActualChildrenCount?: number;
-	}
 }
 
 
@@ -110,29 +101,8 @@ export default class ManualSortingPlugin extends Plugin {
 						debugLog(`Adding`, addedItem, addedItem.firstChild.getAttribute("data-path"));
 						const itemContainer = this;
 
-						const renderedChildrenCount = itemContainer.querySelectorAll(':scope > .tree-item').length;
-						const itemInstance = thisPlugin.app.vault.getAbstractFileByPath(addedItem.firstChild.getAttribute("data-path"));
-						const itemPath = addedItem.firstChild.getAttribute("data-path");
-						const itemIsFolder = !!itemInstance?.children;
-						const targetFolder = itemInstance?.parent;
-						const actualChildrenCount = targetFolder?.children.length;
-
-						if (targetFolder?.prevActualChildrenCount < actualChildrenCount) {
-							debugLog("New item created:", addedItem);
-							thisPlugin.orderManager.createItem(itemPath);
-						}
-
-						if (!targetFolder?.allChildrenRendered && renderedChildrenCount === actualChildrenCount) {
-							debugLog("All children rendered for", itemContainer.parentElement, targetFolder?.path);
-							targetFolder.allChildrenRendered = true;
-							targetFolder.prevActualChildrenCount = actualChildrenCount;
-							thisPlugin.orderManager.restoreOrder(itemContainer);
-						}
-
-						targetFolder.prevActualChildrenCount = actualChildrenCount;
-						if (itemIsFolder) {
-							itemInstance.prevActualChildrenCount = itemInstance?.children.length;
-						}
+						thisPlugin.orderManager.updateOrder();
+						thisPlugin.orderManager.restoreOrder(itemContainer);
 
 						if (!Sortable.get(itemContainer)) {
 							debugLog(`Initiating Sortable on`, itemContainer.parentElement);
@@ -259,9 +229,6 @@ export default class ManualSortingPlugin extends Plugin {
 
 		const allFolders = this.app.vault.getAllFolders();
 		allFolders.push(this.app.vault.getRoot());
-		allFolders.forEach((folder) => {
-			folder.allChildrenRendered = false; 
-		});
     }
 
 	async patchSortOrderMenu() {
@@ -452,30 +419,9 @@ class OrderManager {
             }
 
             await this.plugin.saveData(data);
-			this._updateOrder();
+			this.updateOrder();
         });
     }
-
-	async createItem(path: string) {
-		return this._queueOperation(async () => {
-			debugLog(`Creating "${path}"`);
-	
-			const data = await this.plugin.loadData();
-			const dir = path.substring(0, path.lastIndexOf("/")) || "/";
-	
-			if (!data[dir].includes(path)) {
-				data[dir].push(path);
-			}
-
-			const itemIsFolder = !!this.plugin.app.vault.getAbstractFileByPath(path)?.children;
-            if (itemIsFolder) {
-                data[path] = [];
-            }
-	
-			await this.plugin.saveData(data);
-			this._updateOrder();
-		});
-	}
 
 	async restoreOrder(container: Element) {
         return this._queueOperation(async () => {
