@@ -137,14 +137,7 @@ export default class ManualSortingPlugin extends Plugin {
 
 									const targetFolder = thisPlugin.app.vault.getFolderByPath(destinationPath);
 									const itemDestPath = `${(!targetFolder?.isRoot()) ? (destinationPath + '/') : ''}${movedItem?.name}`;
-									evt.item.firstChild.setAttribute("data-path", itemDestPath);
-
-									const nextItem = evt.item.nextElementSibling;
-									let nextItemPath = nextItem?.firstChild?.getAttribute("data-path");
-									if (draggedOverElementPath) {
-										nextItemPath = null;
-									}
-									thisPlugin.orderManager.moveFile(draggedItemPath, itemDestPath, nextItemPath);
+									evt.item.firstChild.setAttribute("data-path", itemDestPath);					
 
 									const itemIsFolder = !!movedItem?.children;
 									if (itemIsFolder || thisPlugin.app.isMobile) {
@@ -153,6 +146,14 @@ export default class ManualSortingPlugin extends Plugin {
 										const explorerView = thisPlugin.app.workspace.getLeavesOfType("file-explorer")[0].view;
 										explorerView.fileItems[movedItem.path].collapsed = true;
 									}
+
+									const nextItem = evt.item.nextElementSibling;
+									let nextItemPath = nextItem?.firstChild?.getAttribute("data-path");
+									if (draggedOverElementPath) {
+										nextItemPath = null;
+									}
+									thisPlugin.orderManager.moveFile(draggedItemPath, itemDestPath, nextItemPath);
+									thisPlugin.orderManager.restoreOrder(evt.to);
 								},
 								onUnchoose: () => {
 									document.body.classList.toggle('is-grabbing', false);
@@ -298,7 +299,7 @@ class OrderManager {
 			const currentOrder = await this._getCurrentOrder();
 
 			if (savedOrderExists) {
-				this._updateOrder(currentOrder, savedOrder);
+				this.updateOrder(currentOrder, savedOrder);
 			} else {
 				await this.plugin.saveData(currentOrder);
 			}
@@ -311,7 +312,7 @@ class OrderManager {
         });
 	}
 
-	private async _updateOrder(currentOrderParam?: object, savedOrderParam?: object) {
+	async updateOrder(currentOrderParam?: object, savedOrderParam?: object) {
 		return this._queueOperation(async () => {
 			const currentOrder = currentOrderParam || await this._getCurrentOrder();
 			const savedOrder = savedOrderParam || await this.plugin.loadData();
@@ -379,7 +380,7 @@ class OrderManager {
             }
 
             await this.plugin.saveData(data);
-			this._updateOrder();
+			this.updateOrder();
         });
     }
 
@@ -401,7 +402,7 @@ class OrderManager {
             }
 
             await this.plugin.saveData(data);
-			this._updateOrder();
+			this.updateOrder();
         });
     }
 
