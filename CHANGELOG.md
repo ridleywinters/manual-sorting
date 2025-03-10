@@ -1,6 +1,18 @@
 # Changelog
 
 
+### [1.8.1](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.8.0...1.8.1) (2025-03-10)
+
+
+### 🛠️ Changes
+
+* remove unused code for fetching all folders ([f1e10ef](https://github.com/Kh4f/obsidian-manual-sorting/commit/f1e10ef85022d97d18d6ff2ae02124e552d2dd66))
+
+
+### 🐞 Bug Fixes
+
+* **compatibility:** add reload for Folder Notes plugin to resolve conflict ([ec48f17](https://github.com/Kh4f/obsidian-manual-sorting/commit/ec48f17ba7a3e6c1707cc6e2340c11464ed5f672)), closes [#11](https://github.com/Kh4f/obsidian-manual-sorting/issues/11)
+
 ## [1.8.0](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.7.4...1.8.0) (2025-03-10)
 
 
