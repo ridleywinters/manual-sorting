@@ -318,6 +318,7 @@ class OrderManager {
 			const savedOrder = savedOrderParam || await this.plugin.loadData();
 			const newOrder = await this._matchSavedOrder(currentOrder, savedOrder);
 			await this.plugin.saveData(newOrder);
+			this.plugin.app.workspace.getLeavesOfType("file-explorer")[0].view.tree.infinityScroll.updateVirtualDisplay();
 		});
 	}
 
