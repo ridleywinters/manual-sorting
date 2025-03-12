@@ -221,6 +221,18 @@ export default class ManualSortingPlugin extends Plugin {
 				}
 			})
 		);
+
+		this.explorerPatches.push(
+			around(Object.getPrototypeOf(explorerView.tree), {
+				setFocusedItem: (original) => function (e, t) {
+					void 0 === t && (t = !0),
+					e !== this.root && (this.isItem(this.focusedItem) && this.focusedItem.selfEl.removeClass("has-focus"),
+					this.focusedItem = e,
+					e && this.isItem(e) && (e.selfEl.addClass("has-focus")));
+					// t && this.infinityScroll.scrollIntoView(e)))
+				}
+			})
+		);
 	}
 
 	async reloadExplorerPlugin() {
