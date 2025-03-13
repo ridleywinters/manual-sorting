@@ -1,6 +1,22 @@
 # Changelog
 
 
+### [1.8.2](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.8.1...1.8.2) (2025-03-13)
+
+
+### 🩹 Bug Fixes
+
+* prevent scrolling when right-clicking an item by patching setFocusedItem ([8d61c6b](https://github.com/Kh4f/obsidian-manual-sorting/commit/8d61c6bf1eb640741f9d5000035bce5a57bcf022)), closes [#18](https://github.com/Kh4f/obsidian-manual-sorting/issues/18)
+* **debug:** update debug log message to reference itemContainer directly ([ba7ca59](https://github.com/Kh4f/obsidian-manual-sorting/commit/ba7ca591da2d3dec9d1d177864f09aa0681c58e5))
+
+
+### 🧹 Adjustments
+
+* **revert:** fix(ui): adjust animation speed for smoother transition ([b5e5726](https://github.com/Kh4f/obsidian-manual-sorting/commit/b5e5726aa290219244221a886ed9e0e8c3acc2dc))
+* **package.json:** add separate scripts for version bumping and tagging, remove version script ([e4ef759](https://github.com/Kh4f/obsidian-manual-sorting/commit/e4ef75939efbe944575c2c1091ab5a5f4f7592a5))
+* **versionrc:** update postcommit and pretag scripts ([c52f548](https://github.com/Kh4f/obsidian-manual-sorting/commit/c52f5483fcbc3fe78c610e942eae5a4fb57b66b2))
+* **versionrc:** update section labels ([943c09f](https://github.com/Kh4f/obsidian-manual-sorting/commit/943c09febfffa5df7225ce4d46167fd410868b06))
+
 ### [1.8.1](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.8.0...1.8.1) (2025-03-10)
 
 
