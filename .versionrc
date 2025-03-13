@@ -18,7 +18,7 @@
 		{"filename": "versions.json","updater": "version-bump.mjs"}
 	],
 	"scripts": {
-		"postbump": "git add versions.json",
-		"postcommit": "git commit --amend --no-edit"
+		"postcommit": "git commit -a --amend --no-edit",
+		"pretag": "git commit -a --amend --no-edit"
 	}
 }
