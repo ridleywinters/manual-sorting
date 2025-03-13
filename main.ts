@@ -105,7 +105,7 @@ export default class ManualSortingPlugin extends Plugin {
 						thisPlugin.orderManager.restoreOrder(itemContainer);
 
 						if (!Sortable.get(itemContainer)) {
-							debugLog(`Initiating Sortable on`, itemContainer.parentElement);
+							debugLog(`Initiating Sortable on`, itemContainer);
 							new Sortable(itemContainer, {
 								group: "nested",
 								draggable: ".tree-item",
