@@ -1,4 +1,4 @@
-import { App, ButtonComponent, Menu, MenuItem, Modal, Plugin } from 'obsidian';
+import { App, ButtonComponent, Menu, MenuItem, Modal, Plugin, Keymap } from 'obsidian';
 import Sortable from 'sortablejs';
 import { around } from 'monkey-around';
 import {i18n} from "i18next";
@@ -236,6 +236,71 @@ export default class ManualSortingPlugin extends Plugin {
 					this.focusedItem = e,
 					e && this.isItem(e) && (e.selfEl.addClass("has-focus")));
 					// t && this.infinityScroll.scrollIntoView(e)))
+				}
+			})
+		);
+
+		this.explorerPatches.push(
+			around(Object.getPrototypeOf(explorerView.tree), {
+				handleItemSelection: (original) => function (e, t) {
+					if (!thisPlugin.manualSortingEnabled) {
+						return original.apply(this, [e, t]);
+					}
+
+					function getItemsBetween(allPaths, path1, path2) {
+						const index1 = allPaths.indexOf(path1);
+						const index2 = allPaths.indexOf(path2);
+
+						if (index1 === -1 || index2 === -1) {
+							return [];
+						}
+
+						const startIndex = Math.min(index1, index2);
+						const endIndex = Math.max(index1, index2);
+
+						return allPaths.slice(startIndex, endIndex + 1).map(path =>
+							thisPlugin.app.workspace.getLeavesOfType("file-explorer")[0].view.fileItems[path]
+						);
+					}
+
+					var n = this
+						, i = n.selectedDoms
+						, r = n.activeDom
+						, o = n.view;
+					if (!Keymap.isModEvent(e)) {
+						if (e.altKey && !e.shiftKey)
+							return this.app.workspace.setActiveLeaf(o.leaf, {
+								focus: !0
+							}),
+								i.has(t) ? this.deselectItem(t) : (this.selectItem(t),
+									this.setFocusedItem(t, !1),
+									this.activeDom = t),
+								!0;
+						if (e.shiftKey) {
+							this.app.workspace.setActiveLeaf(o.leaf, {
+								focus: !0
+							});
+							const flattenPaths = thisPlugin.orderManager.getFlattenPaths();
+							const itemsBetween = getItemsBetween(flattenPaths, r.file.path, t.file.path);
+							for (var a = 0, s = r ? itemsBetween : [t]; a < s.length; a++) {
+								var l = s[a];
+								this.selectItem(l)
+							}
+							return !0
+						}
+						if (t.selfEl.hasClass("is-being-renamed"))
+							return !0;
+						if (t.selfEl.hasClass("is-active"))
+							return this.app.workspace.setActiveLeaf(o.leaf, {
+								focus: !0
+							}),
+								this.setFocusedItem(t, !1),
+								!0
+					}
+					return this.clearSelectedDoms(),
+						this.setFocusedItem(null),
+						this.activeDom = t,
+						!1
 				}
 			})
 		);
