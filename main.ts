@@ -210,6 +210,9 @@ export default class ManualSortingPlugin extends Plugin {
 		this.explorerPatches.push(
 			around(Object.getPrototypeOf(explorerView.tree?.infinityScroll.rootEl.childrenEl), {
 				detach: (original) => function (...args) {
+					if (!thisPlugin.manualSortingEnabled) {
+						return original.apply(this, args);
+					}
 					const itemNode = this;
 					const itemPath = itemNode?.firstChild?.getAttribute?.("data-path");
 					const itemObject = thisPlugin.app.vault.getAbstractFileByPath(itemPath);
@@ -225,6 +228,9 @@ export default class ManualSortingPlugin extends Plugin {
 		this.explorerPatches.push(
 			around(Object.getPrototypeOf(explorerView.tree), {
 				setFocusedItem: (original) => function (e, t) {
+					if (!thisPlugin.manualSortingEnabled) {
+						return original.apply(this, [e, t]);
+					}
 					void 0 === t && (t = !0),
 					e !== this.root && (this.isItem(this.focusedItem) && this.focusedItem.selfEl.removeClass("has-focus"),
 					this.focusedItem = e,
