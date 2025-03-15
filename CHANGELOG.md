@@ -1,6 +1,25 @@
 # Changelog
 
 
+## [1.9.0](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.8.2...1.9.0) (2025-03-15)
+
+
+### 🚀 Features
+
+* **order-manager:** add caching ([aaed1ee](https://github.com/Kh4f/obsidian-manual-sorting/commit/aaed1eee683f40d24f1fa5b75635c69b294b904d))
+* **order-manager:** add getFlattenPaths method to retrieve all paths in a single array ([af1991c](https://github.com/Kh4f/obsidian-manual-sorting/commit/af1991c1dc5726e36e28495775e13b08ec3fde78))
+
+
+### 🩹 Bug Fixes
+
+* ensure correct selection range after reordering by patching `handleItemSelection` ([1b69a9e](https://github.com/Kh4f/obsidian-manual-sorting/commit/1b69a9ec842d2a57cf33acb426f1446da66480ab)), closes [#16](https://github.com/Kh4f/obsidian-manual-sorting/issues/16)
+* prevent patching `detach` and `setFocusedItem` when manual sorting is disabled ([0deb1eb](https://github.com/Kh4f/obsidian-manual-sorting/commit/0deb1ebe566e55711e62056de785529fdccada2f))
+
+
+### 🧹 Adjustments
+
+* **order-manager:** make _queueOperation generic to support different return types ([adbf3d2](https://github.com/Kh4f/obsidian-manual-sorting/commit/adbf3d28fbfe6d973d43fc1dd95cf10d6c395d7e))
+
 ### [1.8.2](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.8.1...1.8.2) (2025-03-13)
 
 
