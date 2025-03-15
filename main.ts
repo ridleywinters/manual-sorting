@@ -304,6 +304,7 @@ export default class ManualSortingPlugin extends Plugin {
 
 class OrderManager {
     private _operationQueue: Promise<void> = Promise.resolve();
+	public cachedData: object | null = null;
 
     constructor(private plugin: Plugin) {}
 
@@ -311,33 +312,45 @@ class OrderManager {
         this._operationQueue = this._operationQueue.finally(operation);
         return this._operationQueue;
     }
+	private async saveData(data: object) {
+		this.cachedData = data;
+		await this.plugin.saveData(data);
+	}
+	
+	private async loadData() {
+		if (this.cachedData) {
+			return this.cachedData;
+		}
+		this.cachedData = await this.plugin.loadData();
+		return this.cachedData;
+	}
 
     async initOrder() {
         return this._queueOperation(async () => {
-			const savedOrder = await this.plugin.loadData();
+			const savedOrder = await this.loadData();
 			const savedOrderExists = savedOrder && Object.keys(savedOrder).length > 0;
 			const currentOrder = await this._getCurrentOrder();
 
 			if (savedOrderExists) {
 				this.updateOrder(currentOrder, savedOrder);
 			} else {
-				await this.plugin.saveData(currentOrder);
+				await this.saveData(currentOrder);
 			}
 		});
     }
 
 	async resetOrder() {
 		return this._queueOperation(async () => {
-            await this.plugin.saveData({});
+            await this.saveData({});
         });
 	}
 
 	async updateOrder(currentOrderParam?: object, savedOrderParam?: object) {
 		return this._queueOperation(async () => {
 			const currentOrder = currentOrderParam || await this._getCurrentOrder();
-			const savedOrder = savedOrderParam || await this.plugin.loadData();
+			const savedOrder = savedOrderParam || await this.loadData();
 			const newOrder = await this._matchSavedOrder(currentOrder, savedOrder);
-			await this.plugin.saveData(newOrder);
+			await this.saveData(newOrder);
 			this.plugin.app.workspace.getLeavesOfType("file-explorer")[0].view.tree.infinityScroll.updateVirtualDisplay();
 		});
 	}
@@ -386,7 +399,7 @@ class OrderManager {
     async moveFile(oldPath: string, newPath: string, afterPath: string) {
         return this._queueOperation(async () => {
             debugLog(`Moving "${oldPath}" to "${newPath}" before "${afterPath}"`);
-            const data = await this.plugin.loadData();
+            const data = await this.loadData();
 
             const oldDir = oldPath.substring(0, oldPath.lastIndexOf("/")) || "/";
             data[oldDir] = data[oldDir].filter(item => item !== oldPath);
@@ -400,7 +413,7 @@ class OrderManager {
                 data[newDir].push(newPath);
             }
 
-            await this.plugin.saveData(data);
+            await this.saveData(data);
 			this.updateOrder();
         });
     }
@@ -408,7 +421,7 @@ class OrderManager {
     async renameItem(oldPath: string, newPath: string) {
         return this._queueOperation(async () => {
             debugLog(`Renaming "${oldPath}" to "${newPath}"`);
-            const data = await this.plugin.loadData();
+            const data = await this.loadData();
 
             const oldDir = oldPath.substring(0, oldPath.lastIndexOf("/")) || "/";
 			if (data[oldDir]) {
@@ -422,7 +435,7 @@ class OrderManager {
                 data[newPath] = data[newPath].map(item => item.replace(oldPath, newPath));
             }
 
-            await this.plugin.saveData(data);
+            await this.saveData(data);
 			this.updateOrder();
         });
     }
@@ -430,7 +443,7 @@ class OrderManager {
     async deleteItem(path: string) {
         return this._queueOperation(async () => {
             debugLog(`Deleting "${path}"`);
-            const data = await this.plugin.loadData();
+            const data = await this.loadData();
 
             const dir = path.substring(0, path.lastIndexOf("/")) || "/";
             data[dir] = data[dir].filter(item => item !== path);
@@ -440,14 +453,14 @@ class OrderManager {
                 delete data[path];
             }
 
-            await this.plugin.saveData(data);
+            await this.saveData(data);
 			this.updateOrder();
         });
     }
 
 	async restoreOrder(container: Element) {
         return this._queueOperation(async () => {
-            const savedData = await this.plugin.loadData();
+            const savedData = await this.loadData();
             const folderPath = container?.previousElementSibling?.getAttribute("data-path") || "/";
             const savedOrder = savedData?.[folderPath];
             if (!savedOrder) return;
