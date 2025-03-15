@@ -495,7 +495,27 @@ class OrderManager {
             container.appendChild(fragment);
             debugLog(`Order restored for "${folderPath}"`);
         });
-    }
+	}
+
+	getFlattenPaths() {
+		function flattenPaths(obj: { [key: string]: string[] }, path: string = "/"): string[] {
+			let result = [];
+			
+			if (obj[path]) {
+				for (const item of obj[path]) {
+					result.push(item);
+					if (obj[item]) {
+						result.push(...flattenPaths(obj, item));
+					}
+				}
+			}
+			
+			return result;
+		}
+		const savedData = this.cachedData;
+		const result = flattenPaths(savedData);
+		return result;
+	}
 }
 
 
