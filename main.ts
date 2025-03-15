@@ -303,15 +303,20 @@ export default class ManualSortingPlugin extends Plugin {
 
 
 class OrderManager {
-    private _operationQueue: Promise<void> = Promise.resolve();
+    private _operationQueue: Promise<unknown> = Promise.resolve();
 	public cachedData: object | null = null;
 
     constructor(private plugin: Plugin) {}
 
-    private async _queueOperation(operation: () => Promise<void>) {
-        this._operationQueue = this._operationQueue.finally(operation);
-        return this._operationQueue;
-    }
+	private async _queueOperation<T>(operation: () => Promise<T>): Promise<T> {
+		let result!: T;
+		this._operationQueue = this._operationQueue.finally(async () => {
+			result = await operation();
+		});
+		await this._operationQueue;
+		return result;
+	}
+
 	private async saveData(data: object) {
 		this.cachedData = data;
 		await this.plugin.saveData(data);
