@@ -144,24 +144,6 @@ export class OrderManager {
         });
     }
 
-    async deleteItem(path: string) {
-        return this._queueOperation(async () => {
-            console.log(`Deleting "${path}"`);
-            const data = await this.loadData();
-
-            const dir = path.substring(0, path.lastIndexOf("/")) || "/";
-            data[dir] = data[dir].filter(item => item !== path);
-
-            const itemIsFolder = !!data[path];
-            if (itemIsFolder) {
-                delete data[path];
-            }
-
-            await this.saveData(data);
-			this.updateOrder();
-        });
-    }
-
 	async restoreOrder(container: Element) {
         return this._queueOperation(async () => {
             const savedData = await this.loadData();

@@ -74,7 +74,7 @@ export default class ManualSortingPlugin extends Plugin {
 								const itemObject = thisPlugin.app.vault.getAbstractFileByPath(childPath);
 								
 								if (!itemObject) {
-									childPath && thisPlugin.orderManager.deleteItem(childPath);
+									childPath && thisPlugin.orderManager.updateOrder();
 
 									const itemContainerPath = container.previousElementSibling?.getAttribute("data-path") || "/";
 									const itemContainer = thisPlugin.app.vault.getFolderByPath(itemContainerPath);
