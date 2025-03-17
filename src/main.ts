@@ -9,7 +9,7 @@ import { OrderManager } from './OrderManager';
 export default class ManualSortingPlugin extends Plugin {
 	private manualSortingEnabled: boolean = true;
 	private orderManager = new OrderManager(this);
-	private explorerPatches: Function[] = [];
+	private explorerUnpatchFunctions: Function[] = [];
 	private unpatchMenu: Function | null = null;
 	
 	async onload() {
@@ -19,8 +19,8 @@ export default class ManualSortingPlugin extends Plugin {
 	}
 
 	async onunload() {
-		this.explorerPatches.forEach(unpatch => unpatch());
-		this.explorerPatches = [];
+		this.explorerUnpatchFunctions.forEach(unpatch => unpatch());
+		this.explorerUnpatchFunctions = [];
 		this.reloadExplorerPlugin();
 		this.unpatchMenu && this.unpatchMenu() && (this.unpatchMenu = null);
 	}
@@ -51,7 +51,7 @@ export default class ManualSortingPlugin extends Plugin {
 		const explorerView = this.app.workspace.getLeavesOfType("file-explorer")[0].view;
 		const thisPlugin = this;
 
-		this.explorerPatches.push(
+		this.explorerUnpatchFunctions.push(
 			around(Object.getPrototypeOf(explorerView.tree?.infinityScroll.rootEl.childrenEl), {
 				setChildrenInPlace: (original) => function (...args) {
 					const isInExplorer = !!this.closest('[data-type="file-explorer"]');
@@ -176,7 +176,7 @@ export default class ManualSortingPlugin extends Plugin {
 			})
 		);
 
-		this.explorerPatches.push(
+		this.explorerUnpatchFunctions.push(
 			around(Object.getPrototypeOf(explorerView), {
 				onRename: (original) => async function (...args) {
 					await original.apply(this, args);
@@ -197,7 +197,7 @@ export default class ManualSortingPlugin extends Plugin {
 			})
 		);
 
-		this.explorerPatches.push(
+		this.explorerUnpatchFunctions.push(
 			around(Object.getPrototypeOf(explorerView.tree?.infinityScroll.rootEl.childrenEl), {
 				detach: (original) => function (...args) {
 					if (!thisPlugin.manualSortingEnabled) {
@@ -215,7 +215,7 @@ export default class ManualSortingPlugin extends Plugin {
 			})
 		);
 
-		this.explorerPatches.push(
+		this.explorerUnpatchFunctions.push(
 			around(Object.getPrototypeOf(explorerView.tree), {
 				setFocusedItem: (original) => function (e, t) {
 					if (!thisPlugin.manualSortingEnabled) {
@@ -230,7 +230,7 @@ export default class ManualSortingPlugin extends Plugin {
 			})
 		);
 
-		this.explorerPatches.push(
+		this.explorerUnpatchFunctions.push(
 			around(Object.getPrototypeOf(explorerView.tree), {
 				handleItemSelection: (original) => function (e, t) {
 					if (!thisPlugin.manualSortingEnabled) {
