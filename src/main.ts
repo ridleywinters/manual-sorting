@@ -29,7 +29,7 @@ export default class ManualSortingPlugin extends Plugin {
 		this.patchSortOrderMenu();
 		await this.patchFileExplorer();
 		await this.orderManager.initOrder();
-		await this.reloadExplorerPlugin();	
+		this.reloadExplorerPlugin();	
 	}
 
 	async patchFileExplorer() {
