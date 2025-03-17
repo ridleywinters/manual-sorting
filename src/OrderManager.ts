@@ -3,7 +3,7 @@ import { Plugin } from 'obsidian';
 
 export class OrderManager {
     private _operationQueue: Promise<unknown> = Promise.resolve();
-	public cachedData: object | null = null;
+	private _cachedData: object | null = null;
 
     constructor(private plugin: Plugin) {}
 
@@ -17,16 +17,16 @@ export class OrderManager {
 	}
 
 	private async saveData(data: object) {
-		this.cachedData = data;
+		this._cachedData = data;
 		await this.plugin.saveData(data);
 	}
 	
 	private async loadData() {
-		if (this.cachedData) {
-			return this.cachedData;
+		if (this._cachedData) {
+			return this._cachedData;
 		}
-		this.cachedData = await this.plugin.loadData();
-		return this.cachedData;
+		this._cachedData = await this.plugin.loadData();
+		return this._cachedData;
 	}
 
     async initOrder() {
@@ -205,7 +205,7 @@ export class OrderManager {
 			
 			return result;
 		}
-		const savedData = this.cachedData;
+		const savedData = this._cachedData;
 		const result = flattenPaths(savedData);
 		return result;
 	}
