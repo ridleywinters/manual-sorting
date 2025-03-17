@@ -173,6 +173,19 @@ export default class ManualSortingPlugin extends Plugin {
 							}
 						}
 					}
+				},
+				detach: (original) => function (...args) {
+					if (!thisPlugin.manualSortingEnabled) {
+						return original.apply(this, args);
+					}
+					const itemNode = this;
+					const itemPath = itemNode?.firstChild?.getAttribute?.("data-path");
+					const itemObject = thisPlugin.app.vault.getAbstractFileByPath(itemPath);
+
+					// Prevent detaching of existing items
+					if (!itemObject) {
+						return original.apply(this, args);
+					}
 				}
 			})
 		);
@@ -199,24 +212,6 @@ export default class ManualSortingPlugin extends Plugin {
 		);
 
 		this.explorerUnpatchFunctions.push(
-			around(Object.getPrototypeOf(explorerView.tree?.infinityScroll.rootEl.childrenEl), {
-				detach: (original) => function (...args) {
-					if (!thisPlugin.manualSortingEnabled) {
-						return original.apply(this, args);
-					}
-					const itemNode = this;
-					const itemPath = itemNode?.firstChild?.getAttribute?.("data-path");
-					const itemObject = thisPlugin.app.vault.getAbstractFileByPath(itemPath);
-
-					// Prevent detaching of existing items
-					if (!itemObject) {
-						return original.apply(this, args);
-					}
-				}
-			})
-		);
-
-		this.explorerUnpatchFunctions.push(
 			around(Object.getPrototypeOf(explorerView.tree), {
 				setFocusedItem: (original) => function (e, t) {
 					if (!thisPlugin.manualSortingEnabled) {
@@ -227,12 +222,7 @@ export default class ManualSortingPlugin extends Plugin {
 					this.focusedItem = e,
 					e && this.isItem(e) && (e.selfEl.addClass("has-focus")));
 					// t && this.infinityScroll.scrollIntoView(e)))
-				}
-			})
-		);
-
-		this.explorerUnpatchFunctions.push(
-			around(Object.getPrototypeOf(explorerView.tree), {
+				},
 				handleItemSelection: (original) => function (e, t) {
 					if (!thisPlugin.manualSortingEnabled) {
 						return original.apply(this, [e, t]);
