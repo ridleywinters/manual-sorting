@@ -1,6 +1,33 @@
 # Changelog
 
 
+### [1.9.1](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.9.0...1.9.1) (2025-03-17)
+
+
+### ⚡ Performance
+
+* remove await before enabling Folder Notes plugin in reloadExplorerPlugin ([0207f62](https://github.com/Kh4f/obsidian-manual-sorting/commit/0207f62c3457b4735370499e4f3349671d2f9fe8))
+
+
+### 🧹 Adjustments
+
+* add console log for File Explorer plugin reloaded ([29b7f24](https://github.com/Kh4f/obsidian-manual-sorting/commit/29b7f245826333c06dcf3ff634ca026357ed6a14))
+* combine patches for the same class into a single around function ([3dcb705](https://github.com/Kh4f/obsidian-manual-sorting/commit/3dcb705a16cf10bd8e468f2a7ed5a2b7706c0715))
+* move `main.ts` to `src` folder and update `entryPoints` in `esbuild.config.mjs` ([9780d12](https://github.com/Kh4f/obsidian-manual-sorting/commit/9780d12128177f4fe9e582731780092e40e286cd))
+* move `OrderManager` class to a separate file ([e23bb85](https://github.com/Kh4f/obsidian-manual-sorting/commit/e23bb8570f4d3e909a78a48231a8c49c7514d681))
+* move `ResetOrderConfirmationModal` class to a separate file ([dd0df38](https://github.com/Kh4f/obsidian-manual-sorting/commit/dd0df38423837d925a5e3742fb11c1abce2fdad1))
+* move `waitForExplorer` function inside `patchFileExplorer` ([42ada4e](https://github.com/Kh4f/obsidian-manual-sorting/commit/42ada4eb354dc29b22e4b3bdeb870ee9bcd9a342))
+* move console log for reloading Folder Notes plugin to the top ([6aa0c2c](https://github.com/Kh4f/obsidian-manual-sorting/commit/6aa0c2c44b6b264037f3e45dac4b2df2c8de5bd2))
+* move i18next type declaration to types.d.ts ([d2e261e](https://github.com/Kh4f/obsidian-manual-sorting/commit/d2e261e7b0fa64e5a29afe2a87707c375ec8b662))
+* **order-manager:** make `cachedData` private ([3ebf6c6](https://github.com/Kh4f/obsidian-manual-sorting/commit/3ebf6c653376060920e4861de67f7e523dfd7434))
+* remove `await` from `reloadExplorerPlugin` call in `initialize` ([526a98c](https://github.com/Kh4f/obsidian-manual-sorting/commit/526a98cac4f1a6923ba5d23b24772dc0185427b8))
+* remove `deleteItem` function in `OrderManager` and replace its calls with `updateOrder` ([1e98b0d](https://github.com/Kh4f/obsidian-manual-sorting/commit/1e98b0d73a0ac99733e2c5d0a3c1d823411e44e6))
+* remove `reloadFolderNotesPlugin` and inline its content into `reloadExplorerPlugin` ([1ad2c31](https://github.com/Kh4f/obsidian-manual-sorting/commit/1ad2c31031f8b462a7f2a0f1c1a4a72733cc1740))
+* remove unnecessary .npmrc file ([ccfa3b1](https://github.com/Kh4f/obsidian-manual-sorting/commit/ccfa3b133b727c9a9b32dfb48cfaeca9f32c4fd2))
+* rename `explorerPatches` to `explorerUnpatchFunctions` for clarity ([ea79ea7](https://github.com/Kh4f/obsidian-manual-sorting/commit/ea79ea7f7cd72ff03ec1e5786a6e315fca543184))
+* replace `debugLog` function with esbuild `drop` configuration ([aa89b97](https://github.com/Kh4f/obsidian-manual-sorting/commit/aa89b97897715a4f2746a269efec7fefb42af52c))
+* **types:** import only type from i18next ([99d9b0c](https://github.com/Kh4f/obsidian-manual-sorting/commit/99d9b0cc98fe3fdcdc7aba6ddb36e23018f6e13c))
+
 ## [1.9.0](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.8.2...1.9.0) (2025-03-15)
 
 
