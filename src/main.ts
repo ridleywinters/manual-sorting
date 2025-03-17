@@ -4,13 +4,6 @@ import { around } from 'monkey-around';
 import {i18n} from "i18next";
 
 
-function debugLog(...args: any[]) {
-	if(process.env.NODE_ENV === "development") {
-		console.log(...args);
-	}
-}
-
-
 declare global {
 	const i18next: i18n;
 }
@@ -98,14 +91,14 @@ export default class ManualSortingPlugin extends Plugin {
 					}
 
 					const processNewItem = (addedItem) => {
-						debugLog(`Adding`, addedItem, addedItem.firstChild.getAttribute("data-path"));
+						console.log(`Adding`, addedItem, addedItem.firstChild.getAttribute("data-path"));
 						const itemContainer = this;
 
 						thisPlugin.orderManager.updateOrder();
 						thisPlugin.orderManager.restoreOrder(itemContainer);
 
 						if (!Sortable.get(itemContainer)) {
-							debugLog(`Initiating Sortable on`, itemContainer);
+							console.log(`Initiating Sortable on`, itemContainer);
 							new Sortable(itemContainer, {
 								group: "nested",
 								draggable: ".tree-item",
@@ -320,7 +313,7 @@ export default class ManualSortingPlugin extends Plugin {
 	async reloadFolderNotesPlugin() {
 		await this.app.plugins.disablePlugin('folder-notes');
 		await this.app.plugins.enablePlugin('folder-notes');
-		debugLog('Folder Notes plugin has been reloaded.');
+		console.log('Folder Notes plugin has been reloaded.');
 	}
 
 	async patchSortOrderMenu() {
@@ -474,7 +467,7 @@ class OrderManager {
 
     async moveFile(oldPath: string, newPath: string, afterPath: string) {
         return this._queueOperation(async () => {
-            debugLog(`Moving "${oldPath}" to "${newPath}" before "${afterPath}"`);
+            console.log(`Moving "${oldPath}" to "${newPath}" before "${afterPath}"`);
             const data = await this.loadData();
 
             const oldDir = oldPath.substring(0, oldPath.lastIndexOf("/")) || "/";
@@ -496,7 +489,7 @@ class OrderManager {
 
     async renameItem(oldPath: string, newPath: string) {
         return this._queueOperation(async () => {
-            debugLog(`Renaming "${oldPath}" to "${newPath}"`);
+            console.log(`Renaming "${oldPath}" to "${newPath}"`);
             const data = await this.loadData();
 
             const oldDir = oldPath.substring(0, oldPath.lastIndexOf("/")) || "/";
@@ -518,7 +511,7 @@ class OrderManager {
 
     async deleteItem(path: string) {
         return this._queueOperation(async () => {
-            debugLog(`Deleting "${path}"`);
+            console.log(`Deleting "${path}"`);
             const data = await this.loadData();
 
             const dir = path.substring(0, path.lastIndexOf("/")) || "/";
@@ -558,7 +551,7 @@ class OrderManager {
             });
 
             container.appendChild(fragment);
-            debugLog(`Order restored for "${folderPath}"`);
+            console.log(`Order restored for "${folderPath}"`);
         });
 	}
 
