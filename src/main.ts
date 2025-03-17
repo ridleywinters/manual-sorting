@@ -1,7 +1,9 @@
-import { App, ButtonComponent, Menu, MenuItem, Modal, Plugin, Keymap } from 'obsidian';
+import { Menu, MenuItem, Plugin, Keymap } from 'obsidian';
 import Sortable from 'sortablejs';
 import { around } from 'monkey-around';
 import {i18n} from "i18next";
+import { ResetOrderConfirmationModal } from './ResetOrderConfirmationModal';
+
 
 
 declare global {
@@ -574,28 +576,4 @@ class OrderManager {
 		const result = flattenPaths(savedData);
 		return result;
 	}
-}
-
-
-export class ResetOrderConfirmationModal extends Modal {
-    constructor(app: App, onSubmit: () => void) {
-        super(app);
-        this.setTitle("Manual sorting");
-
-        const modalContent = this.contentEl.createEl("div");
-        modalContent.createEl("p", { text: "Are you sure you want to reset order to default?" });
-
-        const modalButtons = modalContent.createEl("div", { cls: "modal-buttons" });
-        new ButtonComponent(modalButtons)
-            .setButtonText("Yep")
-            .setCta()
-            .onClick(() => {
-                this.close();
-                onSubmit();
-            });
-
-        new ButtonComponent(modalButtons)
-            .setButtonText("Cancel")
-            .onClick(() => this.close());
-    }
 }
