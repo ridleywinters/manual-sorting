@@ -301,6 +301,7 @@ export default class ManualSortingPlugin extends Plugin {
         const fileExplorerPlugin = this.app.internalPlugins.plugins['file-explorer'];
         fileExplorerPlugin.disable();
         await fileExplorerPlugin.enable();
+		console.log("File Explorer plugin reloaded");
 
 		if (this.app.plugins.getPlugin('folder-notes')) {
 			console.log('Reloading Folder Notes plugin');
