@@ -1,15 +1,9 @@
 import { Menu, MenuItem, Plugin, Keymap } from 'obsidian';
 import Sortable from 'sortablejs';
 import { around } from 'monkey-around';
-import {i18n} from "i18next";
 import { ResetOrderConfirmationModal } from './ResetOrderConfirmationModal';
 import { OrderManager } from './OrderManager';
 
-
-
-declare global {
-	const i18next: i18n;
-}
 
 
 export default class ManualSortingPlugin extends Plugin {
