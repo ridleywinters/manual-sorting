@@ -304,8 +304,8 @@ export default class ManualSortingPlugin extends Plugin {
 
 		if (this.app.plugins.getPlugin('folder-notes')) {
 			await this.app.plugins.disablePlugin('folder-notes');
-			await this.app.plugins.enablePlugin('folder-notes');
-			console.log('Folder Notes plugin has been reloaded.');
+			this.app.plugins.enablePlugin('folder-notes');
+			console.log('Reloading Folder Notes plugin');
 		}
     }
 
