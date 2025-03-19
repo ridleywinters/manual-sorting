@@ -1,6 +1,13 @@
 # Changelog
 
 
+### [1.9.2](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.9.1...1.9.2) (2025-03-19)
+
+
+### 🩹 Bug Fixes
+
+* **ui:** apply margin-bottom style only to non-tree-item elements ([5d477d4](https://github.com/Kh4f/obsidian-manual-sorting/commit/5d477d426ecf1e4a42da091e6effec1f9d1d8678)), closes [#22](https://github.com/Kh4f/obsidian-manual-sorting/issues/22)
+
 ### [1.9.1](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.9.0...1.9.1) (2025-03-17)
 
 
