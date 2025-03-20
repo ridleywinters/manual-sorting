@@ -92,7 +92,7 @@ export class OrderManager {
                 let existingFiles = prevOrder.filter(file => currentFiles.includes(file));
                 // Add new files to the end of the list
                 let newFiles = currentFiles.filter(file => !prevOrder.includes(file));
-                result[folder] = [...existingFiles, ...newFiles];
+                result[folder] = [...newFiles, ...existingFiles, ];
             } else {
                 result[folder] = currentOrder[folder];
             }
@@ -101,27 +101,27 @@ export class OrderManager {
         return result;
     }
 
-    async moveFile(oldPath: string, newPath: string, afterPath: string) {
-        return this._queueOperation(async () => {
-            console.log(`Moving "${oldPath}" to "${newPath}" before "${afterPath}"`);
-            const data = await this.loadData();
+	async moveFile(oldPath: string, newPath: string, beforePath: string) {
+		return this._queueOperation(async () => {
+			console.log(`Moving "${oldPath}" to "${newPath}" after "${beforePath}"`);
+			const data = await this.loadData();
 
-            const oldDir = oldPath.substring(0, oldPath.lastIndexOf("/")) || "/";
-            data[oldDir] = data[oldDir].filter(item => item !== oldPath);
+			const oldDir = oldPath.substring(0, oldPath.lastIndexOf("/")) || "/";
+			data[oldDir] = data[oldDir].filter(item => item !== oldPath);
 
-            const newDir = newPath.substring(0, newPath.lastIndexOf("/")) || "/";
+			const newDir = newPath.substring(0, newPath.lastIndexOf("/")) || "/";
 
-            if (afterPath) {
-                const afterIndex = data[newDir].indexOf(afterPath);
-                data[newDir].splice(afterIndex, 0, newPath);
-            } else {
-                data[newDir].push(newPath);
-            }
+			if (beforePath) {
+				const beforeIndex = data[newDir].indexOf(beforePath);
+				data[newDir].splice(beforeIndex + 1, 0, newPath);
+			} else {
+				data[newDir].unshift(newPath);
+			}
 
-            await this.saveData(data);
+			await this.saveData(data);
 			this.updateOrder();
-        });
-    }
+		});
+	}
 
     async renameItem(oldPath: string, newPath: string) {
         return this._queueOperation(async () => {

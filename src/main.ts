@@ -152,12 +152,13 @@ export default class ManualSortingPlugin extends Plugin {
 										explorerView.fileItems[movedItem.path].collapsed = true;
 									}
 
-									const nextItem = evt.item.nextElementSibling;
-									let nextItemPath = nextItem?.firstChild?.getAttribute("data-path");
+									const previousItem = evt.item.previousElementSibling;
+									let previousItemPath = previousItem?.firstChild?.getAttribute("data-path");
+
 									if (draggedOverElementPath) {
-										nextItemPath = null;
+										previousItemPath = null;
 									}
-									thisPlugin.orderManager.moveFile(draggedItemPath, itemDestPath, nextItemPath);
+									thisPlugin.orderManager.moveFile(draggedItemPath, itemDestPath, previousItemPath);
 									thisPlugin.orderManager.restoreOrder(evt.to);
 								},
 								onUnchoose: () => {
@@ -169,7 +170,7 @@ export default class ManualSortingPlugin extends Plugin {
 
 					for (const child of newChildren) {
 						if (!this.contains(child)) {
-							this.appendChild(child);
+							this.prepend(child);
 							if (child.classList.contains("tree-item")) {
 								if (!child.firstChild.hasAttribute("data-path")) {
 									new MutationObserver((mutations, obs) => {
