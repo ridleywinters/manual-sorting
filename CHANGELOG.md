@@ -1,6 +1,13 @@
 # Changelog
 
 
+## [1.10.0](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.9.3...1.10.0) (2025-03-20)
+
+
+### 🚀 Features
+
+* add new files/folders to the beginning of the directory instead of the end ([c8c6045](https://github.com/Kh4f/obsidian-manual-sorting/commit/c8c6045214c808c48b99b560f5302c6d0458505e))
+
 ### [1.9.3](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.9.2...1.9.3) (2025-03-20)
 
 
