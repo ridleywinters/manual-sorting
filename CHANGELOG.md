@@ -1,6 +1,18 @@
 # Changelog
 
 
+### [1.9.3](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.9.2...1.9.3) (2025-03-20)
+
+
+### 🩹 Bug Fixes
+
+* preserve rename mode for manually created folders by skipping order restoration ([1934e85](https://github.com/Kh4f/obsidian-manual-sorting/commit/1934e85dcb00704baac1027325569149e0da14de)), closes [#23](https://github.com/Kh4f/obsidian-manual-sorting/issues/23)
+
+
+### 🧹 Adjustments
+
+* **debug:** add log message for order updates ([8660eef](https://github.com/Kh4f/obsidian-manual-sorting/commit/8660eefde343028da802e52025283e29ee3dbffd))
+
 ### [1.9.2](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.9.1...1.9.2) (2025-03-19)
 
 
