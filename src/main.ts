@@ -11,6 +11,7 @@ export default class ManualSortingPlugin extends Plugin {
 	private orderManager = new OrderManager(this);
 	private explorerUnpatchFunctions: Function[] = [];
 	private unpatchMenu: Function | null = null;
+	private folderBeingCreatedManually: boolean = false;
 	
 	async onload() {
 		this.app.workspace.onLayoutReady(() => {
@@ -29,7 +30,15 @@ export default class ManualSortingPlugin extends Plugin {
 		this.patchSortOrderMenu();
 		await this.patchFileExplorer();
 		await this.orderManager.initOrder();
-		this.reloadExplorerPlugin();	
+		this.reloadExplorerPlugin();
+		
+		this.registerEvent(this.app.vault.on('create', (treeItem) => {
+			console.log('Manually created item:', treeItem);
+			const itemIsFolder = !!treeItem.children;
+			if (itemIsFolder) {
+				this.folderBeingCreatedManually = true;
+			}
+		}));
 	}
 
 	async patchFileExplorer() {
@@ -93,7 +102,12 @@ export default class ManualSortingPlugin extends Plugin {
 						const itemContainer = this;
 
 						thisPlugin.orderManager.updateOrder();
-						thisPlugin.orderManager.restoreOrder(itemContainer);
+						if (thisPlugin.folderBeingCreatedManually) {
+							console.log('Folder is being created manually');
+							thisPlugin.folderBeingCreatedManually = false;
+						} else {
+							thisPlugin.orderManager.restoreOrder(itemContainer);
+						}
 
 						if (!Sortable.get(itemContainer)) {
 							console.log(`Initiating Sortable on`, itemContainer);
