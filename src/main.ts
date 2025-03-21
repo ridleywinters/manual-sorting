@@ -114,6 +114,8 @@ export default class ManualSortingPlugin extends Plugin {
 							new Sortable(itemContainer, {
 								group: "nested",
 								draggable: ".tree-item",
+								chosenClass: "manual-sorting-chosen",
+								ghostClass: "manual-sorting-ghost",
 								animation: 100,
 								swapThreshold: 0.18,
 								fallbackOnBody: true,
