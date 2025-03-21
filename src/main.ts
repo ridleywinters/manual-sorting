@@ -117,6 +117,8 @@ export default class ManualSortingPlugin extends Plugin {
 								animation: 100,
 								swapThreshold: 0.18,
 								fallbackOnBody: true,
+								delay: 10,
+								delayOnTouchOnly: true,
 								onStart: (evt) => {
 									const itemPath = evt.item.firstChild.getAttribute("data-path");
 									const itemObject = thisPlugin.app.vault.getFolderByPath(itemPath);
