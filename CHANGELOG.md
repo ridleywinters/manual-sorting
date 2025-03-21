@@ -1,6 +1,13 @@
 # Changelog
 
 
+### [1.10.1](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.10.0...1.10.1) (2025-03-21)
+
+
+### 🩹 Bug Fixes
+
+* **mobile:** add delay before drag starts to prevent accidental reordering during scroll ([6938ce6](https://github.com/Kh4f/obsidian-manual-sorting/commit/6938ce6e5a8560729017f12417bf7c2ea9887866)), closes [#24](https://github.com/Kh4f/obsidian-manual-sorting/issues/24)
+
 ## [1.10.0](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.9.3...1.10.0) (2025-03-20)
 
 
