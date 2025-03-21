@@ -1,6 +1,13 @@
 # Changelog
 
 
+### [1.10.2](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.10.1...1.10.2) (2025-03-21)
+
+
+### 🩹 Bug Fixes
+
+* **compatibility:** add custom chosenClass and ghostClass to resolve cMenu plugin conflict ([26c0567](https://github.com/Kh4f/obsidian-manual-sorting/commit/26c0567a743cf8468358b6ff7765c3d89900016f)), closes [#21](https://github.com/Kh4f/obsidian-manual-sorting/issues/21) [#24](https://github.com/Kh4f/obsidian-manual-sorting/issues/24)
+
 ### [1.10.1](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.10.0...1.10.1) (2025-03-21)
 
 
