@@ -315,6 +315,13 @@ export default class ManualSortingPlugin extends Plugin {
         await fileExplorerPlugin.enable();
 		console.log("File Explorer plugin reloaded");
 
+		const toggleSortingClass = async () => {
+			const explorerEl = await this.waitForExplorer();
+			explorerEl.toggleClass("manual-sorting-enabled", this.manualSortingEnabled);
+			console.warn(explorerEl);
+		}
+		toggleSortingClass();
+
 		if (this.app.plugins.getPlugin('folder-notes')) {
 			console.log('Reloading Folder Notes plugin');
 			await this.app.plugins.disablePlugin('folder-notes');
