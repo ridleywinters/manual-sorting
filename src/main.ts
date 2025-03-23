@@ -150,11 +150,14 @@ export default class ManualSortingPlugin extends Plugin {
 								draggable: ".tree-item",
 								chosenClass: "manual-sorting-chosen",
 								ghostClass: "manual-sorting-ghost",
+
 								animation: 100,
 								swapThreshold: maxSwapThreshold,
 								fallbackOnBody: true,
+
 								delay: 10,
 								delayOnTouchOnly: true,
+
 								onChoose: (evt) => {
 									console.log("Sortable: onChoose");
 									const dragged = evt.item;
