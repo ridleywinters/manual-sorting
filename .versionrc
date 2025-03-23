@@ -9,7 +9,8 @@
 		{ "type": "perf", "section": "⚡ Performance" },
 		{ "type": "refactor", "section": "🧹 Adjustments" },
 		{ "type": "chore", "section": "🧹 Adjustments" },
-		{ "type": "revert", "section": "🧹 Adjustments" }
+		{ "type": "revert", "section": "🧹 Adjustments" },
+		{ "type": "style", "section": "🧹 Adjustments" }
 	],
 	"bumpFiles": [
 		{"filename": "package.json","type": "json"}, 
