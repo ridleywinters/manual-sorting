@@ -248,21 +248,18 @@ export default class ManualSortingPlugin extends Plugin {
 
 		this.explorerUnpatchFunctions.push(
 			around(Object.getPrototypeOf(explorerView), {
-				onRename: (original) => async function (...args) {
-					await original.apply(this, args);
-					if (!thisPlugin.manualSortingEnabled) {
-						return;
+				onRename: (original) => function (...args) {
+					original.apply(this, args);
+					if (thisPlugin.manualSortingEnabled) {
+						thisPlugin.orderManager.renameItem(args[1], args[0].path);
 					}
-					
-					thisPlugin.orderManager.renameItem(args[1], args[0].path);
 				},
-				setSortOrder: (original) => async function (...args) {
-					if (!thisPlugin.manualSortingEnabled) {
-						return await original.apply(this, args);
+				setSortOrder: (original) => function (...args) {
+					original.apply(this, args);
+					if (thisPlugin.manualSortingEnabled) {
+						thisPlugin.manualSortingEnabled = false;
+						thisPlugin.reloadExplorerPlugin();
 					}
-					thisPlugin.manualSortingEnabled = false;
-					await original.apply(this, args);
-					thisPlugin.reloadExplorerPlugin();
 				},
 			})
 		);
