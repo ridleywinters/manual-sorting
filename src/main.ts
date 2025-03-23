@@ -372,7 +372,6 @@ export default class ManualSortingPlugin extends Plugin {
 		const toggleSortingClass = async () => {
 			const explorerEl = await this.waitForExplorer();
 			explorerEl.toggleClass("manual-sorting-enabled", this._manualSortingEnabled);
-			console.warn(explorerEl);
 		}
 		toggleSortingClass();
 
