@@ -338,6 +338,25 @@ export default class ManualSortingPlugin extends Plugin {
 				}
 			})
 		);
+
+		this.explorerUnpatchFunctions.push(
+			around(Object.getPrototypeOf(explorerView.tree?.infinityScroll), {
+				scrollIntoView: (original) => function (...args) {
+					const targetElement = args[0].el;
+					const isInExplorer = !!targetElement.closest('[data-type="file-explorer"]');
+
+					if (!thisPlugin.manualSortingEnabled || !isInExplorer) {
+						return original.apply(this, args);
+					}
+
+					const container = this.scrollEl;
+					const offsetTop = targetElement.offsetTop - container.offsetTop;
+					const middleAlign = offsetTop - (container.clientHeight * 0.3) + (targetElement.clientHeight / 2);
+
+					container.scrollTo({ top: middleAlign, behavior: 'smooth' });
+				}
+			})
+		);
 	}
 
 	async reloadExplorerPlugin() {
