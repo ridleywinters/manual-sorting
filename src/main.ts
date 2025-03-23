@@ -156,10 +156,12 @@ export default class ManualSortingPlugin extends Plugin {
 								delay: 10,
 								delayOnTouchOnly: true,
 								onChoose: (evt) => {
+									console.log("Sortable: onChoose");
 									const dragged = evt.item;
 									adjustSwapThreshold(dragged);
 								},
 								onStart: (evt) => {
+									console.log("Sortable: onStart");
 									const itemPath = evt.item.firstChild.getAttribute("data-path");
 									const itemObject = thisPlugin.app.vault.getFolderByPath(itemPath);
 
@@ -171,10 +173,12 @@ export default class ManualSortingPlugin extends Plugin {
 									}
 								},
 								onChange: (evt) => {
+									console.log("Sortable: onChange");
 									const dragged = evt.item;
 									adjustSwapThreshold(dragged);
 								},
 								onEnd: (evt) => {
+									console.log("Sortable: onEnd");
 									const draggedOverElement = document.querySelector(".is-being-dragged-over");
 									const draggedItemPath = evt.item.firstChild.getAttribute("data-path");
 									const draggedOverElementPath = draggedOverElement?.firstChild?.getAttribute("data-path");
@@ -194,6 +198,7 @@ export default class ManualSortingPlugin extends Plugin {
 									thisPlugin.orderManager.restoreOrder(evt.to);
 								},
 								onUnchoose: () => {
+									console.log("Sortable: onUnchoose");
 									document.body.classList.toggle('is-grabbing', false);
 								},
 							});
