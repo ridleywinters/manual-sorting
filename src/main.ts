@@ -12,7 +12,8 @@ export default class ManualSortingPlugin extends Plugin {
 	private explorerUnpatchFunctions: Function[] = [];
 	private unpatchMenu: Function | null = null;
 	private folderBeingCreatedManually: boolean = false;
-	
+	private recentExplorerAction: string = '';
+
 	async onload() {
 		this.app.workspace.onLayoutReady(() => {
 			this.initialize();
@@ -261,20 +262,18 @@ export default class ManualSortingPlugin extends Plugin {
 						thisPlugin.reloadExplorerPlugin();
 					}
 				},
+				sort: (original) => function (...args) {
+					thisPlugin.recentExplorerAction = 'sort';
+					original.apply(this, args);
+				}
 			})
 		);
 
 		this.explorerUnpatchFunctions.push(
 			around(Object.getPrototypeOf(explorerView.tree), {
-				setFocusedItem: (original) => function (e, t) {
-					if (!thisPlugin.manualSortingEnabled) {
-						return original.apply(this, [e, t]);
-					}
-					void 0 === t && (t = !0),
-					e !== this.root && (this.isItem(this.focusedItem) && this.focusedItem.selfEl.removeClass("has-focus"),
-					this.focusedItem = e,
-					e && this.isItem(e) && (e.selfEl.addClass("has-focus")));
-					// t && this.infinityScroll.scrollIntoView(e)))
+				setFocusedItem: (original) => function (...args) {
+					thisPlugin.recentExplorerAction = 'setFocusedItem';
+					original.apply(this, args);
 				},
 				handleItemSelection: (original) => function (e, t) {
 					if (!thisPlugin.manualSortingEnabled) {
@@ -347,6 +346,11 @@ export default class ManualSortingPlugin extends Plugin {
 
 					if (!thisPlugin.manualSortingEnabled || !isInExplorer) {
 						return original.apply(this, args);
+					}
+
+					if (thisPlugin.recentExplorerAction) {
+						thisPlugin.recentExplorerAction = '';
+						return;
 					}
 
 					const container = this.scrollEl;
