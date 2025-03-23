@@ -322,6 +322,55 @@ export default class ManualSortingPlugin extends Plugin {
 		}
 		toggleSortingClass();
 
+		const configureAutoScrolling = async () =>  {
+			let scrollInterval = null;
+			const explorer = await this.waitForExplorer();
+			if (!explorer) return;
+
+			explorer.removeEventListener("dragover", handleDragOver);
+
+			if(!this.manualSortingEnabled) return; 
+			explorer.addEventListener("dragover", handleDragOver);
+
+			function handleDragOver(event) {
+				event.preventDefault();
+				const rect = explorer.getBoundingClientRect();
+				const scrollZone = 50;
+				const scrollSpeed = 5;
+
+				if (event.clientY < rect.top + scrollZone) {
+					startScrolling(-scrollSpeed);
+				} else if (event.clientY > rect.bottom - scrollZone) {
+					startScrolling(scrollSpeed);
+				} else {
+					stopScrolling();
+				}
+			}
+
+			document.addEventListener("dragend", stopScrolling);
+			document.addEventListener("drop", stopScrolling);
+			document.addEventListener("mouseleave", stopScrolling);
+
+			function startScrolling(speed) {
+				if (scrollInterval) return;
+
+				function scrollStep() {
+					explorer.scrollTop += speed;
+					scrollInterval = requestAnimationFrame(scrollStep);
+				}
+
+				scrollInterval = requestAnimationFrame(scrollStep);
+			}
+
+			function stopScrolling() {
+				if (scrollInterval) {
+					cancelAnimationFrame(scrollInterval);
+					scrollInterval = null;
+				}
+			}
+		}
+		configureAutoScrolling();
+
 		if (this.app.plugins.getPlugin('folder-notes')) {
 			console.log('Reloading Folder Notes plugin');
 			await this.app.plugins.disablePlugin('folder-notes');
