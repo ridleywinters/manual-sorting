@@ -161,6 +161,9 @@ export class OrderManager {
                 }
             });
 
+			const explorer = await this.plugin.waitForExplorer();
+			const scrollTop = explorer.scrollTop;
+
             const fragment = document.createDocumentFragment();
             savedOrder.forEach((path: string) => {
                 const element = itemsByPath.get(path);
@@ -170,6 +173,7 @@ export class OrderManager {
             });
 
             container.appendChild(fragment);
+			explorer.scrollTop = scrollTop;
             console.log(`Order restored for "${folderPath}"`);
         });
 	}
