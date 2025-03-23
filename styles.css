@@ -7,3 +7,8 @@ div.nav-files-container.manual-sorting-enabled {
 		}
 	}
 }
+
+.manual-sorting-modal .modal-buttons {
+	display: flex;
+	gap: 8px;
+}
