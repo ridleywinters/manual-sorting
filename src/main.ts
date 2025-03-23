@@ -41,23 +41,22 @@ export default class ManualSortingPlugin extends Plugin {
 		}));
 	}
 
-	async patchFileExplorer() {
-		
-		const waitForExplorer = () => {
-			return new Promise<Element>((resolve) => {
-				const observer = new MutationObserver((_, obs) => {
-					const explorer = document.querySelector('[data-type="file-explorer"] .nav-files-container');
-					if (explorer) {
-						obs.disconnect();
-						resolve(explorer);
-					}
-				});
-				const workspace = document.querySelector(".workspace");
-				workspace && observer.observe(workspace, { childList: true, subtree: true });
+	async waitForExplorer() {
+		return new Promise<Element>((resolve) => {
+			const observer = new MutationObserver((_, obs) => {
+				const explorer = document.querySelector('[data-type="file-explorer"] .nav-files-container');
+				if (explorer) {
+					obs.disconnect();
+					resolve(explorer);
+				}
 			});
-		};
+			const workspace = document.querySelector(".workspace");
+			workspace && observer.observe(workspace, { childList: true, subtree: true });
+		});
+	};
 
-		await waitForExplorer();
+	async patchFileExplorer() {
+		await this.waitForExplorer();
 		const explorerView = this.app.workspace.getLeavesOfType("file-explorer")[0].view;
 		const thisPlugin = this;
 
