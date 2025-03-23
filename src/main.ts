@@ -112,7 +112,10 @@ export default class ManualSortingPlugin extends Plugin {
 							thisPlugin.orderManager.restoreOrder(itemContainer);
 						}
 
-						if (!Sortable.get(itemContainer)) {
+						function makeSortable(container) {
+							if (Sortable.get(container)) return;
+
+							console.log(`Initiating Sortable on`, container);
 							const minSwapThreshold = 0.3;
 							const maxSwapThreshold = 2;
 
@@ -142,8 +145,7 @@ export default class ManualSortingPlugin extends Plugin {
 								}
 							}
 
-							console.log(`Initiating Sortable on`, itemContainer);
-							const sortableInstance = new Sortable(itemContainer, {
+							const sortableInstance = new Sortable(container, {
 								group: "nested",
 								draggable: ".tree-item",
 								chosenClass: "manual-sorting-chosen",
@@ -196,6 +198,7 @@ export default class ManualSortingPlugin extends Plugin {
 								},
 							});
 						}
+						makeSortable(itemContainer);
 					}
 
 					for (const child of newChildren) {
