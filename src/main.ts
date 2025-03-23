@@ -142,18 +142,12 @@ export default class ManualSortingPlugin extends Plugin {
 									const destinationPath = draggedOverElementPath || evt.to?.previousElementSibling?.getAttribute("data-path") || "/";
 
 									const movedItem = thisPlugin.app.vault.getAbstractFileByPath(draggedItemPath);
-
 									const targetFolder = thisPlugin.app.vault.getFolderByPath(destinationPath);
 									const itemDestPath = `${(!targetFolder?.isRoot()) ? (destinationPath + '/') : ''}${movedItem?.name}`;
-									evt.item.firstChild.setAttribute("data-path", itemDestPath);					
+									thisPlugin.app.fileManager.renameFile(movedItem, itemDestPath);
 
 									const itemIsFolder = !!movedItem?.children;
-									if (itemIsFolder || thisPlugin.app.isMobile) {
-										thisPlugin.app.fileManager.renameFile(movedItem, `${(!targetFolder?.isRoot()) ? (destinationPath + '/') : ''}${movedItem?.name}`);
-
-										const explorerView = thisPlugin.app.workspace.getLeavesOfType("file-explorer")[0].view;
-										explorerView.fileItems[movedItem.path].collapsed = true;
-									}
+									itemIsFolder && (thisPlugin.app.workspace.getLeavesOfType("file-explorer")[0].view.fileItems[movedItem.path].collapsed = true);
 
 									const previousItem = evt.item.previousElementSibling;
 									const previousItemPath = draggedOverElementPath ? null : previousItem?.firstChild?.getAttribute("data-path");
