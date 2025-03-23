@@ -434,7 +434,7 @@ export default class ManualSortingPlugin extends Plugin {
 								if (!thisPlugin.manualSortingEnabled) {
 									thisPlugin.manualSortingEnabled = true;
 									await thisPlugin.orderManager.initOrder();
-									await thisPlugin.reloadExplorerPlugin();
+									thisPlugin.reloadExplorerPlugin();
 								}
 							});
 					});
@@ -446,7 +446,7 @@ export default class ManualSortingPlugin extends Plugin {
 									new ResetOrderConfirmationModal(thisPlugin.app, async () => {
 										await thisPlugin.orderManager.resetOrder();
 										await thisPlugin.orderManager.initOrder();
-										await thisPlugin.reloadExplorerPlugin();
+										thisPlugin.reloadExplorerPlugin();
 									}).open();
 								});
 						});
