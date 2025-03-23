@@ -44,12 +44,12 @@ export default class ManualSortingPlugin extends Plugin {
 	async patchFileExplorer() {
 		
 		const waitForExplorer = () => {
-			return new Promise<void>((resolve) => {
+			return new Promise<Element>((resolve) => {
 				const observer = new MutationObserver((_, obs) => {
 					const explorer = document.querySelector('[data-type="file-explorer"] .nav-files-container');
 					if (explorer) {
 						obs.disconnect();
-						resolve();
+						resolve(explorer);
 					}
 				});
 				const workspace = document.querySelector(".workspace");
