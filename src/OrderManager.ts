@@ -56,6 +56,7 @@ export class OrderManager {
 			const newOrder = await this._matchSavedOrder(currentOrder, savedOrder);
 			await this.saveData(newOrder);
 			this.plugin.app.workspace.getLeavesOfType("file-explorer")[0].view.tree.infinityScroll.updateVirtualDisplay();
+			this.plugin.app.workspace.getLeavesOfType("file-explorer")[0].view.updateShowUnsupportedFiles();
 			console.log("Order updated");
 		});
 	}
