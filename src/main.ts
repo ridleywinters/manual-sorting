@@ -43,6 +43,9 @@ export default class ManualSortingPlugin extends Plugin {
 
 	async waitForExplorer() {
 		return new Promise<Element>((resolve) => {
+			const explorer = document.querySelector('[data-type="file-explorer"] .nav-files-container');
+			if (explorer) return resolve(explorer);
+			
 			const observer = new MutationObserver((_, obs) => {
 				const explorer = document.querySelector('[data-type="file-explorer"] .nav-files-container');
 				if (explorer) {
