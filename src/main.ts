@@ -113,17 +113,50 @@ export default class ManualSortingPlugin extends Plugin {
 						}
 
 						if (!Sortable.get(itemContainer)) {
+							const minSwapThreshold = 0.3;
+							const maxSwapThreshold = 2;
+
+							function adjustSwapThreshold(item) {
+								const previousItem = item.previousElementSibling;
+								const nextItem = item.nextElementSibling;
+
+								let adjacentNavFolders = [];
+								if (previousItem?.classList.contains("nav-folder")) {
+									adjacentNavFolders.push(previousItem);
+								}
+								if (nextItem?.classList.contains("nav-folder")) {
+									adjacentNavFolders.push(nextItem);
+								}
+
+								if (adjacentNavFolders.length > 0) {
+									sortableInstance.options.swapThreshold = minSwapThreshold;
+
+									adjacentNavFolders.forEach(navFolder => {
+										let childrenContainer = navFolder.querySelector('.tree-item-children');
+										if (childrenContainer) {
+											makeSortable(childrenContainer);
+										}
+									});
+								} else {
+									sortableInstance.options.swapThreshold = maxSwapThreshold;
+								}
+							}
+
 							console.log(`Initiating Sortable on`, itemContainer);
-							new Sortable(itemContainer, {
+							const sortableInstance = new Sortable(itemContainer, {
 								group: "nested",
 								draggable: ".tree-item",
 								chosenClass: "manual-sorting-chosen",
 								ghostClass: "manual-sorting-ghost",
 								animation: 100,
-								swapThreshold: 0.18,
+								swapThreshold: maxSwapThreshold,
 								fallbackOnBody: true,
 								delay: 10,
 								delayOnTouchOnly: true,
+								onChoose: (evt) => {
+									const dragged = evt.item;
+									adjustSwapThreshold(dragged);
+								},
 								onStart: (evt) => {
 									const itemPath = evt.item.firstChild.getAttribute("data-path");
 									const itemObject = thisPlugin.app.vault.getFolderByPath(itemPath);
@@ -134,6 +167,10 @@ export default class ManualSortingPlugin extends Plugin {
 										// for some reason Obsidian expands the folder, so we simulate its expanded state
 										explorerView.fileItems[itemObject.path].collapsed = false;
 									}
+								},
+								onChange: (evt) => {
+									const dragged = evt.item;
+									adjustSwapThreshold(dragged);
 								},
 								onEnd: (evt) => {
 									const draggedOverElement = document.querySelector(".is-being-dragged-over");
