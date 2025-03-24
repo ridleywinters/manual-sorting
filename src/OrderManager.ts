@@ -166,7 +166,7 @@ export class OrderManager {
 						console.warn(`Element "${path}" is in the wrong folder: "${folderPath}" instead of "${elementFolderPath}"`);
 						console.warn("Removing element from the wrong folder and updating the tree");
 						child.remove();
-						this.plugin.app.workspace.getLeavesOfType("file-explorer")[0].view.tree.infinityScroll.updateVirtualDisplay();
+						this.updateOrder();
 						return;
 					}
 					itemsByPath.set(path, child);
