@@ -93,7 +93,7 @@ export class OrderManager {
                 let existingFiles = prevOrder.filter(file => currentFiles.includes(file));
                 // Add new files to the end of the list
                 let newFiles = currentFiles.filter(file => !prevOrder.includes(file));
-                result[folder] = [...newFiles, ...existingFiles, ];
+                result[folder] = [...newFiles, ...existingFiles];
             } else {
                 result[folder] = currentOrder[folder];
             }
