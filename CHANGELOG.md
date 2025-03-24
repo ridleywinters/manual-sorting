@@ -1,6 +1,13 @@
 # Changelog
 
 
+### [1.11.1](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.11.0...1.11.1) (2025-03-24)
+
+
+### 🩹 Bug Fixes
+
+* prevent sorting from affecting outline panel elements ([3b0e89f](https://github.com/Kh4f/obsidian-manual-sorting/commit/3b0e89f876880ce8f4608bda55fa6ec49ca7b1de)), closes [#29](https://github.com/Kh4f/obsidian-manual-sorting/issues/29)
+
 ## [1.11.0](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.10.2...1.11.0) (2025-03-24)
 
 
