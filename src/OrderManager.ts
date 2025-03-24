@@ -112,7 +112,7 @@ export class OrderManager {
 
 			const newDir = newPath.substring(0, newPath.lastIndexOf("/")) || "/";
 
-			if (beforePath) {
+			if (beforePath && !data[newDir].includes(newPath)) {
 				const beforeIndex = data[newDir].indexOf(beforePath);
 				data[newDir].splice(beforeIndex + 1, 0, newPath);
 			} else {
