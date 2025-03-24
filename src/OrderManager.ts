@@ -150,15 +150,25 @@ export class OrderManager {
         return this._queueOperation(async () => {
             const savedData = await this.loadData();
             const folderPath = container?.previousElementSibling?.getAttribute("data-path") || "/";
+			console.log(`Restoring order for "${folderPath}"`);
             const savedOrder = savedData?.[folderPath];
             if (!savedOrder) return;
 
             const itemsByPath = new Map<string, Element>();
             Array.from(container.children).forEach((child: Element) => {
                 const path = child.firstElementChild?.getAttribute("data-path");
-                if (path) {
-                    itemsByPath.set(path, child);
-                }
+				if (path) {
+					const elementFolderPath = path.substring(0, path.lastIndexOf('/')) || "/";
+					if (elementFolderPath !== folderPath) {
+						console.warn(child, path);
+						console.warn(`Element "${path}" is in the wrong folder: "${folderPath}" instead of "${elementFolderPath}"`);
+						console.warn("Removing element from the wrong folder and updating the tree");
+						child.remove();
+						this.plugin.app.workspace.getLeavesOfType("file-explorer")[0].view.tree.infinityScroll.updateVirtualDisplay();
+						return;
+					}
+					itemsByPath.set(path, child);
+				}
             });
 
 			const explorer = await this.plugin.waitForExplorer();
