@@ -70,7 +70,12 @@ export default class ManualSortingPlugin extends Plugin {
 				setChildrenInPlace: (original) => function (...args) {
 					const isInExplorer = !!this.closest('[data-type="file-explorer"]');
 					const isTreeItem = this.classList.value.includes("tree-item");
-					if (!thisPlugin._manualSortingEnabled || !isTreeItem && !isInExplorer) {
+
+					const parentLeafContent = this.closest('.workspace-leaf-content');
+					const parentLeafContentType = parentLeafContent?.getAttribute('data-type');
+					const isNotInExplorerLeaf = parentLeafContentType !== 'file-explorer';
+
+					if (!thisPlugin._manualSortingEnabled || isNotInExplorerLeaf || !isTreeItem && !isInExplorer) {
 						return original.apply(this, args);
 					}
 
