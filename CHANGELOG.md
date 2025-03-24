@@ -1,6 +1,50 @@
 # Changelog
 
 
+## [1.11.0](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.10.2...1.11.0) (2025-03-24)
+
+
+### 🚀 Features
+
+* add autoscrolling when dragging items outside window ([3838dd6](https://github.com/Kh4f/obsidian-manual-sorting/commit/3838dd66fc2e10bad392d6731b0c75806510fa26)), closes [#26](https://github.com/Kh4f/obsidian-manual-sorting/issues/26)
+* add smooth scrolling and correct scroll position after manual sorting ([2970987](https://github.com/Kh4f/obsidian-manual-sorting/commit/297098722a5fd736bbd7210cd7a89a0d87773c75))
+* make `swapThreshold` dynamic based on adjacent folders ([25a8153](https://github.com/Kh4f/obsidian-manual-sorting/commit/25a815387cbc9c5826a8bedeeaabed70c20f5aaf))
+
+
+### 🩹 Bug Fixes
+
+* **`waitForExplorer`:** ensure it resolves if explorer already exists ([53c823f](https://github.com/Kh4f/obsidian-manual-sorting/commit/53c823f8afe6c63622ed03238f646c90a8e657a9))
+* add `toggleSortingClass`  to apply styles for explorer only when manual sorting is enabled ([1c641ca](https://github.com/Kh4f/obsidian-manual-sorting/commit/1c641ca566883be89c87be17845ce867d0e2f357))
+* **order-manager:** call `updateOrder` instead of `updateVirtualDisplay` after removing misplaced element ([a5f0ee1](https://github.com/Kh4f/obsidian-manual-sorting/commit/a5f0ee17be752a53147a46e0a3749d65ba2c27e1))
+* **order-manager:** call `updateShowUnsupportedFiles` to sync file explorer with actual file structure after reordering ([908d772](https://github.com/Kh4f/obsidian-manual-sorting/commit/908d772e579e48f519df6eb1e922a3515f2c0c61))
+* **order-manager:** improve folder path validation and remove misplaced elements ([56e0c14](https://github.com/Kh4f/obsidian-manual-sorting/commit/56e0c14ea3791d52b1af0af5686a377e4ccee803))
+* **order-manager:** prevent adding duplicate paths after moving item ([6ec8ab9](https://github.com/Kh4f/obsidian-manual-sorting/commit/6ec8ab9396615b19b3be7e218687607f1969deb4))
+* **order-manager:** restore scroll position after reordering items ([f44ad71](https://github.com/Kh4f/obsidian-manual-sorting/commit/f44ad71a8b5bdd15a02bc1febf68011395ac4991))
+* **order-manager:** update `restoreOrder` to accept folder path as parameter ([ccd0b94](https://github.com/Kh4f/obsidian-manual-sorting/commit/ccd0b94e7681f66f1414a7e84785c7690ac695ae))
+* prevent unexpected scrolling after renaming or moving an item ([adf088b](https://github.com/Kh4f/obsidian-manual-sorting/commit/adf088b07305b12c994d7100255cc25be148dab6))
+* remove manual data-path update and enable `renameFile` for files at drag end ([efcd37c](https://github.com/Kh4f/obsidian-manual-sorting/commit/efcd37c443678d8af378bbc3c2f9d9545d75c57f))
+* **sortable:** add `setData` to enable dragging notes to tabs, new leaf or canvas ([35af97c](https://github.com/Kh4f/obsidian-manual-sorting/commit/35af97c560bc21ad87dce842e9abd111ece4fcfc)), closes [#25](https://github.com/Kh4f/obsidian-manual-sorting/issues/25)
+
+
+### 🧹 Adjustments
+
+* **`onEnd`:** simplify `destinationPath` and `previousItemPath` assignment ([898fc15](https://github.com/Kh4f/obsidian-manual-sorting/commit/898fc157aceedb402f882a4d5e66db043436ae66))
+* **`patchFileExplorer`:** simplify `onRename` and `setSortOrder` method ([4d5937d](https://github.com/Kh4f/obsidian-manual-sorting/commit/4d5937dba7d766537ef08840ffdd993b6191d0fb))
+* **`patchFileExplorer`:** wrap Sortable initialization in `makeSortable` function ([71437b1](https://github.com/Kh4f/obsidian-manual-sorting/commit/71437b16f4cf5eb6fb566a79613ff3a02c161158))
+* **`restoreOrder`:** move scrollTop initialization to where it still has value ([220a05e](https://github.com/Kh4f/obsidian-manual-sorting/commit/220a05e483a5edbae26c15bd6237d530dd9d0583))
+* **`toggleSortingClass`:** remove unnecessary console warning ([7d09064](https://github.com/Kh4f/obsidian-manual-sorting/commit/7d09064fd9ed2ae822f33dc255c99202764b0557))
+* **`waitForExplorer`:** avoid duplicate querySelector calls ([2a108c1](https://github.com/Kh4f/obsidian-manual-sorting/commit/2a108c1e79271f08354924960ad91b151980b33b))
+* **`waitForExplorer`:** make return the dom element ([c70bfe5](https://github.com/Kh4f/obsidian-manual-sorting/commit/c70bfe52f69b6cc451f27f238c63ed05f3425588))
+* **`waitForExplorer`:** move function to class level ([73d6a4d](https://github.com/Kh4f/obsidian-manual-sorting/commit/73d6a4d7daaeb491b94211c25eef48ccc097ac48))
+* add blank lines between properties in Sortable configuration ([ae3e90c](https://github.com/Kh4f/obsidian-manual-sorting/commit/ae3e90c3d543ff2365c8c19e5b23842c808d5999))
+* **debug:** add logs for Sortable events ([75f10c7](https://github.com/Kh4f/obsidian-manual-sorting/commit/75f10c7ceab324e2acdb212139295436f8ffa92c))
+* **modal:** add `manual-sorting-modal` class for more specific `.modal-buttons` styling ([efdd991](https://github.com/Kh4f/obsidian-manual-sorting/commit/efdd991355adacc0ac3b4b6d16158ad83b33c61e))
+* **order-manager:** remove unnecessary comma in file order result ([1bf0673](https://github.com/Kh4f/obsidian-manual-sorting/commit/1bf0673fa65556f3ab5f34e6b7a1d2677bedfa5e))
+* remove unnecessary await from `reloadExplorerPlugin` calls ([ed6d567](https://github.com/Kh4f/obsidian-manual-sorting/commit/ed6d5679b1ae7807017069637607a8937bee151f))
+* update variable names to use underscore prefix for private properties ([f1a7aa7](https://github.com/Kh4f/obsidian-manual-sorting/commit/f1a7aa7471a0b57e67fc478699d4df9fb12d52f3))
+* **versionrc:** include `style` commits in `Adjustments` section ([264969a](https://github.com/Kh4f/obsidian-manual-sorting/commit/264969affe6c1bb9184766c4da52efcf14f1077a))
+
+
 ### [1.10.2](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.10.1...1.10.2) (2025-03-21)
 
 
