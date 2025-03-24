@@ -153,6 +153,9 @@ export class OrderManager {
             const savedOrder = savedData?.[folderPath];
             if (!savedOrder) return;
 
+			const explorer = await this.plugin.waitForExplorer();
+			const scrollTop = explorer.scrollTop;
+
             const itemsByPath = new Map<string, Element>();
             Array.from(container.children).forEach((child: Element) => {
                 const path = child.firstElementChild?.getAttribute("data-path");
@@ -169,9 +172,6 @@ export class OrderManager {
 					itemsByPath.set(path, child);
 				}
             });
-
-			const explorer = await this.plugin.waitForExplorer();
-			const scrollTop = explorer.scrollTop;
 
             const fragment = document.createDocumentFragment();
             savedOrder.forEach((path: string) => {
