@@ -102,15 +102,18 @@ export default class ManualSortingPlugin extends Plugin {
 					}
 
 					const processNewItem = (addedItem) => {
-						console.log(`Adding`, addedItem, addedItem.firstChild.getAttribute("data-path"));
+						const path = addedItem.firstChild.getAttribute("data-path");
+						console.log(`Adding`, addedItem, path);
 						const itemContainer = this;
+						const elementFolderPath = path.substring(0, path.lastIndexOf('/')) || "/";
+						console.log(`Item container:`, itemContainer, elementFolderPath);
 
 						thisPlugin._orderManager.updateOrder();
 						if (thisPlugin._folderBeingCreatedManually) {
 							console.log('Folder is being created manually');
 							thisPlugin._folderBeingCreatedManually = false;
 						} else {
-							thisPlugin._orderManager.restoreOrder(itemContainer);
+							thisPlugin._orderManager.restoreOrder(itemContainer, elementFolderPath);
 						}
 
 						function makeSortable(container) {
@@ -204,7 +207,7 @@ export default class ManualSortingPlugin extends Plugin {
 									const previousItem = evt.item.previousElementSibling;
 									const previousItemPath = draggedOverElementPath ? null : previousItem?.firstChild?.getAttribute("data-path");
 									thisPlugin._orderManager.moveFile(draggedItemPath, itemDestPath, previousItemPath);
-									thisPlugin._orderManager.restoreOrder(evt.to);
+									thisPlugin._orderManager.restoreOrder(evt.to, destinationPath);
 								},
 								onUnchoose: () => {
 									console.log("Sortable: onUnchoose");

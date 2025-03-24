@@ -146,10 +146,9 @@ export class OrderManager {
         });
     }
 
-	async restoreOrder(container: Element) {
+	async restoreOrder(container: Element, folderPath: string) {
         return this._queueOperation(async () => {
             const savedData = await this.loadData();
-            const folderPath = container?.previousElementSibling?.getAttribute("data-path") || "/";
 			console.log(`Restoring order for "${folderPath}"`);
             const savedOrder = savedData?.[folderPath];
             if (!savedOrder) return;
