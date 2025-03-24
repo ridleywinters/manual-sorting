@@ -159,6 +159,11 @@ export default class ManualSortingPlugin extends Plugin {
 								delay: 10,
 								delayOnTouchOnly: true,
 
+								setData: function (dataTransfer: DataTransfer, dragEl: HTMLElement) {
+									dataTransfer.setData('string', 'text/plain');
+									dataTransfer.setData('string', 'text/uri-list');
+									dataTransfer.effectAllowed = "all";
+								},
 								onChoose: (evt) => {
 									console.log("Sortable: onChoose");
 									const dragged = evt.item;
