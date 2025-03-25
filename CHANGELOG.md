@@ -1,6 +1,13 @@
 # Changelog
 
 
+### [1.11.3](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.11.2...1.11.3) (2025-03-25)
+
+
+### 🩹 Bug Fixes
+
+* **`setChildrenInPlace`:** adjust leaf detection logic with `parentLeafContent` check ([811c35c](https://github.com/Kh4f/obsidian-manual-sorting/commit/811c35c47109cc09afbe85de0593d451b7273d1e)), refs [#26](https://github.com/Kh4f/obsidian-manual-sorting/issues/26)
+
 ### [1.11.2](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.11.1...1.11.2) (2025-03-25)
 
 
