@@ -1,6 +1,13 @@
 # Changelog
 
 
+### [1.11.2](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.11.1...1.11.2) (2025-03-25)
+
+
+### 🩹 Bug Fixes
+
+* **mobile:** increase delay before dragging to 100ms on touch screens ([55a64d4](https://github.com/Kh4f/obsidian-manual-sorting/commit/55a64d4dd566f14cb9e23481e93ae96e933c0029)), refs [#24](https://github.com/Kh4f/obsidian-manual-sorting/issues/24)
+
 ### [1.11.1](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.11.0...1.11.1) (2025-03-24)
 
 
