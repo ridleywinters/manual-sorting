@@ -164,7 +164,7 @@ export default class ManualSortingPlugin extends Plugin {
 								swapThreshold: maxSwapThreshold,
 								fallbackOnBody: true,
 
-								delay: 10,
+								delay: 100,
 								delayOnTouchOnly: true,
 
 								setData: function (dataTransfer: DataTransfer, dragEl: HTMLElement) {
