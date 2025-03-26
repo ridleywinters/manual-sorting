@@ -123,10 +123,11 @@ export default class ManualSortingPlugin extends Plugin {
 
 						function makeSortable(container) {
 							if (Sortable.get(container)) return;
-
 							console.log(`Initiating Sortable on`, container);
+
 							const minSwapThreshold = 0.3;
 							const maxSwapThreshold = 2;
+							let origSetCollapsed: Function;
 
 							function adjustSwapThreshold(item) {
 								const previousItem = item.previousElementSibling;
@@ -180,13 +181,13 @@ export default class ManualSortingPlugin extends Plugin {
 								onStart: (evt) => {
 									console.log("Sortable: onStart");
 									const itemPath = evt.item.firstChild.getAttribute("data-path");
-									const itemObject = thisPlugin.app.vault.getFolderByPath(itemPath);
-
-									if (itemObject) {
+									const itemIsFolder = !!thisPlugin.app.vault.getFolderByPath(itemPath);
+									if (itemIsFolder) {
 										const explorerView = thisPlugin.app.workspace.getLeavesOfType("file-explorer")[0].view;
-										explorerView.fileItems[itemObject.path].setCollapsed(true);
-										// for some reason Obsidian expands the folder, so we simulate its expanded state
-										explorerView.fileItems[itemObject.path].collapsed = false;
+										const fileTreeItem = explorerView.fileItems[itemPath];
+										fileTreeItem.setCollapsed(true, true);
+										origSetCollapsed || (origSetCollapsed = fileTreeItem.setCollapsed);
+										fileTreeItem.setCollapsed = () => {};
 									}
 								},
 								onChange: (evt) => {
@@ -207,7 +208,11 @@ export default class ManualSortingPlugin extends Plugin {
 									thisPlugin.app.fileManager.renameFile(movedItem, itemDestPath);
 
 									const itemIsFolder = !!movedItem?.children;
-									itemIsFolder && (thisPlugin.app.workspace.getLeavesOfType("file-explorer")[0].view.fileItems[movedItem.path].collapsed = true);
+									if (itemIsFolder) {
+										const explorerView = thisPlugin.app.workspace.getLeavesOfType("file-explorer")[0].view;
+										const fileTreeItem = explorerView.fileItems[draggedItemPath];
+										fileTreeItem.setCollapsed = origSetCollapsed;
+									}
 
 									const previousItem = evt.item.previousElementSibling;
 									const previousItemPath = draggedOverElementPath ? null : previousItem?.firstChild?.getAttribute("data-path");
