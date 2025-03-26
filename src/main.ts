@@ -221,7 +221,15 @@ export default class ManualSortingPlugin extends Plugin {
 								},
 								onUnchoose: () => {
 									console.log("Sortable: onUnchoose");
-									document.body.classList.toggle('is-grabbing', false);
+									try {
+										const dropEvent = new DragEvent("drop", { 
+											bubbles: true, 
+											cancelable: true, 
+											dataTransfer: new DataTransfer()
+										});
+									
+										document.dispatchEvent(dropEvent);
+									} catch {}
 								},
 							});
 						}
