@@ -467,6 +467,7 @@ export default class ManualSortingPlugin extends Plugin {
 					if (thisPlugin._manualSortingEnabled) {
 						menu.items.find((item: { checked: boolean; }) => item.checked === true).setChecked(false);
 					}
+
 					const sortingMenuSection = "manual-sorting";
 					menu.addItem((item: MenuItem) => {
 						item.setTitle('📌 Manual sorting')
@@ -476,6 +477,9 @@ export default class ManualSortingPlugin extends Plugin {
 								if (!thisPlugin._manualSortingEnabled) {
 									thisPlugin._manualSortingEnabled = true;
 									await thisPlugin._orderManager.updateOrder();
+									thisPlugin.reloadExplorerPlugin();
+								} else {
+									thisPlugin._manualSortingEnabled = false;
 									thisPlugin.reloadExplorerPlugin();
 								}
 							});
