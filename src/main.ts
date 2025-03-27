@@ -481,19 +481,19 @@ export default class ManualSortingPlugin extends Plugin {
 								}
 							});
 					});
-					if (thisPlugin._manualSortingEnabled) {
-						menu.addItem((item: MenuItem) => {
-							item.setTitle('🗑️ Reset order')
-								.setSection(sortingMenuSection)
-								.onClick(async () => {
-									new ResetOrderConfirmationModal(thisPlugin.app, async () => {
-										thisPlugin._orderManager.resetOrder();
-										await thisPlugin._orderManager.updateOrder();
+					menu.addItem((item: MenuItem) => {
+						item.setTitle('🗑️ Reset order')
+							.setSection(sortingMenuSection)
+							.onClick(async () => {
+								new ResetOrderConfirmationModal(thisPlugin.app, async () => {
+									thisPlugin._orderManager.resetOrder();
+									await thisPlugin._orderManager.updateOrder();
+									if (thisPlugin._manualSortingEnabled) {
 										thisPlugin.reloadExplorerPlugin();
-									}).open();
-								});
-						});
-					}
+									}
+								}).open();
+							});
+					});
 					let menuItems = menu.items;
 					let menuSeparator = menuItems.splice(8, 1)[0];
 					menuItems.splice(0, 0, menuSeparator);
