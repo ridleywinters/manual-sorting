@@ -1,4 +1,4 @@
-import { Menu, MenuItem, Plugin, Keymap } from 'obsidian';
+import { Menu, MenuItem, Plugin, Keymap, TFolder } from 'obsidian';
 import Sortable from 'sortablejs';
 import { around } from 'monkey-around';
 import { ResetOrderConfirmationModal } from './ResetOrderConfirmationModal';
@@ -35,9 +35,8 @@ export default class ManualSortingPlugin extends Plugin {
 		this.reloadExplorerPlugin();
 		
 		this.registerEvent(this.app.vault.on('create', (treeItem) => {
-			const itemIsFolder = !!treeItem?.children;
-			if (this._manualSortingEnabled && itemIsFolder) {
-				console.log('Manually created item:', treeItem);
+			if (this._manualSortingEnabled && (treeItem instanceof TFolder)) {
+				console.log('Manually created folder:', treeItem);
 				this._folderBeingCreatedManually = true;
 			}
 		}));
