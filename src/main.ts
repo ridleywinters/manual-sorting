@@ -1,6 +1,7 @@
 import { Menu, MenuItem, Plugin, Keymap, TFolder } from 'obsidian';
 import Sortable from 'sortablejs';
 import { around } from 'monkey-around';
+import Sortable, { SortableEvent } from 'sortablejs';
 import { ResetOrderConfirmationModal } from './ResetOrderConfirmationModal';
 import { OrderManager } from './OrderManager';
 
