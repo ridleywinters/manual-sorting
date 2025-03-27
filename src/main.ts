@@ -201,7 +201,15 @@ export default class ManualSortingPlugin extends Plugin {
 									const movedItem = thisPlugin.app.vault.getAbstractFileByPath(draggedItemPath);
 									const targetFolder = thisPlugin.app.vault.getFolderByPath(destinationPath);
 									const itemDestPath = `${(!targetFolder?.isRoot()) ? (destinationPath + '/') : ''}${movedItem?.name}`;
+									const previousItem = evt.item.previousElementSibling;
+									const previousItemPath = draggedOverElementPath ? null : previousItem?.firstChild?.getAttribute("data-path");
+									thisPlugin._orderManager.moveFile(draggedItemPath, itemDestPath, previousItemPath);
+
 									thisPlugin.app.fileManager.renameFile(movedItem, itemDestPath);
+									// Obsidian doesn't automatically call onRename in some cases - needed here to ensure the DOM reflects file structure changes
+									if (movedItem.path === itemDestPath) {
+										thisPlugin.app.workspace.getLeavesOfType("file-explorer")[0].view.onRename(movedItem, draggedItemPath);
+									}
 
 									const itemIsFolder = !!movedItem?.children;
 									if (itemIsFolder) {
@@ -209,11 +217,6 @@ export default class ManualSortingPlugin extends Plugin {
 										const fileTreeItem = explorerView.fileItems[draggedItemPath];
 										fileTreeItem.setCollapsed = origSetCollapsed;
 									}
-
-									const previousItem = evt.item.previousElementSibling;
-									const previousItemPath = draggedOverElementPath ? null : previousItem?.firstChild?.getAttribute("data-path");
-									thisPlugin._orderManager.moveFile(draggedItemPath, itemDestPath, previousItemPath);
-									thisPlugin._orderManager.restoreOrder(evt.to, destinationPath);
 								},
 								onUnchoose: () => {
 									console.log("Sortable: onUnchoose");
