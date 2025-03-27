@@ -7,7 +7,7 @@ import { OrderManager } from './OrderManager';
 
 
 export default class ManualSortingPlugin extends Plugin {
-	private _manualSortingEnabled: boolean = true;
+	private _manualSortingEnabled: boolean = false;
 	private _orderManager = new OrderManager(this);
 	private _explorerUnpatchFunctions: Function[] = [];
 	private _unpatchMenu: Function | null = null;
@@ -31,6 +31,7 @@ export default class ManualSortingPlugin extends Plugin {
 		this.patchSortOrderMenu();
 		await this.patchFileExplorer();
 		await this._orderManager.initOrder();
+		this._manualSortingEnabled = true;
 		this.reloadExplorerPlugin();
 		
 		this.registerEvent(this.app.vault.on('create', (treeItem) => {
