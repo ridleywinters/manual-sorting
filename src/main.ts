@@ -499,7 +499,7 @@ export default class ManualSortingPlugin extends Plugin {
 					let menuSeparator = menuItems.splice(8, 1)[0];
 					menuItems.splice(0, 0, menuSeparator);
 				}
-				original.apply(this, args);
+				return original.apply(this, args);
 			}
 		});
 	}
