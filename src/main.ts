@@ -35,9 +35,9 @@ export default class ManualSortingPlugin extends Plugin {
 		this.reloadExplorerPlugin();
 		
 		this.registerEvent(this.app.vault.on('create', (treeItem) => {
-			console.log('Manually created item:', treeItem);
-			const itemIsFolder = !!treeItem.children;
-			if (itemIsFolder) {
+			const itemIsFolder = !!treeItem?.children;
+			if (this._manualSortingEnabled && itemIsFolder) {
+				console.log('Manually created item:', treeItem);
 				this._folderBeingCreatedManually = true;
 			}
 		}));
