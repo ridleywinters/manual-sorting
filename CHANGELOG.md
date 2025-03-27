@@ -1,6 +1,14 @@
 # Changelog
 
 
+### [1.11.4](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.11.3...1.11.4) (2025-03-27)
+
+
+### 🩹 Bug Fixes
+
+* **drag-and-drop:** prevent elements jittering after emptying folder by overriding `setCollapsed` ([4f9bcd0](https://github.com/Kh4f/obsidian-manual-sorting/commit/4f9bcd08dcea2d78e84e1ce27ef3308bd3625e13)), closes [#13](https://github.com/Kh4f/obsidian-manual-sorting/issues/13)
+* **ui:** correct hovered item after dragging ends by simulating drop event ([67b680f](https://github.com/Kh4f/obsidian-manual-sorting/commit/67b680fbdd5e6e66db79fbeffcbd104d151e9fe3)), closes [#9](https://github.com/Kh4f/obsidian-manual-sorting/issues/9)
+
 ### [1.11.3](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.11.2...1.11.3) (2025-03-25)
 
 
