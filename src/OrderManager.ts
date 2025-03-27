@@ -1,5 +1,7 @@
-import { Plugin } from 'obsidian';
-import { CustomFileOrder } from './types';
+import { TFolder } from 'obsidian';
+import { FileOrder, PluginData } from './types';
+import { FileExplorerView } from 'obsidian-typings';
+import ManualSortingPlugin from './main';
 
 
 /**
@@ -12,9 +14,9 @@ import { CustomFileOrder } from './types';
  * explorer when the plugin is reloaded.
  */
 export class OrderManager {
-	private _customFileOrder: CustomFileOrder;
+	private _customFileOrder: FileOrder;
 
-    constructor(private plugin: Plugin) {}
+    constructor(private plugin: ManualSortingPlugin) {}
 
 	/**
 	 * Saves the custom file order to the plugin's data storage.
@@ -24,7 +26,7 @@ export class OrderManager {
 	 * Preloading previously saved data is avoided to save time.
 	 */
 	private async _saveCustomOrder() {
-		const data = {};
+		const data: PluginData = {customFileOrder: {}};
 		data.customFileOrder = this._customFileOrder;
 		await this.plugin.saveData(data);
 	}
@@ -37,13 +39,13 @@ export class OrderManager {
 		return this._customFileOrder;
 	}
 
-	private async migrateDataToNewFormat(data) {
+	private async migrateDataToNewFormat(data: PluginData) {
 		const keys = Object.keys(data);
 		const otherKeys = keys.filter(key => key !== 'customFileOrder');
 		
 		if (otherKeys.length > 0) {
 			for (const key of otherKeys) {
-				data.customFileOrder[key] = data[key];
+				data.customFileOrder[key] = data[key] ;
 				delete data[key];
 			}
 		}
@@ -70,17 +72,17 @@ export class OrderManager {
 	}
 
     private async _getCurrentOrder() {
-        const currentData = {};
-        const explorerView = this.plugin.app.workspace.getLeavesOfType("file-explorer")[0]?.view;
+		const currentData: { [folderPath: string]: string[] } = {};
+        const explorerView = this.plugin.app.workspace.getLeavesOfType("file-explorer")[0]?.view as FileExplorerView;
 
-        const indexFolder = (folder) => {
+        const indexFolder = (folder: TFolder) => {
             const sortedItems = explorerView.getSortedFolderItems(folder);
             const sortedItemPaths = sortedItems.map((item) => item.file.path);
             currentData[folder.path] = sortedItemPaths;
 
             for (const item of sortedItems) {
                 const itemObject = item.file;
-                if (itemObject.children) {
+                if (itemObject instanceof TFolder) {
                     indexFolder(itemObject);
                 }
             }
@@ -90,8 +92,8 @@ export class OrderManager {
         return currentData;
     }
 
-    private async _matchSavedOrder(currentOrder, savedOrder) {
-        let result = {};
+    private async _matchSavedOrder(currentOrder: FileOrder, savedOrder: FileOrder) {
+        let result: FileOrder = {};
 
         for (let folder in currentOrder) {
             if (savedOrder[folder]) {

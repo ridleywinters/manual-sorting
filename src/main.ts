@@ -1,5 +1,5 @@
-import { Menu, MenuItem, Plugin, Keymap, TFolder } from 'obsidian';
-import Sortable from 'sortablejs';
+import { Menu, MenuItem, Plugin, Keymap, TFolder, TAbstractFile } from 'obsidian';
+import { FileTreeItem, TreeItem, FileExplorerView } from 'obsidian-typings';
 import { around } from 'monkey-around';
 import Sortable, { SortableEvent } from 'sortablejs';
 import { ResetOrderConfirmationModal } from './ResetOrderConfirmationModal';
@@ -63,12 +63,12 @@ export default class ManualSortingPlugin extends Plugin {
 
 	async patchFileExplorer() {
 		await this.waitForExplorer();
-		const explorerView = this.app.workspace.getLeavesOfType("file-explorer")[0].view;
+		const fileExplorerView = this.app.workspace.getLeavesOfType("file-explorer")[0].view as FileExplorerView;
 		const thisPlugin = this;
 
 		this._explorerUnpatchFunctions.push(
-			around(Object.getPrototypeOf(explorerView.tree?.infinityScroll.rootEl.childrenEl), {
-				setChildrenInPlace: (original) => function (...args) {
+			around(Object.getPrototypeOf((fileExplorerView.tree?.infinityScroll.rootEl as { childrenEl: HTMLElement }).childrenEl), {
+				setChildrenInPlace: (original) => function (newChildren: HTMLElement[]) {
 					const isInExplorer = !!this.closest('[data-type="file-explorer"]');
 					const isTreeItem = this.classList.value.includes("tree-item");
 
@@ -77,18 +77,17 @@ export default class ManualSortingPlugin extends Plugin {
 					const isNotInExplorerLeaf = parentLeafContentType !== 'file-explorer';
 
 					if (!thisPlugin._manualSortingEnabled || (parentLeafContent && isNotInExplorerLeaf) || !isTreeItem && !isInExplorer) {
-						return original.apply(this, args);
+						return original.apply(this, [newChildren]);
 					}
 
-					const newChildren = args[0];
 					const currentChildren = Array.from(this.children);
 					const newChildrenSet = new Set(newChildren);
 
 					for (const child of currentChildren) {
-						if (!newChildrenSet.has(child)) {
-							const childPath = child?.firstChild?.getAttribute("data-path");
-
-							if (childPath && child?.classList.contains("tree-item")) {
+						const childElement = child as HTMLElement;
+						if (!newChildrenSet.has(childElement)) {
+							const childPath = (childElement.firstChild as HTMLElement)?.getAttribute("data-path");
+							if (childPath && childElement.classList.contains("tree-item")) {
 								const itemObject = thisPlugin.app.vault.getAbstractFileByPath(childPath);
 								
 								if (!itemObject) {
@@ -102,11 +101,11 @@ export default class ManualSortingPlugin extends Plugin {
 						}
 					}
 
-					const processNewItem = (addedItem) => {
-						const path = addedItem.firstChild.getAttribute("data-path");
+					const processNewItem = (addedItem: HTMLElement) => {
+						const path = (addedItem.firstChild as HTMLElement)?.getAttribute("data-path");
 						console.log(`Adding`, addedItem, path);
-						const itemContainer = this;
-						const elementFolderPath = path.substring(0, path.lastIndexOf('/')) || "/";
+						const itemContainer: HTMLElement = this;
+						const elementFolderPath = path?.substring(0, path.lastIndexOf('/')) || "/";
 						console.log(`Item container:`, itemContainer, elementFolderPath);
 
 						thisPlugin._orderManager.updateOrder();
@@ -117,15 +116,15 @@ export default class ManualSortingPlugin extends Plugin {
 							thisPlugin._orderManager.restoreOrder(itemContainer, elementFolderPath);
 						}
 
-						function makeSortable(container) {
+						function makeSortable(container: HTMLElement) {
 							if (Sortable.get(container)) return;
 							console.log(`Initiating Sortable on`, container);
 
 							const minSwapThreshold = 0.3;
 							const maxSwapThreshold = 2;
-							let origSetCollapsed: Function;
+							let origSetCollapsed: (collapsed: boolean, check: boolean) => Promise<undefined>;
 
-							function adjustSwapThreshold(item) {
+							function adjustSwapThreshold(item: HTMLElement) {
 								const previousItem = item.previousElementSibling;
 								const nextItem = item.nextElementSibling;
 
@@ -143,7 +142,7 @@ export default class ManualSortingPlugin extends Plugin {
 									adjacentNavFolders.forEach(navFolder => {
 										let childrenContainer = navFolder.querySelector('.tree-item-children');
 										if (childrenContainer) {
-											makeSortable(childrenContainer);
+											makeSortable(childrenContainer as HTMLElement);
 										}
 									});
 								} else {
@@ -169,52 +168,52 @@ export default class ManualSortingPlugin extends Plugin {
 									dataTransfer.setData('string', 'text/uri-list');
 									dataTransfer.effectAllowed = "all";
 								},
-								onChoose: (evt) => {
+								onChoose: (evt: SortableEvent) => {
 									console.log("Sortable: onChoose");
 									const dragged = evt.item;
 									adjustSwapThreshold(dragged);
 								},
-								onStart: (evt) => {
+								onStart: (evt: SortableEvent) => {
 									console.log("Sortable: onStart");
-									const itemPath = evt.item.firstChild.getAttribute("data-path");
-									const itemIsFolder = !!thisPlugin.app.vault.getFolderByPath(itemPath);
-									if (itemIsFolder) {
-										const explorerView = thisPlugin.app.workspace.getLeavesOfType("file-explorer")[0].view;
-										const fileTreeItem = explorerView.fileItems[itemPath];
+									const itemPath = (evt.item.firstChild as HTMLElement)?.getAttribute("data-path") || "";
+									const itemObject = thisPlugin.app.vault.getAbstractFileByPath(itemPath);
+									if (itemObject instanceof TFolder) {
+										const fileTreeItem = (thisPlugin.app.workspace.getLeavesOfType("file-explorer")[0].view as FileExplorerView).fileItems[itemPath] as TreeItem<FileTreeItem>;
 										fileTreeItem.setCollapsed(true, true);
 										origSetCollapsed || (origSetCollapsed = fileTreeItem.setCollapsed);
-										fileTreeItem.setCollapsed = () => {};
+										fileTreeItem.setCollapsed = async () => undefined;
 									}
 								},
-								onChange: (evt) => {
+								onChange: (evt: SortableEvent) => {
 									console.log("Sortable: onChange");
 									const dragged = evt.item;
 									adjustSwapThreshold(dragged);
 								},
-								onEnd: (evt) => {
+								onEnd: (evt: SortableEvent) => {
 									console.log("Sortable: onEnd");
 									const draggedOverElement = document.querySelector(".is-being-dragged-over");
-									const draggedItemPath = evt.item.firstChild.getAttribute("data-path");
-									const draggedOverElementPath = draggedOverElement?.firstChild?.getAttribute("data-path");
+									const draggedItemPath = (evt.item.firstChild as HTMLElement)?.getAttribute("data-path") || "";
+									const draggedOverElementPath = (draggedOverElement?.firstChild as HTMLElement)?.getAttribute("data-path");
 									const destinationPath = draggedOverElementPath || evt.to?.previousElementSibling?.getAttribute("data-path") || "/";
 
-									const movedItem = thisPlugin.app.vault.getAbstractFileByPath(draggedItemPath);
+									const movedItem = thisPlugin.app.vault.getAbstractFileByPath(draggedItemPath) as TAbstractFile;
 									const targetFolder = thisPlugin.app.vault.getFolderByPath(destinationPath);
 									const itemDestPath = `${(!targetFolder?.isRoot()) ? (destinationPath + '/') : ''}${movedItem?.name}`;
 									const previousItem = evt.item.previousElementSibling;
-									const previousItemPath = draggedOverElementPath ? null : previousItem?.firstChild?.getAttribute("data-path");
-									thisPlugin._orderManager.moveFile(draggedItemPath, itemDestPath, previousItemPath);
+									const previousItemPath = draggedOverElementPath ? "" : (previousItem?.firstChild as HTMLElement)?.getAttribute("data-path") || "";
 
+									thisPlugin._orderManager.moveFile(draggedItemPath, itemDestPath, previousItemPath);
 									thisPlugin.app.fileManager.renameFile(movedItem, itemDestPath);
+
+									const fileExplorerView = thisPlugin.app.workspace.getLeavesOfType("file-explorer")[0].view as FileExplorerView;
+
 									// Obsidian doesn't automatically call onRename in some cases - needed here to ensure the DOM reflects file structure changes
-									if (movedItem.path === itemDestPath) {
-										thisPlugin.app.workspace.getLeavesOfType("file-explorer")[0].view.onRename(movedItem, draggedItemPath);
+									if (movedItem?.path === itemDestPath) {
+										fileExplorerView.onRename(movedItem, draggedItemPath);
 									}
 
-									const itemIsFolder = !!movedItem?.children;
-									if (itemIsFolder) {
-										const explorerView = thisPlugin.app.workspace.getLeavesOfType("file-explorer")[0].view;
-										const fileTreeItem = explorerView.fileItems[draggedItemPath];
+									if (movedItem instanceof TFolder) {
+										const fileTreeItem = fileExplorerView.fileItems[draggedItemPath] as TreeItem<FileTreeItem>;
 										fileTreeItem.setCollapsed = origSetCollapsed;
 									}
 								},
@@ -239,7 +238,7 @@ export default class ManualSortingPlugin extends Plugin {
 						if (!this.contains(child)) {
 							this.prepend(child);
 							if (child.classList.contains("tree-item")) {
-								if (!child.firstChild.hasAttribute("data-path")) {
+								if (!(child.firstChild as HTMLElement)?.hasAttribute("data-path")) {
 									new MutationObserver((mutations, obs) => {
 										for (const mutation of mutations) {
 											if (mutation.attributeName === "data-path") {
@@ -248,7 +247,7 @@ export default class ManualSortingPlugin extends Plugin {
 												return;
 											}
 										}
-									}).observe(child.firstChild, { attributes: true, attributeFilter: ["data-path"] });
+									}).observe(child.firstChild as Node, { attributes: true, attributeFilter: ["data-path"] });
 								} else {
 									processNewItem(child);
 								}
@@ -256,7 +255,7 @@ export default class ManualSortingPlugin extends Plugin {
 						}
 					}
 				},
-				detach: (original) => function (...args) {
+				detach: (original) => function (...args: any) {
 					if (!thisPlugin._manualSortingEnabled) {
 						return original.apply(this, args);
 					}
@@ -273,21 +272,21 @@ export default class ManualSortingPlugin extends Plugin {
 		);
 
 		this._explorerUnpatchFunctions.push(
-			around(Object.getPrototypeOf(explorerView), {
-				onRename: (original) => function (...args) {
-					original.apply(this, args);
+			around(Object.getPrototypeOf(fileExplorerView), {
+				onRename: (original) => function (file: TAbstractFile, oldPath: string) {
+					original.apply(this, [file, oldPath]);
 					if (thisPlugin._manualSortingEnabled) {
-						thisPlugin._orderManager.renameItem(args[1], args[0].path);
+						thisPlugin._orderManager.renameItem(oldPath, file.path);
 					}
 				},
-				setSortOrder: (original) => function (...args) {
+				setSortOrder: (original) => function (...args: any) {
 					original.apply(this, args);
 					if (thisPlugin._manualSortingEnabled) {
 						thisPlugin._manualSortingEnabled = false;
 						thisPlugin.reloadExplorerPlugin();
 					}
 				},
-				sort: (original) => function (...args) {
+				sort: (original) => function (...args: any) {
 					thisPlugin._recentExplorerAction = 'sort';
 					original.apply(this, args);
 				}
@@ -295,17 +294,17 @@ export default class ManualSortingPlugin extends Plugin {
 		);
 
 		this._explorerUnpatchFunctions.push(
-			around(Object.getPrototypeOf(explorerView.tree), {
-				setFocusedItem: (original) => function (...args) {
+			around(Object.getPrototypeOf(fileExplorerView.tree), {
+				setFocusedItem: (original) => function (...args: any) {
 					thisPlugin._recentExplorerAction = 'setFocusedItem';
 					original.apply(this, args);
 				},
-				handleItemSelection: (original) => function (e, t) {
+				handleItemSelection: (original) => function (e: PointerEvent, t: TreeItem<FileTreeItem>) {
 					if (!thisPlugin._manualSortingEnabled) {
 						return original.apply(this, [e, t]);
 					}
 
-					function getItemsBetween(allPaths, path1, path2) {
+					function getItemsBetween(allPaths: string[], path1: string, path2: string) {
 						const index1 = allPaths.indexOf(path1);
 						const index2 = allPaths.indexOf(path2);
 
@@ -317,7 +316,7 @@ export default class ManualSortingPlugin extends Plugin {
 						const endIndex = Math.max(index1, index2);
 
 						return allPaths.slice(startIndex, endIndex + 1).map(path =>
-							thisPlugin.app.workspace.getLeavesOfType("file-explorer")[0].view.fileItems[path]
+							(thisPlugin.app.workspace.getLeavesOfType("file-explorer")[0].view as FileExplorerView).fileItems[path]
 						);
 					}
 
@@ -364,8 +363,8 @@ export default class ManualSortingPlugin extends Plugin {
 		);
 
 		this._explorerUnpatchFunctions.push(
-			around(Object.getPrototypeOf(explorerView.tree?.infinityScroll), {
-				scrollIntoView: (original) => function (...args) {
+			around(Object.getPrototypeOf(fileExplorerView.tree?.infinityScroll), {
+				scrollIntoView: (original) => function (...args: any) {
 					const targetElement = args[0].el;
 					const isInExplorer = !!targetElement.closest('[data-type="file-explorer"]');
 
@@ -401,7 +400,7 @@ export default class ManualSortingPlugin extends Plugin {
 		toggleSortingClass();
 
 		const configureAutoScrolling = async () =>  {
-			let scrollInterval = null;
+			let scrollInterval: number | null = null;
 			const explorer = await this.waitForExplorer();
 			if (!explorer) return;
 
@@ -410,7 +409,7 @@ export default class ManualSortingPlugin extends Plugin {
 			if(!this._manualSortingEnabled) return; 
 			explorer.addEventListener("dragover", handleDragOver);
 
-			function handleDragOver(event) {
+			function handleDragOver(event: DragEvent) {
 				event.preventDefault();
 				const rect = explorer.getBoundingClientRect();
 				const scrollZone = 50;
@@ -429,7 +428,7 @@ export default class ManualSortingPlugin extends Plugin {
 			document.addEventListener("drop", stopScrolling);
 			document.addEventListener("mouseleave", stopScrolling);
 
-			function startScrolling(speed) {
+			function startScrolling(speed: number) {
 				if (scrollInterval) return;
 
 				function scrollStep() {

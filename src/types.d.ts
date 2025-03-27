@@ -1,9 +1,17 @@
-import type { i18n } from "i18next";
+import { TAbstractFile } from "obsidian";
 
-declare global {
-	const i18next: i18n;
+
+export interface PluginData {
+	customFileOrder: FileOrder;
+	[otherKey: string]: any;
 }
 
-export interface CustomFileOrder {
+export interface FileOrder {
 	[folderPath: string]: string[];
+}
+
+declare module 'obsidian-typings' {
+	interface FileExplorerView {
+		onRename(file: TAbstractFile, oldPath: string): void;
+	}
 }
