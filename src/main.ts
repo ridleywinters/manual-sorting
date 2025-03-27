@@ -464,7 +464,6 @@ export default class ManualSortingPlugin extends Plugin {
 					openMenuButton.classList.contains('nav-action-button')
 				) {
 					const menu = this;
-					menu.sections.unshift("custom-sorting");
 					if (thisPlugin._manualSortingEnabled) {
 						menu.items.find((item: { checked: boolean; }) => item.checked === true).setChecked(false);
 					}
