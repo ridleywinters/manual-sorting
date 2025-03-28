@@ -13,7 +13,7 @@ import ManualSortingPlugin from './main';
  * The custom file order is used to restore the order of files in the file 
  * explorer when the plugin is reloaded.
  */
-export class OrderManager {
+export class FileOrderManager {
 	private _customFileOrder: FileOrder;
 
     constructor(private plugin: ManualSortingPlugin) {}
