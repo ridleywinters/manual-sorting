@@ -5,7 +5,7 @@
 <p align="center">A plugin for <a href="https://obsidian.md/" target="_blank">Obsidian</a> that enables manual sorting within the file explorer using drag-and-drop.</p>
 
 <div align="center">
-  <img align="center" width="800" style="border-radius: 10px;" src="https://github.com/user-attachments/assets/c552444f-4e2c-4c8f-8d52-9b4a8e2a509c" alt="plugin demo gif">
+  <img align="center" max-width="800" style="border-radius: 5px;" src="https://github.com/user-attachments/assets/c552444f-4e2c-4c8f-8d52-9b4a8e2a509c" alt="plugin demo gif">
 </div>
 
 </br>
