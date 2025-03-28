@@ -1,6 +1,43 @@
 # Changelog
 
 
+## [2.0.0](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.11.4...2.0.0) (2025-03-28)
+
+
+### ⚠ BREAKING CHANGES
+
+Changed the data storage format from `{"folder1":[], "folder2":[]}` to `{customFileOrder: {"folder1":[], "folder2":[]}}`.
+This allows storing additional data in the plugin’s storage, such as settings or paths for folders excluded from manual sorting.
+
+A migration method `OrderManager.migrateDataToNewFormat()` has been added to automatically convert existing data to the new format. However, **this method will be removed in future versions**.
+
+
+### 🚀 Features
+
+* **menu:** always display '🗑️ Reset order' option regardless of selected sorting mode ([87d05ee](https://github.com/Kh4f/obsidian-manual-sorting/commit/87d05eee956a7621451de86055f0ada1eb68971d))
+* **menu:** toggle manual sorting off and restore previous sorting mode when deselected ([f91f526](https://github.com/Kh4f/obsidian-manual-sorting/commit/f91f5265c3f5a481338700faa50048a9e2f42a77))
+
+
+### 🧹 Adjustments
+* **order-manager:** rewrite logic to simplify custom file order handling ([dd561b5](https://github.com/Kh4f/obsidian-manual-sorting/commit/dd561b5802539fdf2322857845741e027bae6d2e))
+  - Removed the operation queue as it is no longer needed due to storing the order in `_customFileOrder`. 
+  - Removed calls to `updateVirtualDisplay()` and `updateShowUnsupportedFiles()`, as they are no longer necessary due to improved logic for handling moved elements after drag-and-drop (12c9614). 
+  - The heavy `updateOrder()` method is now only called during initialization (`initOrder()`) and when adding/removing DOM elements. 
+  - Minimized `restoreOrder()` calls.
+* **`patchSortOrderMenu`:** add missing return before calling original function ([1f8dfbd](https://github.com/Kh4f/obsidian-manual-sorting/commit/1f8dfbd8471b31cee768190f81f59b01d68f0292))
+* **`patchSortOrderMenu`:** remove unnecessary await for `resetOrder` and replace `initOrder` with `updateOrder` ([e8277d1](https://github.com/Kh4f/obsidian-manual-sorting/commit/e8277d1b867d191ca48cf726c04149c46419974a))
+* **`setChildrenInPlace`:** remove unused container variable and related logic ([a95b4a9](https://github.com/Kh4f/obsidian-manual-sorting/commit/a95b4a9c9392d2ac7b9235548f98e453db3ef5d6))
+* **menu:** remove unnecessary 'custom-sorting' section from menu ([fdde071](https://github.com/Kh4f/obsidian-manual-sorting/commit/fdde07149bdc133d41f68c79f5d18d38a383f7d6))
+* **package:** update dependencies to use caret notation ([9640eb6](https://github.com/Kh4f/obsidian-manual-sorting/commit/9640eb6f1cf3497fd0dcadbddb30d06355c70b6c))
+* process manually created folders only when manual sorting is enabled ([e392048](https://github.com/Kh4f/obsidian-manual-sorting/commit/e392048df8c77241600902155dd3a3a58ce3ddde))
+* set `_manualSortingEnabled` to false by default and enable it in initialize() ([6347edf](https://github.com/Kh4f/obsidian-manual-sorting/commit/6347edfcb13f18d3a0d1de923eff21136c4309f2))
+* **sortable:** call `onRename` instead of `restoreOrder` in `onEnd` for better DOM sync ([12c9614](https://github.com/Kh4f/obsidian-manual-sorting/commit/12c9614569aad3a9bb78a3ebdf97ec078ce53523))
+* **types:** add all missing types and integrate `obsidian-typings` ([7fc6ac4](https://github.com/Kh4f/obsidian-manual-sorting/commit/7fc6ac486038716028521baf8043f3b01df22949))
+* **types:** add definition for `CustomFileOrder` interface ([532afc3](https://github.com/Kh4f/obsidian-manual-sorting/commit/532afc399a10f947092cacf3fc8d826518861e93))
+* **types:** add TypeScript definitions for SortableJS ([44169b5](https://github.com/Kh4f/obsidian-manual-sorting/commit/44169b5ec0a5e1d2b053d88f954663dac2259a05))
+* update manually folder creation check to use TFolder instance ([433c61b](https://github.com/Kh4f/obsidian-manual-sorting/commit/433c61b7bfe7bafe0a309a5fea125c4eb500b6dd))
+
+
 ### [1.11.4](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.11.3...1.11.4) (2025-03-27)
 
 
