@@ -101,7 +101,7 @@ export class FileOrderManager {
                 let currentFiles = currentOrder[folder];
                 // Leave the files that have already been saved
                 let existingFiles = prevOrder.filter(file => currentFiles.includes(file));
-                // Add new files to the end of the list
+                // Add new files to the beginning of the list
                 let newFiles = currentFiles.filter(file => !prevOrder.includes(file));
                 result[folder] = [...newFiles, ...existingFiles];
             } else {
