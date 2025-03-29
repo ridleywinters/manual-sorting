@@ -92,25 +92,27 @@ export class FileOrderManager {
         return currentData;
     }
 
-    private async _matchSavedOrder(currentOrder: FileOrder, savedOrder: FileOrder) {
-        let result: FileOrder = {};
+	private async _matchSavedOrder(currentOrder: FileOrder, savedOrder: FileOrder) {
+		let result: FileOrder = {};
 
-        for (let folder in currentOrder) {
-            if (savedOrder[folder]) {
-                let prevOrder = savedOrder[folder];
-                let currentFiles = currentOrder[folder];
-                // Leave the files that have already been saved
-                let existingFiles = prevOrder.filter(file => currentFiles.includes(file));
-                // Add new files to the beginning of the list
-                let newFiles = currentFiles.filter(file => !prevOrder.includes(file));
-                result[folder] = [...newFiles, ...existingFiles];
-            } else {
-                result[folder] = currentOrder[folder];
-            }
-        }
+		for (let folder in currentOrder) {
+			if (savedOrder[folder]) {
+				let prevOrder = savedOrder[folder];
+				let currentFiles = currentOrder[folder];
+				// Leave the files that have already been saved
+				let existingFiles = prevOrder.filter(file => currentFiles.includes(file));
+				// Add new files to the beginning of the list
+				let newFiles = currentFiles.filter(file => !prevOrder.includes(file));
+				// Combine and remove duplicates
+				result[folder] = Array.from(new Set([...newFiles, ...existingFiles]));
+			} else {
+				// Remove duplicates from current folder
+				result[folder] = Array.from(new Set(currentOrder[folder]));
+			}
+		}
 
-        return result;
-    }
+		return result;
+	}
 
 	async moveFile(oldPath: string, newPath: string, beforePath: string) {
 		console.log(`Moving "${oldPath}" to "${newPath}" after "${beforePath}"`);
