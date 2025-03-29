@@ -34,12 +34,12 @@ export class FileOrderManager {
 	private async _loadCustomOrder() {
 		const defaultOrder = {customFileOrder: {"/": []}};
 		const data = Object.assign({}, defaultOrder, await this.plugin.loadData());
-		await this.migrateDataToNewFormat(data);
+		await this._migrateDataToNewFormat(data);
 		this._customFileOrder = data.customFileOrder;
 		return this._customFileOrder;
 	}
 
-	private async migrateDataToNewFormat(data: PluginData) {
+	private async _migrateDataToNewFormat(data: PluginData) {
 		const keys = Object.keys(data);
 		const otherKeys = keys.filter(key => key !== 'customFileOrder');
 		
