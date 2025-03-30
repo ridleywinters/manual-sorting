@@ -12,7 +12,7 @@ export default class ManualSortingPlugin extends Plugin {
 	private _fileOrderManager = new FileOrderManager(this);
 	private _explorerUnpatchFunctions: Function[] = [];
 	private _unpatchMenu: Function | null = null;
-	private _folderBeingCreatedManually: boolean = false;
+	private _itemBeingCreatedManually: boolean = false;
 	private _recentExplorerAction: string = '';
 
 	async onload() {
@@ -36,9 +36,9 @@ export default class ManualSortingPlugin extends Plugin {
 		this.reloadExplorerPlugin();
 		
 		this.registerEvent(this.app.vault.on('create', (treeItem) => {
-			if (this._manualSortingEnabled && (treeItem instanceof TFolder)) {
-				console.log('Manually created folder:', treeItem);
-				this._folderBeingCreatedManually = true;
+			if (this._manualSortingEnabled) {
+				console.log('Manually created item:', treeItem);
+				this._itemBeingCreatedManually = true;
 			}
 		}));
 	}
@@ -109,9 +109,9 @@ export default class ManualSortingPlugin extends Plugin {
 						console.log(`Item container:`, itemContainer, elementFolderPath);
 
 						thisPlugin._fileOrderManager.updateOrder();
-						if (thisPlugin._folderBeingCreatedManually) {
-							console.log('Folder is being created manually');
-							thisPlugin._folderBeingCreatedManually = false;
+						if (thisPlugin._itemBeingCreatedManually) {
+							console.log('Item is being created manually');
+							thisPlugin._itemBeingCreatedManually = false;
 						} else {
 							thisPlugin._fileOrderManager.restoreOrder(itemContainer, elementFolderPath);
 						}
