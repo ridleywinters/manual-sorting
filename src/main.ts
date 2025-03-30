@@ -108,10 +108,10 @@ export default class ManualSortingPlugin extends Plugin {
 						const elementFolderPath = path?.substring(0, path.lastIndexOf('/')) || "/";
 						console.log(`Item container:`, itemContainer, elementFolderPath);
 
-						thisPlugin._fileOrderManager.updateOrder();
 						if (thisPlugin._itemBeingCreatedManually) {
 							console.log('Item is being created manually');
 							thisPlugin._itemBeingCreatedManually = false;
+							thisPlugin._fileOrderManager.updateOrder();
 						} else {
 							thisPlugin._fileOrderManager.restoreOrder(itemContainer, elementFolderPath);
 						}
