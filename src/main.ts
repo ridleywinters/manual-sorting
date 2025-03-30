@@ -112,10 +112,27 @@ export default class ManualSortingPlugin extends Plugin {
 							console.log('Item is being created manually');
 							thisPlugin._itemBeingCreatedManually = false;
 							thisPlugin._fileOrderManager.updateOrder();
-						} else {
-							thisPlugin._fileOrderManager.restoreOrder(itemContainer, elementFolderPath);
 						}
 
+						if (itemContainer.classList.contains("all-children-loaded")) {
+							console.warn(`All children already loaded for ${elementFolderPath}. Skipping...`);
+							return;
+						}
+
+						const dataPathValues = Array.from(itemContainer.children)
+							.filter(item => item.firstElementChild?.hasAttribute('data-path'))
+							.map(item => item.firstElementChild?.getAttribute('data-path'));
+						const childrenCount = dataPathValues.length;
+
+						const expectedChildrenCount = thisPlugin.app.vault.getFolderByPath(elementFolderPath)?.children.length;
+						console.log(`Children count: ${childrenCount}, Expected children count: ${expectedChildrenCount}`);
+
+						if (childrenCount === expectedChildrenCount) {
+							itemContainer.classList.add("all-children-loaded");
+							console.warn(`All children loaded for ${elementFolderPath}`);
+							thisPlugin._fileOrderManager.restoreOrder(itemContainer, elementFolderPath);
+						}
+						
 						function makeSortable(container: HTMLElement) {
 							if (Sortable.get(container)) return;
 							console.log(`Initiating Sortable on`, container);
