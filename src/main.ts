@@ -215,17 +215,42 @@ export default class ManualSortingPlugin extends Plugin {
 
 									const movedItem = thisPlugin.app.vault.getAbstractFileByPath(draggedItemPath) as TAbstractFile;
 									const targetFolder = thisPlugin.app.vault.getFolderByPath(destinationPath);
-									const itemDestPath = `${(!targetFolder?.isRoot()) ? (destinationPath + '/') : ''}${movedItem?.name}`;
-									const previousItem = evt.item.previousElementSibling;
-									const previousItemPath = draggedOverElementPath ? "" : (previousItem?.firstChild as HTMLElement)?.getAttribute("data-path") || "";
+									const folderPathInItemNewPath = `${(targetFolder?.isRoot()) ? '' : (destinationPath + '/')}`;
+									let itemNewPath = folderPathInItemNewPath + movedItem.name;
 
-									thisPlugin._fileOrderManager.moveFile(draggedItemPath, itemDestPath, previousItemPath);
-									thisPlugin.app.fileManager.renameFile(movedItem, itemDestPath);
+									if (draggedItemPath !== itemNewPath && thisPlugin.app.vault.getAbstractFileByPath(itemNewPath)) {
+										console.warn(`Name conflict detected. Path: ${itemNewPath} already exists. Resolving...`);
+
+										const generateUniqueFilePath = (path: string): string => {
+											const fullName = movedItem.name;
+											const lastDotIndex = fullName.lastIndexOf('.');
+											const name = lastDotIndex === -1 ? fullName : fullName.slice(0, lastDotIndex);
+											const extension = lastDotIndex === -1 ? "" : fullName.slice(lastDotIndex + 1);
+											let revisedPath = path;
+											let counter = 1;
+											
+											while (thisPlugin.app.vault.getAbstractFileByPath(revisedPath)) {
+												const newName = `${name} ${counter}${extension ? '.' + extension : ''}`;
+												revisedPath = folderPathInItemNewPath + newName;
+												counter++;
+											}
+											
+											return revisedPath;
+										}
+
+										itemNewPath = generateUniqueFilePath(itemNewPath);
+										console.log("New item path:", itemNewPath);
+									}
+
+									const newDraggbleIndex = draggedOverElementPath ? 0 : evt.newDraggableIndex as number;
+									thisPlugin._fileOrderManager.moveFile(draggedItemPath, itemNewPath, newDraggbleIndex);
+									thisPlugin.app.fileManager.renameFile(movedItem, itemNewPath);
 
 									const fileExplorerView = thisPlugin.app.workspace.getLeavesOfType("file-explorer")[0].view as FileExplorerView;
 
 									// Obsidian doesn't automatically call onRename in some cases - needed here to ensure the DOM reflects file structure changes
-									if (movedItem?.path === itemDestPath) {
+									if (movedItem?.path === itemNewPath) {
+										console.warn("Calling onRename manually for", movedItem, itemNewPath);
 										fileExplorerView.onRename(movedItem, draggedItemPath);
 									}
 

@@ -114,21 +114,24 @@ export class FileOrderManager {
 		return result;
 	}
 
-	async moveFile(oldPath: string, newPath: string, beforePath: string) {
-		console.log(`Moving "${oldPath}" to "${newPath}" after "${beforePath}"`);
+	async moveFile(oldPath: string, newPath: string, newDraggbleIndex: number) {
+		console.log(`Moving from "${oldPath}" to "${newPath}" at index ${newDraggbleIndex}`);
 		const data = this._customFileOrder;
-
 		const oldDir = oldPath.substring(0, oldPath.lastIndexOf("/")) || "/";
-		data[oldDir] = data[oldDir].filter(item => item !== oldPath);
-
 		const newDir = newPath.substring(0, newPath.lastIndexOf("/")) || "/";
 
-		if (beforePath && !data[newDir].includes(newPath)) {
-			const beforeIndex = data[newDir].indexOf(beforePath);
-			data[newDir].splice(beforeIndex + 1, 0, newPath);
+		if (data[oldDir]) {
+			data[oldDir] = data[oldDir].filter(item => item !== oldPath);
 		} else {
-			data[newDir].unshift(newPath);
+			console.warn(`[moveFile] folder "${oldDir}" not found in data.`);
 		}
+
+		if (data[newDir].includes(newPath)) {
+			console.warn(`[moveFile] "${newPath}" already exists in "${newDir}". Removing it from "${oldDir}" and returning.`);
+			return;
+		}
+
+		data[newDir].splice(newDraggbleIndex, 0, newPath);
 
 		this._saveCustomOrder();
 	}
@@ -137,14 +140,17 @@ export class FileOrderManager {
 		if (oldPath === newPath) return;
 		console.log(`Renaming "${oldPath}" to "${newPath}"`);
 		const data = this._customFileOrder;
-
 		const oldDir = oldPath.substring(0, oldPath.lastIndexOf("/")) || "/";
+
 		if (data[oldDir]) {
 			data[oldDir] = data[oldDir].map(item => (item === oldPath ? newPath : item));
+		} else {
+			console.warn(`[renameItem] folder "${oldDir}" not found in data.`);
 		}
 
 		const itemIsFolder = !!data[oldPath];
 		if (itemIsFolder) {
+			console.log(`[renameItem] "${oldPath}" is a folder. Renaming its children as well.`);
 			data[newPath] = data[oldPath];
 			delete data[oldPath];
 			data[newPath] = data[newPath].map(item => item.replace(oldPath, newPath));
