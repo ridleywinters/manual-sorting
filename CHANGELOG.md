@@ -1,6 +1,31 @@
 # Changelog
 
 
+## [2.1.0](https://github.com/Kh4f/obsidian-manual-sorting/compare/2.0.0...2.1.0) (2025-03-30)
+
+
+### ⚡ Performance
+
+* run `updateOrder` only for manually created files ([3991f62](https://github.com/Kh4f/obsidian-manual-sorting/commit/3991f62527a752ff875c3f16e913497d091aa7e7))
+* skip `restoreOrder` if all elements are already loaded ([db17d2c](https://github.com/Kh4f/obsidian-manual-sorting/commit/db17d2c8f22e08c57753d4463985237fbf69dad4)), refs [#34](https://github.com/Kh4f/obsidian-manual-sorting/issues/34)
+
+
+### 🚀 Features
+
+* implement custom name conflict resolution for moved items ([507bc5f](https://github.com/Kh4f/obsidian-manual-sorting/commit/507bc5f50c2628077a5c1d5cb979f1c5639b04d0))
+
+
+### 🩹 Bug Fixes
+
+* **order-manager:** enhance `_matchSavedOrder` method to remove duplicates ([9bc98c5](https://github.com/Kh4f/obsidian-manual-sorting/commit/9bc98c51b8f3fa9fd36cbec7acf8f18c70710a96))
+
+
+### 🧹 Adjustments
+
+* **`_matchSavedOrder`:** update comment to reflect new behavior of adding files to the beginning of the list ([b4c05b4](https://github.com/Kh4f/obsidian-manual-sorting/commit/b4c05b4d51dd198f5a3bfcf92e72220cc3a81b62))
+* **FileOrderManager:** rename `migrateDataToNewFormat` method to `_migrateDataToNewFormat` ([00a989e](https://github.com/Kh4f/obsidian-manual-sorting/commit/00a989e268187119734c72bc3da2e3751a114938))
+* rename `OrderManager` class to `FileOrderManager` ([90a731b](https://github.com/Kh4f/obsidian-manual-sorting/commit/90a731babeadd67c42aaa6fd3e4e7d2ec4b2c2f8))
+
 ## [2.0.0](https://github.com/Kh4f/obsidian-manual-sorting/compare/1.11.4...2.0.0) (2025-03-28)
 
 
