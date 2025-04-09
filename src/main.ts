@@ -29,6 +29,7 @@ export default class ManualSortingPlugin extends Plugin {
 	}
 
 	async initialize() {
+		this.patchSortable();
 		this.patchSortOrderMenu();
 		await this.patchFileExplorer();
 		await this._fileOrderManager.initOrder();
@@ -41,6 +42,18 @@ export default class ManualSortingPlugin extends Plugin {
 				this._itemBeingCreatedManually = true;
 			}
 		}));
+	}
+
+	private patchSortable() {
+		around((Sortable.prototype as any), {
+			_onDragOver: (original: any) => function (evt: DragEvent) {
+				if (!this.el.children.length) {
+					console.warn("Container is empty, skipping onDragOver()");
+					return;
+				}
+				return original.call(this, evt);
+			}
+		});
 	}
 
 	async waitForExplorer() {
