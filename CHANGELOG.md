@@ -1,6 +1,13 @@
 # Changelog
 
 
+### [2.1.1](https://github.com/Kh4f/obsidian-manual-sorting/compare/2.1.0...2.1.1) (2025-04-09)
+
+
+### 🩹 Bug Fixes
+
+* **drag-and-drop:** fix jittering after emptying folder by patching Sortable's `_onDragOver` ([3d8d20d](https://github.com/Kh4f/obsidian-manual-sorting/commit/3d8d20d5606d62fb2cc3ba9363b90f62ef70caf3)), closes [#33](https://github.com/Kh4f/obsidian-manual-sorting/issues/33)
+
 ## [2.1.0](https://github.com/Kh4f/obsidian-manual-sorting/compare/2.0.0...2.1.0) (2025-03-30)
 
 
