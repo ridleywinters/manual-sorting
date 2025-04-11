@@ -83,9 +83,9 @@ export default class ManualSortingPlugin extends Plugin {
 			around(Object.getPrototypeOf((fileExplorerView.tree?.infinityScroll.rootEl as { childrenEl: HTMLElement }).childrenEl), {
 				setChildrenInPlace: (original) => function (newChildren: HTMLElement[]) {
 					const isInExplorer = !!this.closest('[data-type="file-explorer"]');
-					const isTreeItem = this.classList.value.includes("tree-item");
+					const isFileTreeItem = this.classList.value.includes("tree-item") && this.classList.value.includes("nav-");
 
-					if (!thisPlugin._manualSortingEnabled || !isTreeItem && !isInExplorer) {
+					if (!thisPlugin._manualSortingEnabled || !isFileTreeItem && !isInExplorer) {
 						return original.apply(this, [newChildren]);
 					}
 
