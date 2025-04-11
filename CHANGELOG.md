@@ -1,6 +1,17 @@
 # Changelog
 
 
+### [2.1.2](https://github.com/Kh4f/obsidian-manual-sorting/compare/2.1.1...2.1.2) (2025-04-11)
+
+
+### 🩹 Bug Fixes
+
+* **`patchFileExplorer`:** ensure patched `setChildrenInPlace` only runs for elements with "nav-" in classList ([e0168b6](https://github.com/Kh4f/obsidian-manual-sorting/commit/e0168b62bbbb59bdc8b18ddce177cebf4f8184b6)), closes [#35](https://github.com/Kh4f/obsidian-manual-sorting/issues/35), refs [#29](https://github.com/Kh4f/obsidian-manual-sorting/issues/29)
+
+### 🧹 Adjustments
+
+* **revert:** "fix: prevent sorting from affecting outline panel elements" ([21c8234](https://github.com/Kh4f/obsidian-manual-sorting/commit/21c8234e03a14f9d8ebc82305d10a19075812e77))
+
 ### [2.1.1](https://github.com/Kh4f/obsidian-manual-sorting/compare/2.1.0...2.1.1) (2025-04-09)
 
 
