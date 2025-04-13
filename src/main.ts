@@ -546,7 +546,8 @@ export default class ManualSortingPlugin extends Plugin {
 
 					const sortingMenuSection = "manual-sorting";
 					menu.addItem((item: MenuItem) => {
-						item.setTitle('📌 Manual sorting')
+						item.setTitle('Manual sorting')
+							.setIcon('user-round')
 							.setChecked(thisPlugin._manualSortingEnabled)
 							.setSection(sortingMenuSection)
 							.onClick(async () => {
@@ -564,6 +565,7 @@ export default class ManualSortingPlugin extends Plugin {
 					if (thisPlugin._manualSortingEnabled) {
 						menu.addItem((item: MenuItem) => {
 							item.setTitle('Dragging')
+								.setIcon('move')
 								.setSection(sortingMenuSection)
 								.onClick(() => {
 									thisPlugin._draggingEnabled = !thisPlugin._draggingEnabled;
@@ -576,7 +578,8 @@ export default class ManualSortingPlugin extends Plugin {
 						});
 					}
 					menu.addItem((item: MenuItem) => {
-						item.setTitle('🗑️ Reset order')
+						item.setTitle('Reset order')
+							.setIcon('trash-2')
 							.setSection(sortingMenuSection)
 							.onClick(async () => {
 								new ResetOrderConfirmationModal(thisPlugin.app, async () => {

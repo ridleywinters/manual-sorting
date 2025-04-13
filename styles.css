@@ -9,6 +9,10 @@ div.nav-files-container.manual-sorting-enabled {
 }
 
 .menu-item[data-section="manual-sorting"] {
+	& .menu-item-icon:first-child {
+		display: flex;
+	}
+
 	& .dragging-enabled-checkbox {
 		margin-bottom: -2px;
 
