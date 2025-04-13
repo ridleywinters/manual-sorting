@@ -1,6 +1,26 @@
 # Changelog
 
 
+## [2.2.0](https://github.com/Kh4f/obsidian-manual-sorting/compare/2.1.2...2.2.0) (2025-04-13)
+
+### 🚀 Features
+
+* **dnd:** implement drag-and-drop toggle based on `Dragging` checkbox ([415b187](https://github.com/Kh4f/obsidian-manual-sorting/commit/415b187fd399214b26bd87ac305e87104198a478)), closes [#36](https://github.com/Kh4f/obsidian-manual-sorting/issues/36)
+* **menu:** add `Dragging` checkbox to toggle drag & drop in `Change sort order` menu ([017df8c](https://github.com/Kh4f/obsidian-manual-sorting/commit/017df8c9528669110166de5e6b319359aff89341)), refs [#36](https://github.com/Kh4f/obsidian-manual-sorting/issues/36)
+* **menu:** update custom option icons using Lucide icon library ([bffa4fc](https://github.com/Kh4f/obsidian-manual-sorting/commit/bffa4fcab2932baca27e47d36be264974be45a1a))
+
+
+### 🩹 Bug Fixes
+
+* **dnd:** ensure elements update position after drop when dragging is disabled ([ce44dc4](https://github.com/Kh4f/obsidian-manual-sorting/commit/ce44dc48f1c73b5a82302600994b9d3c389c9a1b)), refs [#36](https://github.com/Kh4f/obsidian-manual-sorting/issues/36)
+* **dnd:** prevent dispatching drop event in `onUnchoose` when dragging is disabled ([cee129f](https://github.com/Kh4f/obsidian-manual-sorting/commit/cee129f302b5bd5385ca3b993dd87120ef0a7766)), refs [#36](https://github.com/Kh4f/obsidian-manual-sorting/issues/36)
+
+
+### 🧹 Adjustments
+
+* make `patchSortable` async ([636b85f](https://github.com/Kh4f/obsidian-manual-sorting/commit/636b85ffbccc937c82f09e663cb6222541ae1071))
+* replace firstChild with firstElementChild for `childPath` in `setChildrenInPlace` ([61e83b3](https://github.com/Kh4f/obsidian-manual-sorting/commit/61e83b320de09d9a0d4d129dc874a4657b0ae83b))
+
 ### [2.1.2](https://github.com/Kh4f/obsidian-manual-sorting/compare/2.1.1...2.1.2) (2025-04-11)
 
 
