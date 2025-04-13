@@ -105,16 +105,26 @@ export default class ManualSortingPlugin extends Plugin {
 						if (!newChildrenSet.has(childElement)) {
 							const childPath = (childElement.firstElementChild as HTMLElement)?.getAttribute("data-path");
 							if (childPath && childElement.classList.contains("tree-item")) {
+
+								// Check if the item still exists in the vault
 								const itemObject = thisPlugin.app.vault.getAbstractFileByPath(childPath);
-								
 								if (!itemObject) {
+									console.warn("Item not exists in vault, removing its DOM element:", childPath);
 									childPath && thisPlugin._fileOrderManager.updateOrder();
+									this.removeChild(child);
 								} else {
-									continue;
+									const actualParentPath = childElement.parentElement?.previousElementSibling?.getAttribute("data-path") || "/";
+									const itemObjectParentPath = itemObject.parent?.path;
+									
+									if ((itemObjectParentPath !== actualParentPath) && !thisPlugin._draggingEnabled) {
+										console.warn("Item not in the right place, removing its DOM element:", childPath);
+										this.removeChild(childElement);
+										// Sync file explorer DOM tree
+										const fileExplorerView = thisPlugin.app.workspace.getLeavesOfType("file-explorer")[0].view as FileExplorerView;
+										fileExplorerView.updateShowUnsupportedFiles()
+									}
 								}
 							}
-
-							this.removeChild(child);
 						}
 					}
 

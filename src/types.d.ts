@@ -13,5 +13,6 @@ export interface FileOrder {
 declare module 'obsidian-typings' {
 	interface FileExplorerView {
 		onRename(file: TAbstractFile, oldPath: string): void;
+		updateShowUnsupportedFiles(): void;
 	}
 }
