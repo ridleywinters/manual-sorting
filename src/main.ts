@@ -44,7 +44,7 @@ export default class ManualSortingPlugin extends Plugin {
 		}));
 	}
 
-	private patchSortable() {
+	async patchSortable() {
 		around((Sortable.prototype as any), {
 			_onDragOver: (original: any) => function (evt: DragEvent) {
 				if (!this.el.children.length) {
