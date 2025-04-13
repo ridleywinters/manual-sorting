@@ -8,6 +8,16 @@ div.nav-files-container.manual-sorting-enabled {
 	}
 }
 
+.menu-item[data-section="manual-sorting"] {
+	& .dragging-enabled-checkbox {
+		margin-bottom: -2px;
+
+		& input {
+			margin: 0;
+		}
+	}
+}
+
 .manual-sorting-modal .modal-buttons {
 	display: flex;
 	gap: 8px;

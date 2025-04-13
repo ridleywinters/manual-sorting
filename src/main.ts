@@ -535,6 +535,15 @@ export default class ManualSortingPlugin extends Plugin {
 								}
 							});
 					});
+					if (thisPlugin._manualSortingEnabled) {
+						menu.addItem((item: MenuItem) => {
+							item.setTitle('Dragging')
+								.setSection(sortingMenuSection)
+								
+							const checkboxContainerEl = item.dom.createEl('div', {cls: 'menu-item-icon dragging-enabled-checkbox'});
+							const checkboxEl = checkboxContainerEl.createEl('input', {type: 'checkbox'});
+						});
+					}
 					menu.addItem((item: MenuItem) => {
 						item.setTitle('🗑️ Reset order')
 							.setSection(sortingMenuSection)
