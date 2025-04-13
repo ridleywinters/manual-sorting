@@ -103,7 +103,7 @@ export default class ManualSortingPlugin extends Plugin {
 					for (const child of currentChildren) {
 						const childElement = child as HTMLElement;
 						if (!newChildrenSet.has(childElement)) {
-							const childPath = (childElement.firstChild as HTMLElement)?.getAttribute("data-path");
+							const childPath = (childElement.firstElementChild as HTMLElement)?.getAttribute("data-path");
 							if (childPath && childElement.classList.contains("tree-item")) {
 								const itemObject = thisPlugin.app.vault.getAbstractFileByPath(childPath);
 								
