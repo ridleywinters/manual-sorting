@@ -9,11 +9,13 @@ import { FileOrderManager } from './FileOrderManager';
 
 export default class ManualSortingPlugin extends Plugin {
 	private _manualSortingEnabled: boolean = false;
+	private _draggingEnabled: boolean = true;
 	private _fileOrderManager = new FileOrderManager(this);
 	private _explorerUnpatchFunctions: Function[] = [];
 	private _unpatchMenu: Function | null = null;
 	private _itemBeingCreatedManually: boolean = false;
 	private _recentExplorerAction: string = '';
+	private _sortableInstances: Sortable[] = [];
 
 	async onload() {
 		this.app.workspace.onLayoutReady(() => {
@@ -42,6 +44,12 @@ export default class ManualSortingPlugin extends Plugin {
 				this._itemBeingCreatedManually = true;
 			}
 		}));
+	}
+
+	async toogleDragging() {
+		this._sortableInstances.forEach((sortableInstance) => {
+			sortableInstance.option('disabled', !this._draggingEnabled);
+		});
 	}
 
 	async patchSortable() {
@@ -281,6 +289,7 @@ export default class ManualSortingPlugin extends Plugin {
 									} catch {}
 								},
 							});
+							thisPlugin._sortableInstances.push(sortableInstance);
 						}
 						makeSortable(itemContainer);
 					}
@@ -327,6 +336,10 @@ export default class ManualSortingPlugin extends Plugin {
 				onRename: (original) => function (file: TAbstractFile, oldPath: string) {
 					original.apply(this, [file, oldPath]);
 					if (thisPlugin._manualSortingEnabled) {
+						const oldDirPath = oldPath.substring(0, oldPath.lastIndexOf("/")) || "/";
+						if (!thisPlugin._draggingEnabled && oldDirPath !== file.parent?.path) {
+							thisPlugin._fileOrderManager.moveFile(oldPath, file.path, 0);
+						}
 						thisPlugin._fileOrderManager.renameItem(oldPath, file.path);
 					}
 				},
@@ -527,6 +540,7 @@ export default class ManualSortingPlugin extends Plugin {
 							.onClick(async () => {
 								if (!thisPlugin._manualSortingEnabled) {
 									thisPlugin._manualSortingEnabled = true;
+									thisPlugin._draggingEnabled = true;
 									await thisPlugin._fileOrderManager.updateOrder();
 									thisPlugin.reloadExplorerPlugin();
 								} else {
@@ -539,9 +553,14 @@ export default class ManualSortingPlugin extends Plugin {
 						menu.addItem((item: MenuItem) => {
 							item.setTitle('Dragging')
 								.setSection(sortingMenuSection)
+								.onClick(() => {
+									thisPlugin._draggingEnabled = !thisPlugin._draggingEnabled;
+									thisPlugin.toogleDragging();
+								});
 								
 							const checkboxContainerEl = item.dom.createEl('div', {cls: 'menu-item-icon dragging-enabled-checkbox'});
 							const checkboxEl = checkboxContainerEl.createEl('input', {type: 'checkbox'});
+							checkboxEl.checked = thisPlugin._draggingEnabled;
 						});
 					}
 					menu.addItem((item: MenuItem) => {
