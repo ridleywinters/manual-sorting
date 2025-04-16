@@ -1,6 +1,16 @@
 # Changelog
 
 
+### [2.2.1](https://github.com/Kh4f/obsidian-manual-sorting/compare/2.2.0...2.2.1) (2025-04-16)
+
+
+### 🧹 Adjustments
+
+* **manifest:** correct description formatting ([52a5a23](https://github.com/Kh4f/obsidian-manual-sorting/commit/52a5a2363f46017d439c334253b1e2f025c92392))
+* **manifest:** update description ([dd6bd0b](https://github.com/Kh4f/obsidian-manual-sorting/commit/dd6bd0ba7e0f8a01112f065618020c4b18089641))
+* **package:** add i18next override to resolve dependency conflict ([0b2fa80](https://github.com/Kh4f/obsidian-manual-sorting/commit/0b2fa80ae8fb84958779f6631d805ebea77b1559))
+* **package:** update description and add `drag-and-drop` keyword ([1701b7b](https://github.com/Kh4f/obsidian-manual-sorting/commit/1701b7b41f481ea530e96f7fdae4a2173e51c473))
+
 ## [2.2.0](https://github.com/Kh4f/obsidian-manual-sorting/compare/2.1.2...2.2.0) (2025-04-13)
 
 ### 🚀 Features
