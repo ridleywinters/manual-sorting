@@ -626,10 +626,12 @@ export default class ManualSortingPlugin extends Plugin {
 							.setIcon('trash-2')
 							.setSection(sortingMenuSection)
 							.onClick(async () => {
-								new ResetOrderConfirmationModal(thisPlugin.app, async () => {
+								const fileExplorerView = thisPlugin.getFileExplorerView();
+								const prevSelectedSortOrder = fileExplorerView.sortOrder;
+								new ResetOrderConfirmationModal(thisPlugin.app, prevSelectedSortOrder, async () => {
 									thisPlugin._fileOrderManager.resetOrder();
 									await thisPlugin._fileOrderManager.updateOrder();
-									if (thisPlugin._manualSortingEnabled) {
+									if (thisPlugin.isManualSortingEnabled()) {
 										thisPlugin.reloadExplorerPlugin();
 									}
 								}).open();
