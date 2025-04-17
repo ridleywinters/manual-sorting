@@ -105,7 +105,7 @@ export class FileOrderManager {
 		const newDir = newPath.substring(0, newPath.lastIndexOf("/")) || "/";
 
 		if (data[oldDir]) {
-			data[oldDir] = data[oldDir].filter(item => item !== oldPath);
+			data[oldDir] = data[oldDir].filter((path: string) => path !== oldPath);
 		} else {
 			console.warn(`[moveFile] folder "${oldDir}" not found in data.`);
 		}
@@ -127,7 +127,7 @@ export class FileOrderManager {
 		const oldDir = oldPath.substring(0, oldPath.lastIndexOf("/")) || "/";
 
 		if (data[oldDir]) {
-			data[oldDir] = data[oldDir].map(item => (item === oldPath ? newPath : item));
+			data[oldDir] = data[oldDir].map((path: string) => (path === oldPath ? newPath : path));
 		} else {
 			console.warn(`[renameItem] folder "${oldDir}" not found in data.`);
 		}
@@ -137,7 +137,7 @@ export class FileOrderManager {
 			console.log(`[renameItem] "${oldPath}" is a folder. Renaming its children as well.`);
 			data[newPath] = data[oldPath];
 			delete data[oldPath];
-			data[newPath] = data[newPath].map(item => item.replace(oldPath, newPath));
+			data[newPath] = data[newPath].map((path: string) => path.replace(oldPath, newPath));
 		}
 
 		this._saveCustomOrder();
