@@ -20,6 +20,11 @@ div.nav-files-container.manual-sorting-enabled {
 			margin: 0;
 		}
 	}
+
+	.svg-icon.lucide-pin {
+		transform: rotate(45deg);
+		margin-bottom: -2px;
+	}
 }
 
 .manual-sorting-modal .modal-buttons {

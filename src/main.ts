@@ -590,7 +590,7 @@ export default class ManualSortingPlugin extends Plugin {
 					const sortingMenuSection = MANUAL_SORTING_MODE_ID;
 					menu.addItem((item: MenuItem) => {
 						item.setTitle('Manual sorting')
-							.setIcon('user-round')
+							.setIcon('pin')
 							.setChecked(thisPlugin.isManualSortingEnabled())
 							.setSection(sortingMenuSection)
 							.onClick(async () => {
