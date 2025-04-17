@@ -29,6 +29,7 @@ export default class ManualSortingPlugin extends Plugin {
 		this.reloadExplorerPlugin();
 		this._unpatchMenu && this._unpatchMenu() && (this._unpatchMenu = null);
 	}
+	getFileExplorerView = () => this.app.workspace.getLeavesOfType("file-explorer")[0].view as FileExplorerView;
 
 	async initialize() {
 		this.patchSortable();
@@ -120,7 +121,7 @@ export default class ManualSortingPlugin extends Plugin {
 										console.warn("Item not in the right place, removing its DOM element:", childPath);
 										this.removeChild(childElement);
 										// Sync file explorer DOM tree
-										const fileExplorerView = thisPlugin.app.workspace.getLeavesOfType("file-explorer")[0].view as FileExplorerView;
+										const fileExplorerView = thisPlugin.getFileExplorerView();
 										fileExplorerView.updateShowUnsupportedFiles()
 									}
 								}
@@ -222,7 +223,7 @@ export default class ManualSortingPlugin extends Plugin {
 									const itemPath = (evt.item.firstChild as HTMLElement)?.getAttribute("data-path") || "";
 									const itemObject = thisPlugin.app.vault.getAbstractFileByPath(itemPath);
 									if (itemObject instanceof TFolder) {
-										const fileTreeItem = (thisPlugin.app.workspace.getLeavesOfType("file-explorer")[0].view as FileExplorerView).fileItems[itemPath] as TreeItem<FileTreeItem>;
+										const fileTreeItem = thisPlugin.getFileExplorerView().fileItems[itemPath] as TreeItem<FileTreeItem>;
 										fileTreeItem.setCollapsed(true, true);
 										origSetCollapsed || (origSetCollapsed = fileTreeItem.setCollapsed);
 										fileTreeItem.setCollapsed = async () => undefined;
@@ -273,7 +274,7 @@ export default class ManualSortingPlugin extends Plugin {
 									thisPlugin._fileOrderManager.moveFile(draggedItemPath, itemNewPath, newDraggbleIndex);
 									thisPlugin.app.fileManager.renameFile(movedItem, itemNewPath);
 
-									const fileExplorerView = thisPlugin.app.workspace.getLeavesOfType("file-explorer")[0].view as FileExplorerView;
+									const fileExplorerView = thisPlugin.getFileExplorerView();
 
 									// Obsidian doesn't automatically call onRename in some cases - needed here to ensure the DOM reflects file structure changes
 									if (movedItem?.path === itemNewPath) {
@@ -392,7 +393,7 @@ export default class ManualSortingPlugin extends Plugin {
 						const endIndex = Math.max(index1, index2);
 
 						return allPaths.slice(startIndex, endIndex + 1).map(path =>
-							(thisPlugin.app.workspace.getLeavesOfType("file-explorer")[0].view as FileExplorerView).fileItems[path]
+							thisPlugin.getFileExplorerView().fileItems[path]
 						);
 					}
 
