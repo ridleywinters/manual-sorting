@@ -3,7 +3,8 @@ import { TAbstractFile } from "obsidian";
 
 export interface PluginSettings {
 	customFileOrder: FileOrder;
-	[otherKey: string]: any;
+	selectedSortOrder: string;
+	draggingEnabled: boolean;
 }
 
 export interface FileOrder {

@@ -1,50 +1,30 @@
 import { TFolder } from 'obsidian';
-import { FileOrder, PluginData } from './types';
-import { FileExplorerView } from 'obsidian-typings';
+import { FileOrder } from './types';
 import ManualSortingPlugin from './main';
 
 
 export class FileOrderManager {
-	private _customFileOrder: FileOrder;
 
-    constructor(private plugin: ManualSortingPlugin) {}
-
-	private async _saveCustomOrder() {
-		const data: PluginData = {customFileOrder: {}};
-		data.customFileOrder = this._customFileOrder;
-		await this.plugin.saveData(data);
-	}
-	
-	private async _loadCustomOrder() {
-		const defaultOrder = {customFileOrder: {"/": []}};
-		const data = Object.assign({}, defaultOrder, await this.plugin.loadData());
-		this._customFileOrder = data.customFileOrder;
-		return this._customFileOrder;
-	}
-
-	async initOrder() {
-		await this._loadCustomOrder();
-		await this.updateOrder();
-	}
+	constructor(private _plugin: ManualSortingPlugin) {}
 
 	resetOrder() {
-		this._customFileOrder = {"/": []};
-		this._saveCustomOrder();
+		this._plugin.settings.customFileOrder = {"/": []};
+		this._plugin.saveSettings();
 	}
 
 	async updateOrder() {
 		console.log("Updating order...");
 		const currentOrder = await this._getCurrentOrder();
-		const savedOrder = this._customFileOrder;
+		const savedOrder = this._plugin.settings.customFileOrder;
 		const newOrder = await this._matchSavedOrder(currentOrder, savedOrder);
-		this._customFileOrder = newOrder;
-		this._saveCustomOrder();
-		console.log("Order updated:", this._customFileOrder);
+		this._plugin.settings.customFileOrder = newOrder;
+		this._plugin.saveSettings();
+		console.log("Order updated:", this._plugin.settings.customFileOrder);
 	}
 
     private async _getCurrentOrder() {
 		const currentData: { [folderPath: string]: string[] } = {};
-        const explorerView = this.plugin.app.workspace.getLeavesOfType("file-explorer")[0]?.view as FileExplorerView;
+		const explorerView = this._plugin.getFileExplorerView();
 
         const indexFolder = (folder: TFolder) => {
             const sortedItems = explorerView.getSortedFolderItems(folder);
@@ -59,7 +39,7 @@ export class FileOrderManager {
             }
         };
 
-        indexFolder(this.plugin.app.vault.root);
+        indexFolder(this._plugin.app.vault.root);
         return currentData;
     }
 
@@ -87,7 +67,7 @@ export class FileOrderManager {
 
 	async moveFile(oldPath: string, newPath: string, newDraggbleIndex: number) {
 		console.log(`Moving from "${oldPath}" to "${newPath}" at index ${newDraggbleIndex}`);
-		const data = this._customFileOrder;
+		const data = this._plugin.settings.customFileOrder;
 		const oldDir = oldPath.substring(0, oldPath.lastIndexOf("/")) || "/";
 		const newDir = newPath.substring(0, newPath.lastIndexOf("/")) || "/";
 
@@ -104,13 +84,13 @@ export class FileOrderManager {
 
 		data[newDir].splice(newDraggbleIndex, 0, newPath);
 
-		this._saveCustomOrder();
+		this._plugin.saveSettings();
 	}
 
 	async renameItem(oldPath: string, newPath: string) {
 		if (oldPath === newPath) return;
 		console.log(`Renaming "${oldPath}" to "${newPath}"`);
-		const data = this._customFileOrder;
+		const data = this._plugin.settings.customFileOrder;
 		const oldDir = oldPath.substring(0, oldPath.lastIndexOf("/")) || "/";
 
 		if (data[oldDir]) {
@@ -127,16 +107,16 @@ export class FileOrderManager {
 			data[newPath] = data[newPath].map((path: string) => path.replace(oldPath, newPath));
 		}
 
-		this._saveCustomOrder();
+		this._plugin.saveSettings();
 	}
 
 	async restoreOrder(container: Element, folderPath: string) {
-		const savedData = this._customFileOrder;
+		const savedData = this._plugin.settings.customFileOrder;
 		console.log(`Restoring order for "${folderPath}"`);
 		const savedOrder = savedData?.[folderPath];
 		if (!savedOrder) return;
 
-		const explorer = await this.plugin.waitForExplorer();
+		const explorer = await this._plugin.waitForExplorer();
 		const scrollTop = explorer.scrollTop;
 
 		const itemsByPath = new Map<string, Element>();
@@ -175,7 +155,7 @@ export class FileOrderManager {
 			return result;
 		}
 
-		return flattenPaths(this._customFileOrder);
+		return flattenPaths(this._plugin.settings.customFileOrder);
 	}
 }
 

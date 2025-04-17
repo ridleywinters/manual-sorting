@@ -46,8 +46,8 @@
 - **Powered by**:  [SortableJS](https://github.com/SortableJS/Sortable), [monkey-around](https://github.com/pjeby/monkey-around)
 - **Icon library**:  [Lucide](https://lucide.dev/) (for the custom menu options)
 - **Inspiration**: [Obsidian Bartender](https://github.com/nothingislost/obsidian-bartender) by @nothingislost, [Custom File Explorer sorting](https://github.com/SebastianMC/obsidian-custom-sort) by @SebastianMC
-- **Thanks to all bug reporters** for helping improve the plugin!
-- **Special thanks** to @Paining1, @Azmoinal, @SublimePeace for testing and providing feedback on the plugin!
+- **Huge thanks** to [@Paining1](https://github.com/Paining1), [@Azmoinal](https://github.com/Azmoinal), [@SublimePeace](https://github.com/SublimePeace) for testing and providing feedback on the plugin!
+- **Special thanks** to [@Mara-Li](https://github.com/Mara-Li) for contributions and feature suggestions!
 
 </br>
 

@@ -4,43 +4,73 @@ import { around } from 'monkey-around';
 import Sortable, { SortableEvent } from 'sortablejs';
 import { ResetOrderConfirmationModal } from './ResetOrderConfirmationModal';
 import { FileOrderManager } from './FileOrderManager';
-
+import { PluginSettings } from './types';
+import { DEFAULT_SETTINGS, MANUAL_SORTING_MODE_ID } from './constants';
 
 
 export default class ManualSortingPlugin extends Plugin {
-	private _manualSortingEnabled: boolean = false;
-	private _draggingEnabled: boolean = true;
-	private _fileOrderManager = new FileOrderManager(this);
+	private _fileOrderManager: FileOrderManager;
 	private _explorerUnpatchFunctions: Function[] = [];
 	private _unpatchMenu: Function | null = null;
 	private _itemBeingCreatedManually: boolean = false;
 	private _recentExplorerAction: string = '';
 	private _sortableInstances: Sortable[] = [];
+	public settings: PluginSettings;
 
 	async onload() {
+		await this.loadSettings();
 		this.app.workspace.onLayoutReady(() => {
 			this.initialize();
 		});
 	}
 
+	async loadSettings() {
+		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+		console.log("Settings loaded:", this.settings);
+	}
+
+	async saveSettings() {
+		await this.saveData(this.settings);
+		console.log("Settings saved:", this.settings);
+	}
+
 	async onunload() {
 		this._explorerUnpatchFunctions.forEach(unpatch => unpatch());
 		this._explorerUnpatchFunctions = [];
-		this.reloadExplorerPlugin();
+		this.isManualSortingEnabled() && this.reloadExplorerPlugin();
 		this._unpatchMenu && this._unpatchMenu() && (this._unpatchMenu = null);
 	}
+
 	getFileExplorerView = () => this.app.workspace.getLeavesOfType("file-explorer")[0].view as FileExplorerView;
 
+	isManualSortingEnabled = () => this.settings.selectedSortOrder === MANUAL_SORTING_MODE_ID;
+
 	async initialize() {
+		const prevSelectedSortOrder = this.settings.selectedSortOrder;
+		const prevManualSortingEnabledStatus = (prevSelectedSortOrder === MANUAL_SORTING_MODE_ID);
+		if (prevManualSortingEnabledStatus) {
+			// temporarily disable manual sorting mode to prevent unnecessary sorting 
+			// before reloading the file-explorer plugin
+			this.settings.selectedSortOrder = '';
+		}
 		this.patchSortable();
 		this.patchSortOrderMenu();
-		await this.patchFileExplorer();
-		await this._fileOrderManager.initOrder();
-		this._manualSortingEnabled = true;
-		this.reloadExplorerPlugin();
+
+		await this.waitForExplorer();
+		const fileExplorerView = this.getFileExplorerView();
+		await this.patchFileExplorer(fileExplorerView);
+		this._fileOrderManager = new FileOrderManager(this);
+		await this._fileOrderManager.updateOrder();
+
+		// re-enable manual sorting mode if it was previously enabled
+		if (prevManualSortingEnabledStatus) {
+			this.settings.selectedSortOrder = prevSelectedSortOrder;
+		}
+
+		this.isManualSortingEnabled() && this.reloadExplorerPlugin();
 		
 		this.registerEvent(this.app.vault.on('create', (treeItem) => {
-			if (this._manualSortingEnabled) {
+			if (this.isManualSortingEnabled()) {
 				console.log('Manually created item:', treeItem);
 				this._itemBeingCreatedManually = true;
 			}
@@ -49,7 +79,7 @@ export default class ManualSortingPlugin extends Plugin {
 
 	async toogleDragging() {
 		this._sortableInstances.forEach((sortableInstance) => {
-			sortableInstance.option('disabled', !this._draggingEnabled);
+			sortableInstance.option('disabled', !this.settings.draggingEnabled);
 		});
 	}
 
@@ -83,9 +113,7 @@ export default class ManualSortingPlugin extends Plugin {
 		});
 	};
 
-	async patchFileExplorer() {
-		await this.waitForExplorer();
-		const fileExplorerView = this.app.workspace.getLeavesOfType("file-explorer")[0].view as FileExplorerView;
+	async patchFileExplorer(fileExplorerView: FileExplorerView) {
 		const thisPlugin = this;
 
 		this._explorerUnpatchFunctions.push(
@@ -94,7 +122,7 @@ export default class ManualSortingPlugin extends Plugin {
 					const isInExplorer = !!this.closest('[data-type="file-explorer"]');
 					const isFileTreeItem = this.classList.value.includes("tree-item") && this.classList.value.includes("nav-");
 
-					if (!thisPlugin._manualSortingEnabled || !isFileTreeItem && !isInExplorer) {
+					if (!thisPlugin.isManualSortingEnabled() || !isFileTreeItem && !isInExplorer) {
 						return original.apply(this, [newChildren]);
 					}
 
@@ -117,7 +145,7 @@ export default class ManualSortingPlugin extends Plugin {
 									const actualParentPath = childElement.parentElement?.previousElementSibling?.getAttribute("data-path") || "/";
 									const itemObjectParentPath = itemObject.parent?.path;
 									
-									if ((itemObjectParentPath !== actualParentPath) && !thisPlugin._draggingEnabled) {
+									if ((itemObjectParentPath !== actualParentPath) && !thisPlugin.settings.draggingEnabled) {
 										console.warn("Item not in the right place, removing its DOM element:", childPath);
 										this.removeChild(childElement);
 										// Sync file explorer DOM tree
@@ -204,6 +232,7 @@ export default class ManualSortingPlugin extends Plugin {
 								animation: 100,
 								swapThreshold: maxSwapThreshold,
 								fallbackOnBody: true,
+								disabled: !thisPlugin.settings.draggingEnabled,
 
 								delay: 100,
 								delayOnTouchOnly: true,
@@ -289,7 +318,7 @@ export default class ManualSortingPlugin extends Plugin {
 								},
 								onUnchoose: () => {
 									console.log("Sortable: onUnchoose");
-									if (thisPlugin._draggingEnabled) {
+									if (thisPlugin.settings.draggingEnabled) {
 										try {
 											const dropEvent = new DragEvent("drop", { 
 												bubbles: true, 
@@ -329,7 +358,7 @@ export default class ManualSortingPlugin extends Plugin {
 					}
 				},
 				detach: (original) => function (...args: any) {
-					if (!thisPlugin._manualSortingEnabled) {
+					if (!thisPlugin.isManualSortingEnabled()) {
 						return original.apply(this, args);
 					}
 					const itemNode = this;
@@ -348,23 +377,30 @@ export default class ManualSortingPlugin extends Plugin {
 			around(Object.getPrototypeOf(fileExplorerView), {
 				onRename: (original) => function (file: TAbstractFile, oldPath: string) {
 					original.apply(this, [file, oldPath]);
-					if (thisPlugin._manualSortingEnabled) {
+					if (thisPlugin.isManualSortingEnabled()) {
 						const oldDirPath = oldPath.substring(0, oldPath.lastIndexOf("/")) || "/";
-						if (!thisPlugin._draggingEnabled && oldDirPath !== file.parent?.path) {
+						if (!thisPlugin.settings.draggingEnabled && oldDirPath !== file.parent?.path) {
 							thisPlugin._fileOrderManager.moveFile(oldPath, file.path, 0);
 						}
 						thisPlugin._fileOrderManager.renameItem(oldPath, file.path);
 					}
 				},
-				setSortOrder: (original) => function (...args: any) {
-					original.apply(this, args);
-					if (thisPlugin._manualSortingEnabled) {
-						thisPlugin._manualSortingEnabled = false;
+				setSortOrder: (original) => function (sortOrder: string) {
+					// this method is called only when selecting one of the standard sorting modes
+					original.call(this, sortOrder);
+					const prevManualSortingEnabledStatus = thisPlugin.isManualSortingEnabled();
+					thisPlugin.settings.selectedSortOrder = sortOrder;
+
+					console.log("Sort order changed to:", sortOrder);
+					if (prevManualSortingEnabledStatus) {
 						thisPlugin.reloadExplorerPlugin();
 					}
+					thisPlugin.saveSettings();
 				},
 				sort: (original) => function (...args: any) {
-					thisPlugin._recentExplorerAction = 'sort';
+					if (thisPlugin.isManualSortingEnabled()) {
+						thisPlugin._recentExplorerAction = 'sort';
+					}
 					original.apply(this, args);
 				}
 			})
@@ -373,11 +409,13 @@ export default class ManualSortingPlugin extends Plugin {
 		this._explorerUnpatchFunctions.push(
 			around(Object.getPrototypeOf(fileExplorerView.tree), {
 				setFocusedItem: (original) => function (...args: any) {
-					thisPlugin._recentExplorerAction = 'setFocusedItem';
+					if (thisPlugin.isManualSortingEnabled()) {
+						thisPlugin._recentExplorerAction = 'setFocusedItem';
+					}
 					original.apply(this, args);
 				},
 				handleItemSelection: (original) => function (e: PointerEvent, t: TreeItem<FileTreeItem>) {
-					if (!thisPlugin._manualSortingEnabled) {
+					if (!thisPlugin.isManualSortingEnabled()) {
 						return original.apply(this, [e, t]);
 					}
 
@@ -445,7 +483,7 @@ export default class ManualSortingPlugin extends Plugin {
 					const targetElement = args[0].el;
 					const isInExplorer = !!targetElement.closest('[data-type="file-explorer"]');
 
-					if (!thisPlugin._manualSortingEnabled || !isInExplorer) {
+					if (!thisPlugin.isManualSortingEnabled() || !isInExplorer) {
 						return original.apply(this, args);
 					}
 
@@ -472,9 +510,9 @@ export default class ManualSortingPlugin extends Plugin {
 
 		const toggleSortingClass = async () => {
 			const explorerEl = await this.waitForExplorer();
-			explorerEl.toggleClass("manual-sorting-enabled", this._manualSortingEnabled);
+			explorerEl.toggleClass("manual-sorting-enabled", this.isManualSortingEnabled());
 		}
-		toggleSortingClass();
+		this.isManualSortingEnabled() && toggleSortingClass();
 
 		const configureAutoScrolling = async () =>  {
 			let scrollInterval: number | null = null;
@@ -483,7 +521,7 @@ export default class ManualSortingPlugin extends Plugin {
 
 			explorer.removeEventListener("dragover", handleDragOver);
 
-			if(!this._manualSortingEnabled) return; 
+			if(!this.isManualSortingEnabled()) return; 
 			explorer.addEventListener("dragover", handleDragOver);
 
 			function handleDragOver(event: DragEvent) {
@@ -523,7 +561,7 @@ export default class ManualSortingPlugin extends Plugin {
 				}
 			}
 		}
-		configureAutoScrolling();
+		this.isManualSortingEnabled() && configureAutoScrolling();
 
 		if (this.app.plugins.getPlugin('folder-notes')) {
 			console.log('Reloading Folder Notes plugin');
@@ -541,20 +579,20 @@ export default class ManualSortingPlugin extends Plugin {
 					openMenuButton.classList.contains('nav-action-button')
 				) {
 					const menu = this;
-					if (thisPlugin._manualSortingEnabled) {
+					if (thisPlugin.isManualSortingEnabled()) {
 						menu.items.find((item: { checked: boolean; }) => item.checked === true).setChecked(false);
 					}
 
-					const sortingMenuSection = "manual-sorting";
+					const sortingMenuSection = MANUAL_SORTING_MODE_ID;
 					menu.addItem((item: MenuItem) => {
 						item.setTitle('Manual sorting')
 							.setIcon('user-round')
-							.setChecked(thisPlugin._manualSortingEnabled)
+							.setChecked(thisPlugin.isManualSortingEnabled())
 							.setSection(sortingMenuSection)
 							.onClick(async () => {
-								if (!thisPlugin._manualSortingEnabled) {
-									thisPlugin._manualSortingEnabled = true;
-									thisPlugin._draggingEnabled = true;
+								if (!thisPlugin.isManualSortingEnabled()) {
+									thisPlugin.settings.selectedSortOrder = MANUAL_SORTING_MODE_ID;
+									thisPlugin.saveSettings();
 									await thisPlugin._fileOrderManager.updateOrder();
 									thisPlugin.reloadExplorerPlugin();
 								} else {
@@ -563,19 +601,20 @@ export default class ManualSortingPlugin extends Plugin {
 								}
 							});
 					});
-					if (thisPlugin._manualSortingEnabled) {
+					if (thisPlugin.isManualSortingEnabled()) {
 						menu.addItem((item: MenuItem) => {
 							item.setTitle('Dragging')
 								.setIcon('move')
 								.setSection(sortingMenuSection)
 								.onClick(() => {
-									thisPlugin._draggingEnabled = !thisPlugin._draggingEnabled;
+									thisPlugin.settings.draggingEnabled = !thisPlugin.settings.draggingEnabled;
+									thisPlugin.saveSettings();
 									thisPlugin.toogleDragging();
 								});
 								
 							const checkboxContainerEl = item.dom.createEl('div', {cls: 'menu-item-icon dragging-enabled-checkbox'});
 							const checkboxEl = checkboxContainerEl.createEl('input', {type: 'checkbox'});
-							checkboxEl.checked = thisPlugin._draggingEnabled;
+							checkboxEl.checked = thisPlugin.settings.draggingEnabled;
 						});
 					}
 					menu.addItem((item: MenuItem) => {
