@@ -599,9 +599,6 @@ export default class ManualSortingPlugin extends Plugin {
 									thisPlugin.saveSettings();
 									await thisPlugin._fileOrderManager.updateOrder();
 									thisPlugin.reloadExplorerPlugin();
-								} else {
-									thisPlugin._manualSortingEnabled = false;
-									thisPlugin.reloadExplorerPlugin();
 								}
 							});
 					});
