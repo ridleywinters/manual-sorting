@@ -1,6 +1,32 @@
 # Changelog
 
 
+## [2.3.0](https://github.com/Kh4f/manual-sorting/compare/2.2.1...2.3.0) (2025-04-17)
+
+
+### 🚀 Features
+
+* **settings:** persist last selected sorting mode and "Dragging" state across plugin reloads ([9da2ca6](https://github.com/Kh4f/manual-sorting/commit/9da2ca63e9f0682c91125e2feb05b4bbebc02abc)), closes [#38](https://github.com/Kh4f/manual-sorting/issues/38) (based on the solution proposed by [@Mara-Li](https://github.com/Mara-Li) in [#39](https://github.com/Kh4f/manual-sorting/issues/39))
+
+
+### 🩹 Bug Fixes
+
+* **obsidian:** persist last selected built-in sorting mode across app reloads ([730917f](https://github.com/Kh4f/manual-sorting/commit/730917f5e1101eec7231205f38eee2a1c79aaba0))
+* prevent toggling the 'Manual sorting' option when it's already active ([26908bb](https://github.com/Kh4f/manual-sorting/commit/26908bb2dfade62253c65d679c20f0e364295e0e))
+
+
+### 🧹 Adjustments
+
+* extract `FileExplorerView` retrieval logic into `getFileExplorerView` method ([977197d](https://github.com/Kh4f/manual-sorting/commit/977197d05a2bc68016080a36cfb41e9744f4002d))
+* **FileOrderManager:** add type annotations to filter and map functions ([a0039f4](https://github.com/Kh4f/manual-sorting/commit/a0039f433fe16d3f2c3f1bec0b240c5e8783aa05))
+* **FileOrderManager:** remove comments before `FileOrderManager` and `_saveCustomOrder` ([e7803bc](https://github.com/Kh4f/manual-sorting/commit/e7803bcb5d618e740f2942796fdfeb530cf0e12c))
+* **FileOrderManager:** remove data migration method ([bf83458](https://github.com/Kh4f/manual-sorting/commit/bf83458cf51a0c90c1c2b23f3057593df3958dfa))
+* **modal:** clarify reset order confirmation message with target sorting mode ([b0d404b](https://github.com/Kh4f/manual-sorting/commit/b0d404b49161892ee9f277c53c42828d2ed1adf6))
+* **package-lock:** update versions and repository URLs ([fa1a520](https://github.com/Kh4f/manual-sorting/commit/fa1a52008d4f9091ffe74b77964e5f133fb6a01c))
+* **package:** update project name and repository url ([ec76ead](https://github.com/Kh4f/manual-sorting/commit/ec76eaddd56a826dbe520fc9c21a1868c01d105c))
+* **types:** rename `PluginData` interface to `PluginSettings` ([5f7a508](https://github.com/Kh4f/manual-sorting/commit/5f7a508e6e2a57bb171fb7030598108ce5243deb))
+* **ui:** change icon for `Manual Sorting` option from 'user' to 'pin' ([7d84dba](https://github.com/Kh4f/manual-sorting/commit/7d84dba778179bf2492b0f220fa8b129d9a3a678))
+
 ### [2.2.1](https://github.com/Kh4f/obsidian-manual-sorting/compare/2.2.0...2.2.1) (2025-04-16)
 
 
