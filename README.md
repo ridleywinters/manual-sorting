@@ -23,29 +23,29 @@
 </div>
 
 
-## `🎯` Key Features
+## 🎯 Key Features
 
 - Your custom sort order is preserved and synced across devices
-- Toggle manual sorting mode via `✔️ Manual sorting` option
-- Enable/disable dragging using `☑️ Dragging` checkbox
+- Enable manual sorting mode via `✔️ Manual sorting` option
+- Toggle dragging using `☑️ Dragging` checkbox
 - Reset custom order with `🗑️ Reset order` button
 - Seamlessly switch between manual and other sorting modes
 
-## `🔍` How to Use
+## 🔍 How to Use
 
 1. Open the `⚙️ Change sort order` menu and select `✔️ Manual sorting` mode.
 2. Enable drag&drop by checking the `☑️ Dragging` option.
 3. Freely reorder items within the file explorer by dragging them!
 
-## `📥` Installation
+## 📥 Installation
 - **Via Obsidian Community Plugins**: https://obsidian.md/plugins?id=manual-sorting
 - **Using the [BRAT plugin](https://github.com/TfTHacker/obsidian42-brat)**: `Add Beta Plugin` → `kh4f/manual-sorting`
 - **Manually**: go to the [latest release](https://github.com/Kh4f/manual-sorting/releases/latest) → copy `main.js`, `manifest.json`, `styles.css` to `your-vault/.obsidian/plugins/manual-sorting/`
 
-## `💖` Credits
+## 💖 Credits
 - **Powered by**:  [SortableJS](https://github.com/SortableJS/Sortable), [monkey-around](https://github.com/pjeby/monkey-around)
 - **Icon library**:  [Lucide](https://lucide.dev/) (for the custom menu options)
-- **Inspiration**: [Obsidian Bartender](https://github.com/nothingislost/obsidian-bartender) by @nothingislost, [Custom File Explorer sorting](https://github.com/SebastianMC/obsidian-custom-sort) by @SebastianMC
+- **Inspiration**: [Obsidian Bartender](https://github.com/nothingislost/obsidian-bartender), [Custom File Explorer sorting](https://github.com/SebastianMC/obsidian-custom-sort)
 - **Huge thanks** to [@Paining1](https://github.com/Paining1), [@Azmoinal](https://github.com/Azmoinal), [@SublimePeace](https://github.com/SublimePeace) for testing and providing feedback on the plugin!
 - **Special thanks** to [@Mara-Li](https://github.com/Mara-Li) for contributions and feature suggestions!
 
