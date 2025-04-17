@@ -1,7 +1,7 @@
 import { TAbstractFile } from "obsidian";
 
 
-export interface PluginData {
+export interface PluginSettings {
 	customFileOrder: FileOrder;
 	[otherKey: string]: any;
 }
