@@ -4,27 +4,11 @@ import { FileExplorerView } from 'obsidian-typings';
 import ManualSortingPlugin from './main';
 
 
-/**
- * The `OrderManager` class is responsible for managing the custom file order.
- * 
- * The custom file order is stored in the plugin's data storage and is updated
- * every time the order of files in the file explorer changes.
- * 
- * The custom file order is used to restore the order of files in the file 
- * explorer when the plugin is reloaded.
- */
 export class FileOrderManager {
 	private _customFileOrder: FileOrder;
 
     constructor(private plugin: ManualSortingPlugin) {}
 
-	/**
-	 * Saves the custom file order to the plugin's data storage.
-	 * 
-	 * Note: The `data` object is initialized as empty, because at the time 
-	 * of the current version only `CustomFinedorder is stored there.`
-	 * Preloading previously saved data is avoided to save time.
-	 */
 	private async _saveCustomOrder() {
 		const data: PluginData = {customFileOrder: {}};
 		data.customFileOrder = this._customFileOrder;
