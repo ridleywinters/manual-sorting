@@ -46,13 +46,7 @@ export default class ManualSortingPlugin extends Plugin {
 	isManualSortingEnabled = () => this.settings.selectedSortOrder === MANUAL_SORTING_MODE_ID;
 
 	async initialize() {
-		const prevSelectedSortOrder = this.settings.selectedSortOrder;
-		const prevManualSortingEnabledStatus = (prevSelectedSortOrder === MANUAL_SORTING_MODE_ID);
-		if (prevManualSortingEnabledStatus) {
-			// temporarily disable manual sorting mode to prevent unnecessary sorting 
-			// before reloading the file-explorer plugin
-			this.settings.selectedSortOrder = '';
-		}
+		const prevManualSortingEnabledStatus = this.isManualSortingEnabled();
 		this.patchSortable();
 		this.patchSortOrderMenu();
 
@@ -63,13 +57,9 @@ export default class ManualSortingPlugin extends Plugin {
 			fileExplorerView.setSortOrder(this.settings.selectedSortOrder);
 		}
 		await this.patchFileExplorer(fileExplorerView);
+
 		this._fileOrderManager = new FileOrderManager(this);
 		await this._fileOrderManager.updateOrder();
-
-		// re-enable manual sorting mode if it was previously enabled
-		if (prevManualSortingEnabledStatus) {
-			this.settings.selectedSortOrder = prevSelectedSortOrder;
-		}
 
 		this.isManualSortingEnabled() && this.reloadExplorerPlugin();
 		
