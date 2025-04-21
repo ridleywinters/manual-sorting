@@ -1,6 +1,13 @@
 # Changelog
 
 
+### [2.3.1](https://github.com/Kh4f/manual-sorting/compare/2.3.0...2.3.1) (2025-04-21)
+
+
+### 🩹 Bug Fixes
+
+* **settings:** resolve race condition causing manual sorting state to reset after restart ([4c13117](https://github.com/Kh4f/manual-sorting/commit/4c13117e628d14a1ed5289e6531ff00aabe1df3a)), closes [#41](https://github.com/Kh4f/manual-sorting/issues/41)
+
 ## [2.3.0](https://github.com/Kh4f/manual-sorting/compare/2.2.1...2.3.0) (2025-04-17)
 
 
