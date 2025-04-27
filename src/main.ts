@@ -309,6 +309,13 @@ export default class ManualSortingPlugin extends Plugin {
 										const fileTreeItem = fileExplorerView.fileItems[draggedItemPath] as TreeItem<FileTreeItem>;
 										fileTreeItem.setCollapsed = origSetCollapsed;
 									}
+									const draggedItemSelf = evt.item.querySelector(".tree-item-self") as HTMLElement;
+									// Simulate hover on the dragged item
+									document.querySelector(".tree-item-self.hovered")?.classList.remove("hovered");
+									draggedItemSelf.classList.add("hovered");
+									draggedItemSelf.addEventListener("mouseleave", () => {
+										draggedItemSelf.classList.remove("hovered");
+									}, { once: true });
 								},
 								onUnchoose: () => {
 									console.log("Sortable: onUnchoose");
