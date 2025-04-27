@@ -183,7 +183,7 @@ export default class ManualSortingPlugin extends Plugin {
 							thisPlugin._fileOrderManager.restoreOrder(itemContainer, elementFolderPath);
 						}
 						
-						function makeSortable(container: HTMLElement) {
+						const makeSortable = (container: HTMLElement) => {
 							if (Sortable.get(container)) return;
 							console.log(`Initiating Sortable on`, container);
 
