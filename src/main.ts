@@ -18,6 +18,7 @@ export default class ManualSortingPlugin extends Plugin {
 	public settings: PluginSettings;
 
 	async onload() {
+		this.isDevMode() && console.log("Loading Manual Sorting in dev mode");
 		await this.loadSettings();
 		this.app.workspace.onLayoutReady(() => {
 			this.initialize();
@@ -39,6 +40,10 @@ export default class ManualSortingPlugin extends Plugin {
 		this._explorerUnpatchFunctions = [];
 		this.isManualSortingEnabled() && this.reloadExplorerPlugin();
 		this._unpatchMenu && this._unpatchMenu() && (this._unpatchMenu = null);
+	}
+
+	isDevMode = () => {
+		return process.env.NODE_ENV === 'development';
 	}
 
 	getFileExplorerView = () => {
