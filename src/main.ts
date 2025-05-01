@@ -590,6 +590,17 @@ export default class ManualSortingPlugin extends Plugin {
 		}
 		this.isManualSortingEnabled() && configureAutoScrolling();
 
+		// [Dev mode] Add reload button to file explorer header instead of auto-reveal button
+		const addReloadNavButton = async () => {
+			await this.waitForExplorer();
+			const fileExplorerView = this.getFileExplorerView();
+			fileExplorerView.autoRevealButtonEl.style.display = "none";
+			fileExplorerView.headerDom.addNavButton("rotate-ccw", "Reload app", () => {
+				this.app.commands.executeCommandById("app:reload");
+			});
+		}
+		this.isDevMode() && addReloadNavButton();
+
 		if (this.app.plugins.getPlugin('folder-notes')) {
 			console.log('Reloading Folder Notes plugin');
 			await this.app.plugins.disablePlugin('folder-notes');
