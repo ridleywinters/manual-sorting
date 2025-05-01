@@ -41,9 +41,13 @@ export default class ManualSortingPlugin extends Plugin {
 		this._unpatchMenu && this._unpatchMenu() && (this._unpatchMenu = null);
 	}
 
-	getFileExplorerView = () => this.app.workspace.getLeavesOfType("file-explorer")[0].view as FileExplorerView;
+	getFileExplorerView = () => {
+		return this.app.workspace.getLeavesOfType("file-explorer")[0].view as FileExplorerView;
+	}
 
-	isManualSortingEnabled = () => this.settings.selectedSortOrder === MANUAL_SORTING_MODE_ID;
+	isManualSortingEnabled = () => {
+		return this.settings.selectedSortOrder === MANUAL_SORTING_MODE_ID;
+	}
 
 	async initialize() {
 		const prevManualSortingEnabledStatus = this.isManualSortingEnabled();
