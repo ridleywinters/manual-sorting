@@ -26,12 +26,12 @@ export default class ManualSortingPlugin extends Plugin {
 
 	async loadSettings() {
 		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
-		console.log("Settings loaded:", this.settings);
+		console.log("Settings loaded:", this.settings, "Custom file order:", this.settings.customFileOrder);
 	}
 
 	async saveSettings() {
 		await this.saveData(this.settings);
-		console.log("Settings saved:", this.settings);
+		console.log("Settings saved:", this.settings, "Custom file order:", this.settings.customFileOrder);
 	}
 
 	async onunload() {
