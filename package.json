@@ -3,9 +3,10 @@
 	"version": "2.4.0",
 	"description": "An Obsidian plugin that adds manual drag&drop sorting to the file explorer.",
 	"main": "main.js",
+	"type": "module",
 	"scripts": {
-		"dev": "node esbuild.config.mjs",
-		"build": "node esbuild.config.mjs production",
+		"dev": "node esbuild.config.js",
+		"build": "node esbuild.config.js production",
 		"release": "standard-version",
 		"bump": "standard-version --skip.tag",
 		"tag": "standard-version --skip.bump --skip.changelog --skip.commit"
