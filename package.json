@@ -6,7 +6,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "tsx scripts/esbuild-runner.ts",
-		"build": "tsx scripts/esbuild-runner.ts production",
+		"build": "tsx scripts/esbuild-runner.ts --production",
 		"release": "standard-version",
 		"bump": "standard-version --skip.tag",
 		"tag": "standard-version --skip.bump --skip.changelog --skip.commit"

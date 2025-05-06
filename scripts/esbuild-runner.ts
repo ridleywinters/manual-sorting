@@ -1,7 +1,7 @@
 import esbuild from "esbuild";
 import { createEsbuildConfig } from "./esbuild.config";
 
-const prod = (process.argv[2] === "production");
+const prod = process.argv.includes("--production");
 
 async function runEsbuild() {
     const esbuildConfig = createEsbuildConfig(prod);
