@@ -5,8 +5,8 @@
 	"main": "main.js",
 	"type": "module",
 	"scripts": {
-		"dev": "node esbuild.config.js",
-		"build": "node esbuild.config.js production",
+		"dev": "node scripts/esbuild.config.js",
+		"build": "node scripts/esbuild.config.js production",
 		"release": "standard-version",
 		"bump": "standard-version --skip.tag",
 		"tag": "standard-version --skip.bump --skip.changelog --skip.commit"
