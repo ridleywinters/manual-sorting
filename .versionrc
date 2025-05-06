@@ -16,7 +16,7 @@
 		{"filename": "package.json","type": "json"}, 
 		{"filename": "package-lock.json","type": "json"}, 
 		{"filename": "manifest.json","type": "json"}, 
-		{"filename": "versions.json","updater": "scripts/version-bump.js"}
+		{"filename": "versions.json","updater": "scripts/version-bump.ts"}
 	],
 	"scripts": {
 		"postcommit": "git commit -a --amend --no-edit",
