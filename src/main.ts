@@ -17,6 +17,25 @@ export default class ManualSortingPlugin extends Plugin {
 	private _sortableInstances: Sortable[] = [];
 	public settings: PluginSettings;
 
+	async _onConfigFileChange(): Promise<void> {
+		// The config file has changed. In the case that the plugin itself
+		// did not just save the settings (in which case what's in memory
+		// will match what's on disk) we want to reload the settings and
+		// use the settings on disk as the source of truth.
+		//
+		// The code below uses a brute force approach of reloading the
+		// plugin entirely which is very likely more heavy-handed than we
+		// need! Also we use JSON.stringify to do a deep comparison, which is
+		// easy but inefficient!
+		const previous = JSON.stringify(this.settings.customFileOrder);
+		await this.loadSettings();
+		const current = JSON.stringify(this.settings.customFileOrder);
+		if (previous !== current) {
+			console.log("Config file changed on disk, updating order...");
+			this.isManualSortingEnabled() && this.reloadExplorerPlugin();
+		}
+	}
+
 	async onload() {
 		this.isDevMode() && console.log("Loading Manual Sorting in dev mode");
 		await this.loadSettings();
